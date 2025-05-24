@@ -1,0 +1,6 @@
+#!/bin/sh
+
+just fmt
+just lint
+
+git diff --exit-code

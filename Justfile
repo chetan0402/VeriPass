@@ -12,3 +12,8 @@ fmt:
 
 gen:
     buf generate
+    go mod tidy
+    just fmt
+
+hooks-set:
+    git config --local core.hooksPath .githooks
