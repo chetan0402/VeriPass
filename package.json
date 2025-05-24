@@ -1,0 +1,14 @@
+{
+  "name": "veri-pass",
+  "version": "1.0.0",
+  "description": "",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.54.0",
+    "@bufbuild/protoc-gen-es": "^2.4.0"
+  }
+}

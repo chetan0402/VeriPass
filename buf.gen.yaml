@@ -1,0 +1,29 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/chetan0402/veripass/internal/gen
+inputs:
+  - directory: proto
+plugins:
+  - local:
+      - go
+      - run
+      - -mod=mod
+      - google.golang.org/protobuf/cmd/protoc-gen-go
+    out: ./internal/gen
+    opt: paths=source_relative,default_api_level=API_OPEN
+  - local:
+      - go
+      - run
+      - -mod=mod
+      - connectrpc.com/connect/cmd/protoc-gen-connect-go
+    out: ./internal/gen
+    opt: paths=source_relative
+  - local:
+      - "npx"
+      - "@bufbuild/protoc-gen-es"
+    out: ./web/app/src/lib/gen
+    opt: target=ts
