@@ -29,6 +29,7 @@ const (
 	Pass_PASS_TYPE_CLASS       Pass_PassType = 1
 	Pass_PASS_TYPE_MARKET      Pass_PassType = 2
 	Pass_PASS_TYPE_HOME        Pass_PassType = 3
+	Pass_PASS_TYPE_EVENT       Pass_PassType = 4
 )
 
 // Enum value maps for Pass_PassType.
@@ -38,12 +39,14 @@ var (
 		1: "PASS_TYPE_CLASS",
 		2: "PASS_TYPE_MARKET",
 		3: "PASS_TYPE_HOME",
+		4: "PASS_TYPE_EVENT",
 	}
 	Pass_PassType_value = map[string]int32{
 		"PASS_TYPE_UNSPECIFIED": 0,
 		"PASS_TYPE_CLASS":       1,
 		"PASS_TYPE_MARKET":      2,
 		"PASS_TYPE_HOME":        3,
+		"PASS_TYPE_EVENT":       4,
 	}
 )
 
@@ -354,19 +357,20 @@ var File_veripass_v1_pass_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\n" +
-	"\x16veripass/v1/pass.proto\x12\vveripass.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc9\x02\n" +
+	"\x16veripass/v1/pass.proto\x12\vveripass.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xde\x02\n" +
 	"\x04Pass\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12.\n" +
 	"\x04type\x18\x03 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\x129\n" +
 	"\n" +
 	"start_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12:\n" +
-	"\bend_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\aendTime\x88\x01\x01\"d\n" +
+	"\bend_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\aendTime\x88\x01\x01\"y\n" +
 	"\bPassType\x12\x19\n" +
 	"\x15PASS_TYPE_UNSPECIFIED\x10\x00\x12\x13\n" +
 	"\x0fPASS_TYPE_CLASS\x10\x01\x12\x14\n" +
 	"\x10PASS_TYPE_MARKET\x10\x02\x12\x12\n" +
-	"\x0ePASS_TYPE_HOME\x10\x03B\v\n" +
+	"\x0ePASS_TYPE_HOME\x10\x03\x12\x13\n" +
+	"\x0fPASS_TYPE_EVENT\x10\x04B\v\n" +
 	"\t_end_time\" \n" +
 	"\x0eGetPassRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"5\n" +

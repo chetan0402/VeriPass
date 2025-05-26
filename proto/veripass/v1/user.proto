@@ -24,10 +24,11 @@ message EntryRequest {
 message ExitRequest {
     string id = 1;
     enum ExitType {
-        ENTRY_TYPE_UNSPECIFIED = 0;
-        ENTRY_TYPE_CLASS = 1;
-        ENTRY_TYPE_MARKET = 2;
-        ENTRY_TYPE_HOME = 3;
+        EXIT_TYPE_UNSPECIFIED = 0;
+        EXIT_TYPE_CLASS = 1;
+        EXIT_TYPE_MARKET = 2;
+        EXIT_TYPE_HOME = 3;
+        EXIT_TYPE_EVENT = 4;
     }
     ExitType type = 2;
 }

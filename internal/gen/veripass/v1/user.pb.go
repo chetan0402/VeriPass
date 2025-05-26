@@ -25,25 +25,28 @@ const (
 type ExitRequest_ExitType int32
 
 const (
-	ExitRequest_ENTRY_TYPE_UNSPECIFIED ExitRequest_ExitType = 0
-	ExitRequest_ENTRY_TYPE_CLASS       ExitRequest_ExitType = 1
-	ExitRequest_ENTRY_TYPE_MARKET      ExitRequest_ExitType = 2
-	ExitRequest_ENTRY_TYPE_HOME        ExitRequest_ExitType = 3
+	ExitRequest_EXIT_TYPE_UNSPECIFIED ExitRequest_ExitType = 0
+	ExitRequest_EXIT_TYPE_CLASS       ExitRequest_ExitType = 1
+	ExitRequest_EXIT_TYPE_MARKET      ExitRequest_ExitType = 2
+	ExitRequest_EXIT_TYPE_HOME        ExitRequest_ExitType = 3
+	ExitRequest_EXIT_TYPE_EVENT       ExitRequest_ExitType = 4
 )
 
 // Enum value maps for ExitRequest_ExitType.
 var (
 	ExitRequest_ExitType_name = map[int32]string{
-		0: "ENTRY_TYPE_UNSPECIFIED",
-		1: "ENTRY_TYPE_CLASS",
-		2: "ENTRY_TYPE_MARKET",
-		3: "ENTRY_TYPE_HOME",
+		0: "EXIT_TYPE_UNSPECIFIED",
+		1: "EXIT_TYPE_CLASS",
+		2: "EXIT_TYPE_MARKET",
+		3: "EXIT_TYPE_HOME",
+		4: "EXIT_TYPE_EVENT",
 	}
 	ExitRequest_ExitType_value = map[string]int32{
-		"ENTRY_TYPE_UNSPECIFIED": 0,
-		"ENTRY_TYPE_CLASS":       1,
-		"ENTRY_TYPE_MARKET":      2,
-		"ENTRY_TYPE_HOME":        3,
+		"EXIT_TYPE_UNSPECIFIED": 0,
+		"EXIT_TYPE_CLASS":       1,
+		"EXIT_TYPE_MARKET":      2,
+		"EXIT_TYPE_HOME":        3,
+		"EXIT_TYPE_EVENT":       4,
 	}
 )
 
@@ -243,7 +246,7 @@ func (x *ExitRequest) GetType() ExitRequest_ExitType {
 	if x != nil {
 		return x.Type
 	}
-	return ExitRequest_ENTRY_TYPE_UNSPECIFIED
+	return ExitRequest_EXIT_TYPE_UNSPECIFIED
 }
 
 type ExitResponse struct {
@@ -346,15 +349,16 @@ const file_veripass_v1_user_proto_rawDesc = "" +
 	"\x06hostel\x18\x04 \x01(\tR\x06hostel\x12\x14\n" +
 	"\x05phone\x18\x05 \x01(\tR\x05phone\"'\n" +
 	"\fEntryRequest\x12\x17\n" +
-	"\apass_id\x18\x01 \x01(\tR\x06passId\"\xbe\x01\n" +
+	"\apass_id\x18\x01 \x01(\tR\x06passId\"\xcf\x01\n" +
 	"\vExitRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x125\n" +
-	"\x04type\x18\x02 \x01(\x0e2!.veripass.v1.ExitRequest.ExitTypeR\x04type\"h\n" +
-	"\bExitType\x12\x1a\n" +
-	"\x16ENTRY_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
-	"\x10ENTRY_TYPE_CLASS\x10\x01\x12\x15\n" +
-	"\x11ENTRY_TYPE_MARKET\x10\x02\x12\x13\n" +
-	"\x0fENTRY_TYPE_HOME\x10\x03\"'\n" +
+	"\x04type\x18\x02 \x01(\x0e2!.veripass.v1.ExitRequest.ExitTypeR\x04type\"y\n" +
+	"\bExitType\x12\x19\n" +
+	"\x15EXIT_TYPE_UNSPECIFIED\x10\x00\x12\x13\n" +
+	"\x0fEXIT_TYPE_CLASS\x10\x01\x12\x14\n" +
+	"\x10EXIT_TYPE_MARKET\x10\x02\x12\x12\n" +
+	"\x0eEXIT_TYPE_HOME\x10\x03\x12\x13\n" +
+	"\x0fEXIT_TYPE_EVENT\x10\x04\"'\n" +
 	"\fExitResponse\x12\x17\n" +
 	"\apass_id\x18\x01 \x01(\tR\x06passId\" \n" +
 	"\x0eGetUserRequest\x12\x0e\n" +

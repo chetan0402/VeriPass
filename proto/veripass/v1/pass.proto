@@ -12,6 +12,7 @@ message Pass {
         PASS_TYPE_CLASS = 1;
         PASS_TYPE_MARKET = 2;
         PASS_TYPE_HOME = 3;
+        PASS_TYPE_EVENT = 4;
     }
     PassType type = 3;
     google.protobuf.Timestamp start_time = 4;

@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file veripass/v1/user.proto.
  */
 export const file_veripass_v1_user: GenFile = /*@__PURE__*/
-  fileDesc("ChZ2ZXJpcGFzcy92MS91c2VyLnByb3RvEgt2ZXJpcGFzcy52MSJNCgRVc2VyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEcm9vbRgDIAEoCRIOCgZob3N0ZWwYBCABKAkSDQoFcGhvbmUYBSABKAkiHwoMRW50cnlSZXF1ZXN0Eg8KB3Bhc3NfaWQYASABKAkitAEKC0V4aXRSZXF1ZXN0EgoKAmlkGAEgASgJEi8KBHR5cGUYAiABKA4yIS52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdC5FeGl0VHlwZSJoCghFeGl0VHlwZRIaChZFTlRSWV9UWVBFX1VOU1BFQ0lGSUVEEAASFAoQRU5UUllfVFlQRV9DTEFTUxABEhUKEUVOVFJZX1RZUEVfTUFSS0VUEAISEwoPRU5UUllfVFlQRV9IT01FEAMiHwoMRXhpdFJlc3BvbnNlEg8KB3Bhc3NfaWQYASABKAkiHAoOR2V0VXNlclJlcXVlc3QSCgoCaWQYASABKAkywQEKC1VzZXJTZXJ2aWNlEjoKBUVudHJ5EhkudmVyaXBhc3MudjEuRW50cnlSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EjsKBEV4aXQSGC52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdBoZLnZlcmlwYXNzLnYxLkV4aXRSZXNwb25zZRI5CgdHZXRVc2VyEhsudmVyaXBhc3MudjEuR2V0VXNlclJlcXVlc3QaES52ZXJpcGFzcy52MS5Vc2VyQq0BCg9jb20udmVyaXBhc3MudjFCCVVzZXJQcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw", [file_google_protobuf_empty]);
+  fileDesc("ChZ2ZXJpcGFzcy92MS91c2VyLnByb3RvEgt2ZXJpcGFzcy52MSJNCgRVc2VyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEcm9vbRgDIAEoCRIOCgZob3N0ZWwYBCABKAkSDQoFcGhvbmUYBSABKAkiHwoMRW50cnlSZXF1ZXN0Eg8KB3Bhc3NfaWQYASABKAkixQEKC0V4aXRSZXF1ZXN0EgoKAmlkGAEgASgJEi8KBHR5cGUYAiABKA4yIS52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdC5FeGl0VHlwZSJ5CghFeGl0VHlwZRIZChVFWElUX1RZUEVfVU5TUEVDSUZJRUQQABITCg9FWElUX1RZUEVfQ0xBU1MQARIUChBFWElUX1RZUEVfTUFSS0VUEAISEgoORVhJVF9UWVBFX0hPTUUQAxITCg9FWElUX1RZUEVfRVZFTlQQBCIfCgxFeGl0UmVzcG9uc2USDwoHcGFzc19pZBgBIAEoCSIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCTLBAQoLVXNlclNlcnZpY2USOgoFRW50cnkSGS52ZXJpcGFzcy52MS5FbnRyeVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSOwoERXhpdBIYLnZlcmlwYXNzLnYxLkV4aXRSZXF1ZXN0GhkudmVyaXBhc3MudjEuRXhpdFJlc3BvbnNlEjkKB0dldFVzZXISGy52ZXJpcGFzcy52MS5HZXRVc2VyUmVxdWVzdBoRLnZlcmlwYXNzLnYxLlVzZXJCrQEKD2NvbS52ZXJpcGFzcy52MUIJVXNlclByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z", [file_google_protobuf_empty]);
 
 /**
  * @generated from message veripass.v1.User
@@ -95,24 +95,29 @@ export const ExitRequestSchema: GenMessage<ExitRequest> = /*@__PURE__*/
  */
 export enum ExitRequest_ExitType {
   /**
-   * @generated from enum value: ENTRY_TYPE_UNSPECIFIED = 0;
+   * @generated from enum value: EXIT_TYPE_UNSPECIFIED = 0;
    */
-  ENTRY_TYPE_UNSPECIFIED = 0,
+  UNSPECIFIED = 0,
 
   /**
-   * @generated from enum value: ENTRY_TYPE_CLASS = 1;
+   * @generated from enum value: EXIT_TYPE_CLASS = 1;
    */
-  ENTRY_TYPE_CLASS = 1,
+  CLASS = 1,
 
   /**
-   * @generated from enum value: ENTRY_TYPE_MARKET = 2;
+   * @generated from enum value: EXIT_TYPE_MARKET = 2;
    */
-  ENTRY_TYPE_MARKET = 2,
+  MARKET = 2,
 
   /**
-   * @generated from enum value: ENTRY_TYPE_HOME = 3;
+   * @generated from enum value: EXIT_TYPE_HOME = 3;
    */
-  ENTRY_TYPE_HOME = 3,
+  HOME = 3,
+
+  /**
+   * @generated from enum value: EXIT_TYPE_EVENT = 4;
+   */
+  EVENT = 4,
 }
 
 /**
