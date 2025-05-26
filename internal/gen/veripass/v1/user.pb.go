@@ -9,6 +9,7 @@ package veripassv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -21,9 +22,65 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ExitRequest_ExitType int32
+
+const (
+	ExitRequest_ENTRY_TYPE_UNSPECIFIED ExitRequest_ExitType = 0
+	ExitRequest_ENTRY_TYPE_CLASS       ExitRequest_ExitType = 1
+	ExitRequest_ENTRY_TYPE_MARKET      ExitRequest_ExitType = 2
+	ExitRequest_ENTRY_TYPE_HOME        ExitRequest_ExitType = 3
+)
+
+// Enum value maps for ExitRequest_ExitType.
+var (
+	ExitRequest_ExitType_name = map[int32]string{
+		0: "ENTRY_TYPE_UNSPECIFIED",
+		1: "ENTRY_TYPE_CLASS",
+		2: "ENTRY_TYPE_MARKET",
+		3: "ENTRY_TYPE_HOME",
+	}
+	ExitRequest_ExitType_value = map[string]int32{
+		"ENTRY_TYPE_UNSPECIFIED": 0,
+		"ENTRY_TYPE_CLASS":       1,
+		"ENTRY_TYPE_MARKET":      2,
+		"ENTRY_TYPE_HOME":        3,
+	}
+)
+
+func (x ExitRequest_ExitType) Enum() *ExitRequest_ExitType {
+	p := new(ExitRequest_ExitType)
+	*p = x
+	return p
+}
+
+func (x ExitRequest_ExitType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ExitRequest_ExitType) Descriptor() protoreflect.EnumDescriptor {
+	return file_veripass_v1_user_proto_enumTypes[0].Descriptor()
+}
+
+func (ExitRequest_ExitType) Type() protoreflect.EnumType {
+	return &file_veripass_v1_user_proto_enumTypes[0]
+}
+
+func (x ExitRequest_ExitType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ExitRequest_ExitType.Descriptor instead.
+func (ExitRequest_ExitType) EnumDescriptor() ([]byte, []int) {
+	return file_veripass_v1_user_proto_rawDescGZIP(), []int{2, 0}
+}
+
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Room          string                 `protobuf:"bytes,3,opt,name=room,proto3" json:"room,omitempty"`
+	Hostel        string                 `protobuf:"bytes,4,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	Phone         string                 `protobuf:"bytes,5,opt,name=phone,proto3" json:"phone,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -65,13 +122,247 @@ func (x *User) GetId() string {
 	return ""
 }
 
+func (x *User) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *User) GetRoom() string {
+	if x != nil {
+		return x.Room
+	}
+	return ""
+}
+
+func (x *User) GetHostel() string {
+	if x != nil {
+		return x.Hostel
+	}
+	return ""
+}
+
+func (x *User) GetPhone() string {
+	if x != nil {
+		return x.Phone
+	}
+	return ""
+}
+
+type EntryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PassId        string                 `protobuf:"bytes,1,opt,name=pass_id,json=passId,proto3" json:"pass_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EntryRequest) Reset() {
+	*x = EntryRequest{}
+	mi := &file_veripass_v1_user_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EntryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EntryRequest) ProtoMessage() {}
+
+func (x *EntryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_user_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EntryRequest.ProtoReflect.Descriptor instead.
+func (*EntryRequest) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_user_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *EntryRequest) GetPassId() string {
+	if x != nil {
+		return x.PassId
+	}
+	return ""
+}
+
+type ExitRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type          ExitRequest_ExitType   `protobuf:"varint,2,opt,name=type,proto3,enum=veripass.v1.ExitRequest_ExitType" json:"type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExitRequest) Reset() {
+	*x = ExitRequest{}
+	mi := &file_veripass_v1_user_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExitRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExitRequest) ProtoMessage() {}
+
+func (x *ExitRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_user_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExitRequest.ProtoReflect.Descriptor instead.
+func (*ExitRequest) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_user_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ExitRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ExitRequest) GetType() ExitRequest_ExitType {
+	if x != nil {
+		return x.Type
+	}
+	return ExitRequest_ENTRY_TYPE_UNSPECIFIED
+}
+
+type ExitResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PassId        string                 `protobuf:"bytes,1,opt,name=pass_id,json=passId,proto3" json:"pass_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExitResponse) Reset() {
+	*x = ExitResponse{}
+	mi := &file_veripass_v1_user_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExitResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExitResponse) ProtoMessage() {}
+
+func (x *ExitResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_user_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExitResponse.ProtoReflect.Descriptor instead.
+func (*ExitResponse) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_user_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ExitResponse) GetPassId() string {
+	if x != nil {
+		return x.PassId
+	}
+	return ""
+}
+
+type GetUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserRequest) Reset() {
+	*x = GetUserRequest{}
+	mi := &file_veripass_v1_user_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserRequest) ProtoMessage() {}
+
+func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_user_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
+func (*GetUserRequest) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_user_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetUserRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 var File_veripass_v1_user_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_user_proto_rawDesc = "" +
 	"\n" +
-	"\x16veripass/v1/user.proto\x12\vveripass.v1\"\x16\n" +
+	"\x16veripass/v1/user.proto\x12\vveripass.v1\x1a\x1bgoogle/protobuf/empty.proto\"l\n" +
 	"\x04User\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02idB\xad\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
+	"\x04room\x18\x03 \x01(\tR\x04room\x12\x16\n" +
+	"\x06hostel\x18\x04 \x01(\tR\x06hostel\x12\x14\n" +
+	"\x05phone\x18\x05 \x01(\tR\x05phone\"'\n" +
+	"\fEntryRequest\x12\x17\n" +
+	"\apass_id\x18\x01 \x01(\tR\x06passId\"\xbe\x01\n" +
+	"\vExitRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x125\n" +
+	"\x04type\x18\x02 \x01(\x0e2!.veripass.v1.ExitRequest.ExitTypeR\x04type\"h\n" +
+	"\bExitType\x12\x1a\n" +
+	"\x16ENTRY_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
+	"\x10ENTRY_TYPE_CLASS\x10\x01\x12\x15\n" +
+	"\x11ENTRY_TYPE_MARKET\x10\x02\x12\x13\n" +
+	"\x0fENTRY_TYPE_HOME\x10\x03\"'\n" +
+	"\fExitResponse\x12\x17\n" +
+	"\apass_id\x18\x01 \x01(\tR\x06passId\" \n" +
+	"\x0eGetUserRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xc1\x01\n" +
+	"\vUserService\x12:\n" +
+	"\x05Entry\x12\x19.veripass.v1.EntryRequest\x1a\x16.google.protobuf.Empty\x12;\n" +
+	"\x04Exit\x12\x18.veripass.v1.ExitRequest\x1a\x19.veripass.v1.ExitResponse\x129\n" +
+	"\aGetUser\x12\x1b.veripass.v1.GetUserRequest\x1a\x11.veripass.v1.UserB\xad\x01\n" +
 	"\x0fcom.veripass.v1B\tUserProtoP\x01ZBgithub.com/chetan0402/veripass/internal/gen/veripass/v1;veripassv1\xa2\x02\x03VXX\xaa\x02\vVeripass.V1\xca\x02\vVeripass\\V1\xe2\x02\x17Veripass\\V1\\GPBMetadata\xea\x02\fVeripass::V1b\x06proto3"
 
 var (
@@ -86,16 +377,30 @@ func file_veripass_v1_user_proto_rawDescGZIP() []byte {
 	return file_veripass_v1_user_proto_rawDescData
 }
 
-var file_veripass_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_veripass_v1_user_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_veripass_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_veripass_v1_user_proto_goTypes = []any{
-	(*User)(nil), // 0: veripass.v1.User
+	(ExitRequest_ExitType)(0), // 0: veripass.v1.ExitRequest.ExitType
+	(*User)(nil),              // 1: veripass.v1.User
+	(*EntryRequest)(nil),      // 2: veripass.v1.EntryRequest
+	(*ExitRequest)(nil),       // 3: veripass.v1.ExitRequest
+	(*ExitResponse)(nil),      // 4: veripass.v1.ExitResponse
+	(*GetUserRequest)(nil),    // 5: veripass.v1.GetUserRequest
+	(*emptypb.Empty)(nil),     // 6: google.protobuf.Empty
 }
 var file_veripass_v1_user_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: veripass.v1.ExitRequest.type:type_name -> veripass.v1.ExitRequest.ExitType
+	2, // 1: veripass.v1.UserService.Entry:input_type -> veripass.v1.EntryRequest
+	3, // 2: veripass.v1.UserService.Exit:input_type -> veripass.v1.ExitRequest
+	5, // 3: veripass.v1.UserService.GetUser:input_type -> veripass.v1.GetUserRequest
+	6, // 4: veripass.v1.UserService.Entry:output_type -> google.protobuf.Empty
+	4, // 5: veripass.v1.UserService.Exit:output_type -> veripass.v1.ExitResponse
+	1, // 6: veripass.v1.UserService.GetUser:output_type -> veripass.v1.User
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_veripass_v1_user_proto_init() }
@@ -108,13 +413,14 @@ func file_veripass_v1_user_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_veripass_v1_user_proto_rawDesc), len(file_veripass_v1_user_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   1,
+			NumEnums:      1,
+			NumMessages:   5,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_veripass_v1_user_proto_goTypes,
 		DependencyIndexes: file_veripass_v1_user_proto_depIdxs,
+		EnumInfos:         file_veripass_v1_user_proto_enumTypes,
 		MessageInfos:      file_veripass_v1_user_proto_msgTypes,
 	}.Build()
 	File_veripass_v1_user_proto = out.File

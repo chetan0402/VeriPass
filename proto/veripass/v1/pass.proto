@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package veripass.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message Pass {
+    string id = 1;
+    string user_id = 2;
+    enum PassType {
+        PASS_TYPE_UNSPECIFIED = 0;
+        PASS_TYPE_CLASS = 1;
+        PASS_TYPE_MARKET = 2;
+        PASS_TYPE_HOME = 3;
+    }
+    PassType type = 3;
+    google.protobuf.Timestamp start_time = 4;
+    optional google.protobuf.Timestamp end_time = 5;
+}
+
+service PassService {
+    rpc GetPass(GetPassRequest) returns (Pass);
+    rpc GetLatestPassByUser(GetLatestPassByUserRequest) returns (Pass);
+    rpc ListPassesByUser(ListPassesByUserRequest) returns (ListPassesByUserResponse);
+}
+
+message GetPassRequest {
+    string id = 1;
+}
+
+message GetLatestPassByUserRequest {
+    string user_id = 1;
+}
+
+message ListPassesByUserRequest {
+    string user_id = 1;
+    string page_token = 2;
+    int32 page_size = 3;
+}
+
+message ListPassesByUserResponse {
+    repeated Pass passes = 1;
+    string next_page_token = 2;
+}

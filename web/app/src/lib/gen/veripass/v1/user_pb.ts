@@ -2,31 +2,187 @@
 // @generated from file veripass/v1/user.proto (package veripass.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from '@bufbuild/protobuf/codegenv1';
-import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv1';
-import type { Message } from '@bufbuild/protobuf';
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
+import type { EmptySchema } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file veripass/v1/user.proto.
  */
-export const file_veripass_v1_user: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		'ChZ2ZXJpcGFzcy92MS91c2VyLnByb3RvEgt2ZXJpcGFzcy52MSISCgRVc2VyEgoKAmlkGAEgASgJQq0BCg9jb20udmVyaXBhc3MudjFCCVVzZXJQcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw'
-	);
+export const file_veripass_v1_user: GenFile = /*@__PURE__*/
+  fileDesc("ChZ2ZXJpcGFzcy92MS91c2VyLnByb3RvEgt2ZXJpcGFzcy52MSJNCgRVc2VyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEcm9vbRgDIAEoCRIOCgZob3N0ZWwYBCABKAkSDQoFcGhvbmUYBSABKAkiHwoMRW50cnlSZXF1ZXN0Eg8KB3Bhc3NfaWQYASABKAkitAEKC0V4aXRSZXF1ZXN0EgoKAmlkGAEgASgJEi8KBHR5cGUYAiABKA4yIS52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdC5FeGl0VHlwZSJoCghFeGl0VHlwZRIaChZFTlRSWV9UWVBFX1VOU1BFQ0lGSUVEEAASFAoQRU5UUllfVFlQRV9DTEFTUxABEhUKEUVOVFJZX1RZUEVfTUFSS0VUEAISEwoPRU5UUllfVFlQRV9IT01FEAMiHwoMRXhpdFJlc3BvbnNlEg8KB3Bhc3NfaWQYASABKAkiHAoOR2V0VXNlclJlcXVlc3QSCgoCaWQYASABKAkywQEKC1VzZXJTZXJ2aWNlEjoKBUVudHJ5EhkudmVyaXBhc3MudjEuRW50cnlSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EjsKBEV4aXQSGC52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdBoZLnZlcmlwYXNzLnYxLkV4aXRSZXNwb25zZRI5CgdHZXRVc2VyEhsudmVyaXBhc3MudjEuR2V0VXNlclJlcXVlc3QaES52ZXJpcGFzcy52MS5Vc2VyQq0BCg9jb20udmVyaXBhc3MudjFCCVVzZXJQcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw", [file_google_protobuf_empty]);
 
 /**
  * @generated from message veripass.v1.User
  */
-export type User = Message<'veripass.v1.User'> & {
-	/**
-	 * @generated from field: string id = 1;
-	 */
-	id: string;
+export type User = Message<"veripass.v1.User"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string room = 3;
+   */
+  room: string;
+
+  /**
+   * @generated from field: string hostel = 4;
+   */
+  hostel: string;
+
+  /**
+   * @generated from field: string phone = 5;
+   */
+  phone: string;
 };
 
 /**
  * Describes the message veripass.v1.User.
  * Use `create(UserSchema)` to create a new message.
  */
-export const UserSchema: GenMessage<User> = /*@__PURE__*/ messageDesc(file_veripass_v1_user, 0);
+export const UserSchema: GenMessage<User> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_user, 0);
+
+/**
+ * @generated from message veripass.v1.EntryRequest
+ */
+export type EntryRequest = Message<"veripass.v1.EntryRequest"> & {
+  /**
+   * @generated from field: string pass_id = 1;
+   */
+  passId: string;
+};
+
+/**
+ * Describes the message veripass.v1.EntryRequest.
+ * Use `create(EntryRequestSchema)` to create a new message.
+ */
+export const EntryRequestSchema: GenMessage<EntryRequest> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_user, 1);
+
+/**
+ * @generated from message veripass.v1.ExitRequest
+ */
+export type ExitRequest = Message<"veripass.v1.ExitRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: veripass.v1.ExitRequest.ExitType type = 2;
+   */
+  type: ExitRequest_ExitType;
+};
+
+/**
+ * Describes the message veripass.v1.ExitRequest.
+ * Use `create(ExitRequestSchema)` to create a new message.
+ */
+export const ExitRequestSchema: GenMessage<ExitRequest> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_user, 2);
+
+/**
+ * @generated from enum veripass.v1.ExitRequest.ExitType
+ */
+export enum ExitRequest_ExitType {
+  /**
+   * @generated from enum value: ENTRY_TYPE_UNSPECIFIED = 0;
+   */
+  ENTRY_TYPE_UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: ENTRY_TYPE_CLASS = 1;
+   */
+  ENTRY_TYPE_CLASS = 1,
+
+  /**
+   * @generated from enum value: ENTRY_TYPE_MARKET = 2;
+   */
+  ENTRY_TYPE_MARKET = 2,
+
+  /**
+   * @generated from enum value: ENTRY_TYPE_HOME = 3;
+   */
+  ENTRY_TYPE_HOME = 3,
+}
+
+/**
+ * Describes the enum veripass.v1.ExitRequest.ExitType.
+ */
+export const ExitRequest_ExitTypeSchema: GenEnum<ExitRequest_ExitType> = /*@__PURE__*/
+  enumDesc(file_veripass_v1_user, 2, 0);
+
+/**
+ * @generated from message veripass.v1.ExitResponse
+ */
+export type ExitResponse = Message<"veripass.v1.ExitResponse"> & {
+  /**
+   * @generated from field: string pass_id = 1;
+   */
+  passId: string;
+};
+
+/**
+ * Describes the message veripass.v1.ExitResponse.
+ * Use `create(ExitResponseSchema)` to create a new message.
+ */
+export const ExitResponseSchema: GenMessage<ExitResponse> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_user, 3);
+
+/**
+ * @generated from message veripass.v1.GetUserRequest
+ */
+export type GetUserRequest = Message<"veripass.v1.GetUserRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message veripass.v1.GetUserRequest.
+ * Use `create(GetUserRequestSchema)` to create a new message.
+ */
+export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_user, 4);
+
+/**
+ * @generated from service veripass.v1.UserService
+ */
+export const UserService: GenService<{
+  /**
+   * @generated from rpc veripass.v1.UserService.Entry
+   */
+  entry: {
+    methodKind: "unary";
+    input: typeof EntryRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc veripass.v1.UserService.Exit
+   */
+  exit: {
+    methodKind: "unary";
+    input: typeof ExitRequestSchema;
+    output: typeof ExitResponseSchema;
+  },
+  /**
+   * @generated from rpc veripass.v1.UserService.GetUser
+   */
+  getUser: {
+    methodKind: "unary";
+    input: typeof GetUserRequestSchema;
+    output: typeof UserSchema;
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_veripass_v1_user, 0);
+
