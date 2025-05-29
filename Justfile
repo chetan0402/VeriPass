@@ -3,11 +3,11 @@ default:
 
 lint:
     buf lint
-    golangci-lint run ./...
+    golangci-lint run ./internal/... ./cmd/...
     pnpm -r lint
 
 fmt:
-    golangci-lint fmt ./...
+    golangci-lint fmt ./internal/... ./cmd/...
     pnpm -r format
 
 gen:

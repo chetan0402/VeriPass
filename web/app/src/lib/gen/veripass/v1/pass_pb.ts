@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file veripass/v1/pass.proto.
  */
 export const file_veripass_v1_pass: GenFile = /*@__PURE__*/
-  fileDesc("ChZ2ZXJpcGFzcy92MS9wYXNzLnByb3RvEgt2ZXJpcGFzcy52MSK4AgoEUGFzcxIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEigKBHR5cGUYAyABKA4yGi52ZXJpcGFzcy52MS5QYXNzLlBhc3NUeXBlEi4KCnN0YXJ0X3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjEKCGVuZF90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBInkKCFBhc3NUeXBlEhkKFVBBU1NfVFlQRV9VTlNQRUNJRklFRBAAEhMKD1BBU1NfVFlQRV9DTEFTUxABEhQKEFBBU1NfVFlQRV9NQVJLRVQQAhISCg5QQVNTX1RZUEVfSE9NRRADEhMKD1BBU1NfVFlQRV9FVkVOVBAEQgsKCV9lbmRfdGltZSIcCg5HZXRQYXNzUmVxdWVzdBIKCgJpZBgBIAEoCSItChpHZXRMYXRlc3RQYXNzQnlVc2VyUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIlEKF0xpc3RQYXNzZXNCeVVzZXJSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSEgoKcGFnZV90b2tlbhgCIAEoCRIRCglwYWdlX3NpemUYAyABKAUiVgoYTGlzdFBhc3Nlc0J5VXNlclJlc3BvbnNlEiEKBnBhc3NlcxgBIAMoCzIRLnZlcmlwYXNzLnYxLlBhc3MSFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJMvwBCgtQYXNzU2VydmljZRI5CgdHZXRQYXNzEhsudmVyaXBhc3MudjEuR2V0UGFzc1JlcXVlc3QaES52ZXJpcGFzcy52MS5QYXNzElEKE0dldExhdGVzdFBhc3NCeVVzZXISJy52ZXJpcGFzcy52MS5HZXRMYXRlc3RQYXNzQnlVc2VyUmVxdWVzdBoRLnZlcmlwYXNzLnYxLlBhc3MSXwoQTGlzdFBhc3Nlc0J5VXNlchIkLnZlcmlwYXNzLnYxLkxpc3RQYXNzZXNCeVVzZXJSZXF1ZXN0GiUudmVyaXBhc3MudjEuTGlzdFBhc3Nlc0J5VXNlclJlc3BvbnNlQq0BCg9jb20udmVyaXBhc3MudjFCCVBhc3NQcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("ChZ2ZXJpcGFzcy92MS9wYXNzLnByb3RvEgt2ZXJpcGFzcy52MSK4AgoEUGFzcxIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEigKBHR5cGUYAyABKA4yGi52ZXJpcGFzcy52MS5QYXNzLlBhc3NUeXBlEi4KCnN0YXJ0X3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjEKCGVuZF90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBInkKCFBhc3NUeXBlEhkKFVBBU1NfVFlQRV9VTlNQRUNJRklFRBAAEhMKD1BBU1NfVFlQRV9DTEFTUxABEhQKEFBBU1NfVFlQRV9NQVJLRVQQAhISCg5QQVNTX1RZUEVfSE9NRRADEhMKD1BBU1NfVFlQRV9FVkVOVBAEQgsKCV9lbmRfdGltZSJpChdDcmVhdGVNYW51YWxQYXNzUmVxdWVzdBITCgthZG1pbl9lbWFpbBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEigKBHR5cGUYAyABKA4yGi52ZXJpcGFzcy52MS5QYXNzLlBhc3NUeXBlIhwKDkdldFBhc3NSZXF1ZXN0EgoKAmlkGAEgASgJIi0KGkdldExhdGVzdFBhc3NCeVVzZXJSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkijQIKF0xpc3RQYXNzZXNCeVVzZXJSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkSEgoKcGFnZV90b2tlbhgCIAEoCRIRCglwYWdlX3NpemUYAyABKAUSLQoEdHlwZRgEIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGVIAIgBARIzCgpzdGFydF90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgBiAEBEjEKCGVuZF90aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgCiAEBQgcKBV90eXBlQg0KC19zdGFydF90aW1lQgsKCV9lbmRfdGltZSJWChhMaXN0UGFzc2VzQnlVc2VyUmVzcG9uc2USIQoGcGFzc2VzGAEgAygLMhEudmVyaXBhc3MudjEuUGFzcxIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkyyQIKC1Bhc3NTZXJ2aWNlEksKEENyZWF0ZU1hbnVhbFBhc3MSJC52ZXJpcGFzcy52MS5DcmVhdGVNYW51YWxQYXNzUmVxdWVzdBoRLnZlcmlwYXNzLnYxLlBhc3MSOQoHR2V0UGFzcxIbLnZlcmlwYXNzLnYxLkdldFBhc3NSZXF1ZXN0GhEudmVyaXBhc3MudjEuUGFzcxJRChNHZXRMYXRlc3RQYXNzQnlVc2VyEicudmVyaXBhc3MudjEuR2V0TGF0ZXN0UGFzc0J5VXNlclJlcXVlc3QaES52ZXJpcGFzcy52MS5QYXNzEl8KEExpc3RQYXNzZXNCeVVzZXISJC52ZXJpcGFzcy52MS5MaXN0UGFzc2VzQnlVc2VyUmVxdWVzdBolLnZlcmlwYXNzLnYxLkxpc3RQYXNzZXNCeVVzZXJSZXNwb25zZUKtAQoPY29tLnZlcmlwYXNzLnYxQglQYXNzUHJvdG9QAVpCZ2l0aHViLmNvbS9jaGV0YW4wNDAyL3ZlcmlwYXNzL2ludGVybmFsL2dlbi92ZXJpcGFzcy92MTt2ZXJpcGFzc3YxogIDVlhYqgILVmVyaXBhc3MuVjHKAgtWZXJpcGFzc1xWMeICF1ZlcmlwYXNzXFYxXEdQQk1ldGFkYXRh6gIMVmVyaXBhc3M6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message veripass.v1.Pass
@@ -88,6 +88,33 @@ export const Pass_PassTypeSchema: GenEnum<Pass_PassType> = /*@__PURE__*/
   enumDesc(file_veripass_v1_pass, 0, 0);
 
 /**
+ * @generated from message veripass.v1.CreateManualPassRequest
+ */
+export type CreateManualPassRequest = Message<"veripass.v1.CreateManualPassRequest"> & {
+  /**
+   * @generated from field: string admin_email = 1;
+   */
+  adminEmail: string;
+
+  /**
+   * @generated from field: string user_id = 2;
+   */
+  userId: string;
+
+  /**
+   * @generated from field: veripass.v1.Pass.PassType type = 3;
+   */
+  type: Pass_PassType;
+};
+
+/**
+ * Describes the message veripass.v1.CreateManualPassRequest.
+ * Use `create(CreateManualPassRequestSchema)` to create a new message.
+ */
+export const CreateManualPassRequestSchema: GenMessage<CreateManualPassRequest> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_pass, 1);
+
+/**
  * @generated from message veripass.v1.GetPassRequest
  */
 export type GetPassRequest = Message<"veripass.v1.GetPassRequest"> & {
@@ -102,7 +129,7 @@ export type GetPassRequest = Message<"veripass.v1.GetPassRequest"> & {
  * Use `create(GetPassRequestSchema)` to create a new message.
  */
 export const GetPassRequestSchema: GenMessage<GetPassRequest> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_pass, 1);
+  messageDesc(file_veripass_v1_pass, 2);
 
 /**
  * @generated from message veripass.v1.GetLatestPassByUserRequest
@@ -119,7 +146,7 @@ export type GetLatestPassByUserRequest = Message<"veripass.v1.GetLatestPassByUse
  * Use `create(GetLatestPassByUserRequestSchema)` to create a new message.
  */
 export const GetLatestPassByUserRequestSchema: GenMessage<GetLatestPassByUserRequest> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_pass, 2);
+  messageDesc(file_veripass_v1_pass, 3);
 
 /**
  * @generated from message veripass.v1.ListPassesByUserRequest
@@ -139,6 +166,21 @@ export type ListPassesByUserRequest = Message<"veripass.v1.ListPassesByUserReque
    * @generated from field: int32 page_size = 3;
    */
   pageSize: number;
+
+  /**
+   * @generated from field: optional veripass.v1.Pass.PassType type = 4;
+   */
+  type?: Pass_PassType;
+
+  /**
+   * @generated from field: optional google.protobuf.Timestamp start_time = 5;
+   */
+  startTime?: Timestamp;
+
+  /**
+   * @generated from field: optional google.protobuf.Timestamp end_time = 6;
+   */
+  endTime?: Timestamp;
 };
 
 /**
@@ -146,7 +188,7 @@ export type ListPassesByUserRequest = Message<"veripass.v1.ListPassesByUserReque
  * Use `create(ListPassesByUserRequestSchema)` to create a new message.
  */
 export const ListPassesByUserRequestSchema: GenMessage<ListPassesByUserRequest> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_pass, 3);
+  messageDesc(file_veripass_v1_pass, 4);
 
 /**
  * @generated from message veripass.v1.ListPassesByUserResponse
@@ -168,12 +210,20 @@ export type ListPassesByUserResponse = Message<"veripass.v1.ListPassesByUserResp
  * Use `create(ListPassesByUserResponseSchema)` to create a new message.
  */
 export const ListPassesByUserResponseSchema: GenMessage<ListPassesByUserResponse> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_pass, 4);
+  messageDesc(file_veripass_v1_pass, 5);
 
 /**
  * @generated from service veripass.v1.PassService
  */
 export const PassService: GenService<{
+  /**
+   * @generated from rpc veripass.v1.PassService.CreateManualPass
+   */
+  createManualPass: {
+    methodKind: "unary";
+    input: typeof CreateManualPassRequestSchema;
+    output: typeof PassSchema;
+  },
   /**
    * @generated from rpc veripass.v1.PassService.GetPass
    */

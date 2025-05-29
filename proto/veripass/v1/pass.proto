@@ -20,9 +20,16 @@ message Pass {
 }
 
 service PassService {
+    rpc CreateManualPass(CreateManualPassRequest) returns (Pass);
     rpc GetPass(GetPassRequest) returns (Pass);
     rpc GetLatestPassByUser(GetLatestPassByUserRequest) returns (Pass);
     rpc ListPassesByUser(ListPassesByUserRequest) returns (ListPassesByUserResponse);
+}
+
+message CreateManualPassRequest {
+    string admin_email = 1;
+    string user_id = 2;
+    Pass.PassType type = 3;
 }
 
 message GetPassRequest {
@@ -37,6 +44,9 @@ message ListPassesByUserRequest {
     string user_id = 1;
     string page_token = 2;
     int32 page_size = 3;
+    optional Pass.PassType type = 4;
+    optional google.protobuf.Timestamp start_time = 5;
+    optional google.protobuf.Timestamp end_time = 6;
 }
 
 message ListPassesByUserResponse {

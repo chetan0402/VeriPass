@@ -33,6 +33,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// PassServiceCreateManualPassProcedure is the fully-qualified name of the PassService's
+	// CreateManualPass RPC.
+	PassServiceCreateManualPassProcedure = "/veripass.v1.PassService/CreateManualPass"
 	// PassServiceGetPassProcedure is the fully-qualified name of the PassService's GetPass RPC.
 	PassServiceGetPassProcedure = "/veripass.v1.PassService/GetPass"
 	// PassServiceGetLatestPassByUserProcedure is the fully-qualified name of the PassService's
@@ -45,6 +48,7 @@ const (
 
 // PassServiceClient is a client for the veripass.v1.PassService service.
 type PassServiceClient interface {
+	CreateManualPass(context.Context, *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error)
 	GetPass(context.Context, *connect.Request[v1.GetPassRequest]) (*connect.Response[v1.Pass], error)
 	GetLatestPassByUser(context.Context, *connect.Request[v1.GetLatestPassByUserRequest]) (*connect.Response[v1.Pass], error)
 	ListPassesByUser(context.Context, *connect.Request[v1.ListPassesByUserRequest]) (*connect.Response[v1.ListPassesByUserResponse], error)
@@ -61,6 +65,12 @@ func NewPassServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 	baseURL = strings.TrimRight(baseURL, "/")
 	passServiceMethods := v1.File_veripass_v1_pass_proto.Services().ByName("PassService").Methods()
 	return &passServiceClient{
+		createManualPass: connect.NewClient[v1.CreateManualPassRequest, v1.Pass](
+			httpClient,
+			baseURL+PassServiceCreateManualPassProcedure,
+			connect.WithSchema(passServiceMethods.ByName("CreateManualPass")),
+			connect.WithClientOptions(opts...),
+		),
 		getPass: connect.NewClient[v1.GetPassRequest, v1.Pass](
 			httpClient,
 			baseURL+PassServiceGetPassProcedure,
@@ -84,9 +94,15 @@ func NewPassServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // passServiceClient implements PassServiceClient.
 type passServiceClient struct {
+	createManualPass    *connect.Client[v1.CreateManualPassRequest, v1.Pass]
 	getPass             *connect.Client[v1.GetPassRequest, v1.Pass]
 	getLatestPassByUser *connect.Client[v1.GetLatestPassByUserRequest, v1.Pass]
 	listPassesByUser    *connect.Client[v1.ListPassesByUserRequest, v1.ListPassesByUserResponse]
+}
+
+// CreateManualPass calls veripass.v1.PassService.CreateManualPass.
+func (c *passServiceClient) CreateManualPass(ctx context.Context, req *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error) {
+	return c.createManualPass.CallUnary(ctx, req)
 }
 
 // GetPass calls veripass.v1.PassService.GetPass.
@@ -106,6 +122,7 @@ func (c *passServiceClient) ListPassesByUser(ctx context.Context, req *connect.R
 
 // PassServiceHandler is an implementation of the veripass.v1.PassService service.
 type PassServiceHandler interface {
+	CreateManualPass(context.Context, *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error)
 	GetPass(context.Context, *connect.Request[v1.GetPassRequest]) (*connect.Response[v1.Pass], error)
 	GetLatestPassByUser(context.Context, *connect.Request[v1.GetLatestPassByUserRequest]) (*connect.Response[v1.Pass], error)
 	ListPassesByUser(context.Context, *connect.Request[v1.ListPassesByUserRequest]) (*connect.Response[v1.ListPassesByUserResponse], error)
@@ -118,6 +135,12 @@ type PassServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewPassServiceHandler(svc PassServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	passServiceMethods := v1.File_veripass_v1_pass_proto.Services().ByName("PassService").Methods()
+	passServiceCreateManualPassHandler := connect.NewUnaryHandler(
+		PassServiceCreateManualPassProcedure,
+		svc.CreateManualPass,
+		connect.WithSchema(passServiceMethods.ByName("CreateManualPass")),
+		connect.WithHandlerOptions(opts...),
+	)
 	passServiceGetPassHandler := connect.NewUnaryHandler(
 		PassServiceGetPassProcedure,
 		svc.GetPass,
@@ -138,6 +161,8 @@ func NewPassServiceHandler(svc PassServiceHandler, opts ...connect.HandlerOption
 	)
 	return "/veripass.v1.PassService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case PassServiceCreateManualPassProcedure:
+			passServiceCreateManualPassHandler.ServeHTTP(w, r)
 		case PassServiceGetPassProcedure:
 			passServiceGetPassHandler.ServeHTTP(w, r)
 		case PassServiceGetLatestPassByUserProcedure:
@@ -152,6 +177,10 @@ func NewPassServiceHandler(svc PassServiceHandler, opts ...connect.HandlerOption
 
 // UnimplementedPassServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedPassServiceHandler struct{}
+
+func (UnimplementedPassServiceHandler) CreateManualPass(context.Context, *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.PassService.CreateManualPass is not implemented"))
+}
 
 func (UnimplementedPassServiceHandler) GetPass(context.Context, *connect.Request[v1.GetPassRequest]) (*connect.Response[v1.Pass], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.PassService.GetPass is not implemented"))

@@ -1,7 +1,9 @@
 #!/bin/sh
 set -e
 
-just fmt
 just lint
+just fmt
+git diff --exit-code
 
+just gen
 git diff --exit-code
