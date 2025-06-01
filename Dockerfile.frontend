@@ -1,0 +1,19 @@
+FROM node:lts-alpine AS builder
+WORKDIR /app
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY web/app/package.json web/app/
+RUN pnpm -r install --frozen-lockfile
+COPY web/app/ web/app/
+RUN pnpm -C web/app run build
+
+
+FROM node:lts-alpine AS runner
+WORKDIR /app
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY web/app/package.json web/app/
+RUN pnpm -r install --frozen-lockfile --prod
+COPY --from=builder /app/web/app/build ./build
+EXPOSE 3000
+CMD ["node","build"]
