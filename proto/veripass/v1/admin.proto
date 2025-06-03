@@ -5,8 +5,8 @@ package veripass.v1;
 message Admin {
     string email = 1;
     string name = 2;
-    repeated string hostels = 3;
-    bool add_pass = 4;
+    string hostel = 3;
+    bool can_add_pass = 4;
 }
 
 service AdminService {

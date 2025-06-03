@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file veripass/v1/admin.proto.
  */
 export const file_veripass_v1_admin: GenFile = /*@__PURE__*/
-  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiRwoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIPCgdob3N0ZWxzGAMgAygJEhAKCGFkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCTJMCgxBZG1pblNlcnZpY2USPAoIR2V0QWRtaW4SHC52ZXJpcGFzcy52MS5HZXRBZG1pblJlcXVlc3QaEi52ZXJpcGFzcy52MS5BZG1pbkKuAQoPY29tLnZlcmlwYXNzLnYxQgpBZG1pblByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z");
+  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCTJMCgxBZG1pblNlcnZpY2USPAoIR2V0QWRtaW4SHC52ZXJpcGFzcy52MS5HZXRBZG1pblJlcXVlc3QaEi52ZXJpcGFzcy52MS5BZG1pbkKuAQoPY29tLnZlcmlwYXNzLnYxQgpBZG1pblByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z");
 
 /**
  * @generated from message veripass.v1.Admin
@@ -27,14 +27,14 @@ export type Admin = Message<"veripass.v1.Admin"> & {
   name: string;
 
   /**
-   * @generated from field: repeated string hostels = 3;
+   * @generated from field: string hostel = 3;
    */
-  hostels: string[];
+  hostel: string;
 
   /**
-   * @generated from field: bool add_pass = 4;
+   * @generated from field: bool can_add_pass = 4;
    */
-  addPass: boolean;
+  canAddPass: boolean;
 };
 
 /**

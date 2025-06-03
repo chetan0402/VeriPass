@@ -12,6 +12,7 @@ fmt:
 
 gen:
     buf generate
+    go run -mod=mod entgo.io/ent/cmd/ent generate ./internal/ent/schema
     go mod tidy
     just fmt
 

@@ -25,8 +25,8 @@ type Admin struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Hostels       []string               `protobuf:"bytes,3,rep,name=hostels,proto3" json:"hostels,omitempty"`
-	AddPass       bool                   `protobuf:"varint,4,opt,name=add_pass,json=addPass,proto3" json:"add_pass,omitempty"`
+	Hostel        string                 `protobuf:"bytes,3,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	CanAddPass    bool                   `protobuf:"varint,4,opt,name=can_add_pass,json=canAddPass,proto3" json:"can_add_pass,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -75,16 +75,16 @@ func (x *Admin) GetName() string {
 	return ""
 }
 
-func (x *Admin) GetHostels() []string {
+func (x *Admin) GetHostel() string {
 	if x != nil {
-		return x.Hostels
+		return x.Hostel
 	}
-	return nil
+	return ""
 }
 
-func (x *Admin) GetAddPass() bool {
+func (x *Admin) GetCanAddPass() bool {
 	if x != nil {
-		return x.AddPass
+		return x.CanAddPass
 	}
 	return false
 }
@@ -137,12 +137,13 @@ var File_veripass_v1_admin_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\n" +
-	"\x17veripass/v1/admin.proto\x12\vveripass.v1\"f\n" +
+	"\x17veripass/v1/admin.proto\x12\vveripass.v1\"k\n" +
 	"\x05Admin\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x18\n" +
-	"\ahostels\x18\x03 \x03(\tR\ahostels\x12\x19\n" +
-	"\badd_pass\x18\x04 \x01(\bR\aaddPass\"'\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
+	"\x06hostel\x18\x03 \x01(\tR\x06hostel\x12 \n" +
+	"\fcan_add_pass\x18\x04 \x01(\bR\n" +
+	"canAddPass\"'\n" +
 	"\x0fGetAdminRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email2L\n" +
 	"\fAdminService\x12<\n" +
