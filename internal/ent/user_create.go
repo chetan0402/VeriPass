@@ -19,15 +19,15 @@ type UserCreate struct {
 	hooks    []Hook
 }
 
-// SetEmail sets the "email" field.
-func (uc *UserCreate) SetEmail(s string) *UserCreate {
-	uc.mutation.SetEmail(s)
-	return uc
-}
-
 // SetName sets the "name" field.
 func (uc *UserCreate) SetName(s string) *UserCreate {
 	uc.mutation.SetName(s)
+	return uc
+}
+
+// SetRoom sets the "room" field.
+func (uc *UserCreate) SetRoom(s string) *UserCreate {
+	uc.mutation.SetRoom(s)
 	return uc
 }
 
@@ -37,9 +37,15 @@ func (uc *UserCreate) SetHostel(s string) *UserCreate {
 	return uc
 }
 
-// SetCanAddPass sets the "can_add_pass" field.
-func (uc *UserCreate) SetCanAddPass(b bool) *UserCreate {
-	uc.mutation.SetCanAddPass(b)
+// SetPhone sets the "phone" field.
+func (uc *UserCreate) SetPhone(s string) *UserCreate {
+	uc.mutation.SetPhone(s)
+	return uc
+}
+
+// SetID sets the "id" field.
+func (uc *UserCreate) SetID(s string) *UserCreate {
+	uc.mutation.SetID(s)
 	return uc
 }
 
@@ -77,17 +83,17 @@ func (uc *UserCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
-	if _, ok := uc.mutation.Email(); !ok {
-		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "User.email"`)}
-	}
 	if _, ok := uc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "User.name"`)}
+	}
+	if _, ok := uc.mutation.Room(); !ok {
+		return &ValidationError{Name: "room", err: errors.New(`ent: missing required field "User.room"`)}
 	}
 	if _, ok := uc.mutation.Hostel(); !ok {
 		return &ValidationError{Name: "hostel", err: errors.New(`ent: missing required field "User.hostel"`)}
 	}
-	if _, ok := uc.mutation.CanAddPass(); !ok {
-		return &ValidationError{Name: "can_add_pass", err: errors.New(`ent: missing required field "User.can_add_pass"`)}
+	if _, ok := uc.mutation.Phone(); !ok {
+		return &ValidationError{Name: "phone", err: errors.New(`ent: missing required field "User.phone"`)}
 	}
 	return nil
 }
@@ -103,8 +109,13 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected User.ID type: %T", _spec.ID.Value)
+		}
+	}
 	uc.mutation.id = &_node.ID
 	uc.mutation.done = true
 	return _node, nil
@@ -113,23 +124,27 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	var (
 		_node = &User{config: uc.config}
-		_spec = sqlgraph.NewCreateSpec(user.Table, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(user.Table, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	)
-	if value, ok := uc.mutation.Email(); ok {
-		_spec.SetField(user.FieldEmail, field.TypeString, value)
-		_node.Email = value
+	if id, ok := uc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := uc.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
+	if value, ok := uc.mutation.Room(); ok {
+		_spec.SetField(user.FieldRoom, field.TypeString, value)
+		_node.Room = value
+	}
 	if value, ok := uc.mutation.Hostel(); ok {
 		_spec.SetField(user.FieldHostel, field.TypeString, value)
 		_node.Hostel = value
 	}
-	if value, ok := uc.mutation.CanAddPass(); ok {
-		_spec.SetField(user.FieldCanAddPass, field.TypeBool, value)
-		_node.CanAddPass = value
+	if value, ok := uc.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
+		_node.Phone = value
 	}
 	return _node, _spec
 }
@@ -178,10 +193,6 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

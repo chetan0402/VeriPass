@@ -27,20 +27,6 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetEmail sets the "email" field.
-func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
-	uu.mutation.SetEmail(s)
-	return uu
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableEmail(s *string) *UserUpdate {
-	if s != nil {
-		uu.SetEmail(*s)
-	}
-	return uu
-}
-
 // SetName sets the "name" field.
 func (uu *UserUpdate) SetName(s string) *UserUpdate {
 	uu.mutation.SetName(s)
@@ -51,6 +37,20 @@ func (uu *UserUpdate) SetName(s string) *UserUpdate {
 func (uu *UserUpdate) SetNillableName(s *string) *UserUpdate {
 	if s != nil {
 		uu.SetName(*s)
+	}
+	return uu
+}
+
+// SetRoom sets the "room" field.
+func (uu *UserUpdate) SetRoom(s string) *UserUpdate {
+	uu.mutation.SetRoom(s)
+	return uu
+}
+
+// SetNillableRoom sets the "room" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableRoom(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetRoom(*s)
 	}
 	return uu
 }
@@ -69,16 +69,16 @@ func (uu *UserUpdate) SetNillableHostel(s *string) *UserUpdate {
 	return uu
 }
 
-// SetCanAddPass sets the "can_add_pass" field.
-func (uu *UserUpdate) SetCanAddPass(b bool) *UserUpdate {
-	uu.mutation.SetCanAddPass(b)
+// SetPhone sets the "phone" field.
+func (uu *UserUpdate) SetPhone(s string) *UserUpdate {
+	uu.mutation.SetPhone(s)
 	return uu
 }
 
-// SetNillableCanAddPass sets the "can_add_pass" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableCanAddPass(b *bool) *UserUpdate {
-	if b != nil {
-		uu.SetCanAddPass(*b)
+// SetNillablePhone sets the "phone" field if the given value is not nil.
+func (uu *UserUpdate) SetNillablePhone(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetPhone(*s)
 	}
 	return uu
 }
@@ -116,7 +116,7 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 }
 
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -124,17 +124,17 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := uu.mutation.Email(); ok {
-		_spec.SetField(user.FieldEmail, field.TypeString, value)
-	}
 	if value, ok := uu.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Room(); ok {
+		_spec.SetField(user.FieldRoom, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.Hostel(); ok {
 		_spec.SetField(user.FieldHostel, field.TypeString, value)
 	}
-	if value, ok := uu.mutation.CanAddPass(); ok {
-		_spec.SetField(user.FieldCanAddPass, field.TypeBool, value)
+	if value, ok := uu.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -156,20 +156,6 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetEmail sets the "email" field.
-func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
-	uuo.mutation.SetEmail(s)
-	return uuo
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableEmail(s *string) *UserUpdateOne {
-	if s != nil {
-		uuo.SetEmail(*s)
-	}
-	return uuo
-}
-
 // SetName sets the "name" field.
 func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
 	uuo.mutation.SetName(s)
@@ -180,6 +166,20 @@ func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
 func (uuo *UserUpdateOne) SetNillableName(s *string) *UserUpdateOne {
 	if s != nil {
 		uuo.SetName(*s)
+	}
+	return uuo
+}
+
+// SetRoom sets the "room" field.
+func (uuo *UserUpdateOne) SetRoom(s string) *UserUpdateOne {
+	uuo.mutation.SetRoom(s)
+	return uuo
+}
+
+// SetNillableRoom sets the "room" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableRoom(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetRoom(*s)
 	}
 	return uuo
 }
@@ -198,16 +198,16 @@ func (uuo *UserUpdateOne) SetNillableHostel(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// SetCanAddPass sets the "can_add_pass" field.
-func (uuo *UserUpdateOne) SetCanAddPass(b bool) *UserUpdateOne {
-	uuo.mutation.SetCanAddPass(b)
+// SetPhone sets the "phone" field.
+func (uuo *UserUpdateOne) SetPhone(s string) *UserUpdateOne {
+	uuo.mutation.SetPhone(s)
 	return uuo
 }
 
-// SetNillableCanAddPass sets the "can_add_pass" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableCanAddPass(b *bool) *UserUpdateOne {
-	if b != nil {
-		uuo.SetCanAddPass(*b)
+// SetNillablePhone sets the "phone" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillablePhone(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetPhone(*s)
 	}
 	return uuo
 }
@@ -258,7 +258,7 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	id, ok := uuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "User.id" for update`)}
@@ -283,17 +283,17 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			}
 		}
 	}
-	if value, ok := uuo.mutation.Email(); ok {
-		_spec.SetField(user.FieldEmail, field.TypeString, value)
-	}
 	if value, ok := uuo.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Room(); ok {
+		_spec.SetField(user.FieldRoom, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.Hostel(); ok {
 		_spec.SetField(user.FieldHostel, field.TypeString, value)
 	}
-	if value, ok := uuo.mutation.CanAddPass(); ok {
-		_spec.SetField(user.FieldCanAddPass, field.TypeBool, value)
+	if value, ok := uuo.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues

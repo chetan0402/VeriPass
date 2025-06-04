@@ -15,15 +15,15 @@ import (
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// Email holds the value of the "email" field.
-	Email string `json:"email,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Room holds the value of the "room" field.
+	Room string `json:"room,omitempty"`
 	// Hostel holds the value of the "hostel" field.
 	Hostel string `json:"hostel,omitempty"`
-	// CanAddPass holds the value of the "can_add_pass" field.
-	CanAddPass   bool `json:"can_add_pass,omitempty"`
+	// Phone holds the value of the "phone" field.
+	Phone        string `json:"phone,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -32,11 +32,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldCanAddPass:
-			values[i] = new(sql.NullBool)
-		case user.FieldID:
-			values[i] = new(sql.NullInt64)
-		case user.FieldEmail, user.FieldName, user.FieldHostel:
+		case user.FieldID, user.FieldName, user.FieldRoom, user.FieldHostel, user.FieldPhone:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -54,16 +50,10 @@ func (u *User) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			u.ID = int(value.Int64)
-		case user.FieldEmail:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field email", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				u.Email = value.String
+				u.ID = value.String
 			}
 		case user.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -71,17 +61,23 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.Name = value.String
 			}
+		case user.FieldRoom:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field room", values[i])
+			} else if value.Valid {
+				u.Room = value.String
+			}
 		case user.FieldHostel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field hostel", values[i])
 			} else if value.Valid {
 				u.Hostel = value.String
 			}
-		case user.FieldCanAddPass:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field can_add_pass", values[i])
+		case user.FieldPhone:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field phone", values[i])
 			} else if value.Valid {
-				u.CanAddPass = value.Bool
+				u.Phone = value.String
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -119,17 +115,17 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
-	builder.WriteString("email=")
-	builder.WriteString(u.Email)
-	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(u.Name)
+	builder.WriteString(", ")
+	builder.WriteString("room=")
+	builder.WriteString(u.Room)
 	builder.WriteString(", ")
 	builder.WriteString("hostel=")
 	builder.WriteString(u.Hostel)
 	builder.WriteString(", ")
-	builder.WriteString("can_add_pass=")
-	builder.WriteString(fmt.Sprintf("%v", u.CanAddPass))
+	builder.WriteString("phone=")
+	builder.WriteString(u.Phone)
 	builder.WriteByte(')')
 	return builder.String()
 }

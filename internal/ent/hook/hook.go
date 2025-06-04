@@ -9,6 +9,30 @@ import (
 	"github.com/chetan0402/veripass/internal/ent"
 )
 
+// The AdminFunc type is an adapter to allow the use of ordinary
+// function as Admin mutator.
+type AdminFunc func(context.Context, *ent.AdminMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AdminFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AdminMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AdminMutation", m)
+}
+
+// The PassFunc type is an adapter to allow the use of ordinary
+// function as Pass mutator.
+type PassFunc func(context.Context, *ent.PassMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PassFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PassMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PassMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

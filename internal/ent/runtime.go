@@ -2,8 +2,20 @@
 
 package ent
 
+import (
+	"github.com/chetan0402/veripass/internal/ent/pass"
+	"github.com/chetan0402/veripass/internal/ent/schema"
+	"github.com/google/uuid"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	passFields := schema.Pass{}.Fields()
+	_ = passFields
+	// passDescID is the schema descriptor for id field.
+	passDescID := passFields[0].Descriptor()
+	// pass.DefaultID holds the default value on creation for the id field.
+	pass.DefaultID = passDescID.Default.(func() uuid.UUID)
 }
