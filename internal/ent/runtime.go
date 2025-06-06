@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/chetan0402/veripass/internal/ent/admin"
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	"github.com/chetan0402/veripass/internal/ent/schema"
 	"github.com/google/uuid"
@@ -12,6 +13,14 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	adminFields := schema.Admin{}.Fields()
+	_ = adminFields
+	// adminDescID is the schema descriptor for id field.
+	adminDescID := adminFields[0].Descriptor()
+	// admin.DefaultID holds the default value on creation for the id field.
+	admin.DefaultID = adminDescID.Default.(func() string)
+	// admin.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	admin.IDValidator = adminDescID.Validators[0].(func(string) error)
 	passFields := schema.Pass{}.Fields()
 	_ = passFields
 	// passDescID is the schema descriptor for id field.

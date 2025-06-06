@@ -11,11 +11,11 @@ type User struct {
 
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id").StorageKey("sch_id").Unique(),
+		field.String("id").Unique(),
 		field.String("name"),
 		field.String("room"),
 		field.String("hostel"),
-		field.String("phone"),
+		field.String("phone").Unique(),
 	}
 }
 

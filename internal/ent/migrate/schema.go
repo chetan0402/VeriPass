@@ -10,8 +10,8 @@ import (
 var (
 	// AdminsColumns holds the columns for the "admins" table.
 	AdminsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "email", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, Unique: true, Size: 26},
+		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "hostel", Type: field.TypeString},
 		{Name: "can_add_pass", Type: field.TypeBool},
@@ -38,11 +38,11 @@ var (
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "sch_id", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "room", Type: field.TypeString},
 		{Name: "hostel", Type: field.TypeString},
-		{Name: "phone", Type: field.TypeString},
+		{Name: "phone", Type: field.TypeString, Unique: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

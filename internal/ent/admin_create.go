@@ -43,6 +43,20 @@ func (ac *AdminCreate) SetCanAddPass(b bool) *AdminCreate {
 	return ac
 }
 
+// SetID sets the "id" field.
+func (ac *AdminCreate) SetID(s string) *AdminCreate {
+	ac.mutation.SetID(s)
+	return ac
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (ac *AdminCreate) SetNillableID(s *string) *AdminCreate {
+	if s != nil {
+		ac.SetID(*s)
+	}
+	return ac
+}
+
 // Mutation returns the AdminMutation object of the builder.
 func (ac *AdminCreate) Mutation() *AdminMutation {
 	return ac.mutation
@@ -50,6 +64,7 @@ func (ac *AdminCreate) Mutation() *AdminMutation {
 
 // Save creates the Admin in the database.
 func (ac *AdminCreate) Save(ctx context.Context) (*Admin, error) {
+	ac.defaults()
 	return withHooks(ctx, ac.sqlSave, ac.mutation, ac.hooks)
 }
 
@@ -75,6 +90,14 @@ func (ac *AdminCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ac *AdminCreate) defaults() {
+	if _, ok := ac.mutation.ID(); !ok {
+		v := admin.DefaultID()
+		ac.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ac *AdminCreate) check() error {
 	if _, ok := ac.mutation.Email(); !ok {
@@ -88,6 +111,11 @@ func (ac *AdminCreate) check() error {
 	}
 	if _, ok := ac.mutation.CanAddPass(); !ok {
 		return &ValidationError{Name: "can_add_pass", err: errors.New(`ent: missing required field "Admin.can_add_pass"`)}
+	}
+	if v, ok := ac.mutation.ID(); ok {
+		if err := admin.IDValidator(v); err != nil {
+			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Admin.id": %w`, err)}
+		}
 	}
 	return nil
 }
@@ -103,8 +131,13 @@ func (ac *AdminCreate) sqlSave(ctx context.Context) (*Admin, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Admin.ID type: %T", _spec.ID.Value)
+		}
+	}
 	ac.mutation.id = &_node.ID
 	ac.mutation.done = true
 	return _node, nil
@@ -113,8 +146,12 @@ func (ac *AdminCreate) sqlSave(ctx context.Context) (*Admin, error) {
 func (ac *AdminCreate) createSpec() (*Admin, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Admin{config: ac.config}
-		_spec = sqlgraph.NewCreateSpec(admin.Table, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(admin.Table, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeString))
 	)
+	if id, ok := ac.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := ac.mutation.Email(); ok {
 		_spec.SetField(admin.FieldEmail, field.TypeString, value)
 		_node.Email = value
@@ -152,6 +189,7 @@ func (acb *AdminCreateBulk) Save(ctx context.Context) ([]*Admin, error) {
 	for i := range acb.builders {
 		func(i int, root context.Context) {
 			builder := acb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AdminMutation)
 				if !ok {
@@ -178,10 +216,6 @@ func (acb *AdminCreateBulk) Save(ctx context.Context) ([]*Admin, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})

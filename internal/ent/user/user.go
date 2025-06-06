@@ -10,7 +10,7 @@ const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "sch_id"
+	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldRoom holds the string denoting the room field in the database.

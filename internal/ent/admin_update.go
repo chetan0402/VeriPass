@@ -116,7 +116,7 @@ func (au *AdminUpdate) ExecX(ctx context.Context) {
 }
 
 func (au *AdminUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(admin.Table, admin.Columns, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(admin.Table, admin.Columns, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeString))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -258,7 +258,7 @@ func (auo *AdminUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (auo *AdminUpdateOne) sqlSave(ctx context.Context) (_node *Admin, err error) {
-	_spec := sqlgraph.NewUpdateSpec(admin.Table, admin.Columns, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(admin.Table, admin.Columns, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeString))
 	id, ok := auo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Admin.id" for update`)}

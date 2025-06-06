@@ -82,8 +82,8 @@ func (aq *AdminQuery) FirstX(ctx context.Context) *Admin {
 
 // FirstID returns the first Admin ID from the query.
 // Returns a *NotFoundError when no Admin ID was found.
-func (aq *AdminQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (aq *AdminQuery) FirstID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -95,7 +95,7 @@ func (aq *AdminQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *AdminQuery) FirstIDX(ctx context.Context) int {
+func (aq *AdminQuery) FirstIDX(ctx context.Context) string {
 	id, err := aq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -133,8 +133,8 @@ func (aq *AdminQuery) OnlyX(ctx context.Context) *Admin {
 // OnlyID is like Only, but returns the only Admin ID in the query.
 // Returns a *NotSingularError when more than one Admin ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *AdminQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (aq *AdminQuery) OnlyID(ctx context.Context) (id string, err error) {
+	var ids []string
 	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -150,7 +150,7 @@ func (aq *AdminQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *AdminQuery) OnlyIDX(ctx context.Context) int {
+func (aq *AdminQuery) OnlyIDX(ctx context.Context) string {
 	id, err := aq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -178,7 +178,7 @@ func (aq *AdminQuery) AllX(ctx context.Context) []*Admin {
 }
 
 // IDs executes the query and returns a list of Admin IDs.
-func (aq *AdminQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (aq *AdminQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if aq.ctx.Unique == nil && aq.path != nil {
 		aq.Unique(true)
 	}
@@ -190,7 +190,7 @@ func (aq *AdminQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *AdminQuery) IDsX(ctx context.Context) []int {
+func (aq *AdminQuery) IDsX(ctx context.Context) []string {
 	ids, err := aq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -365,7 +365,7 @@ func (aq *AdminQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (aq *AdminQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(admin.Table, admin.Columns, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(admin.Table, admin.Columns, sqlgraph.NewFieldSpec(admin.FieldID, field.TypeString))
 	_spec.From = aq.sql
 	if unique := aq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

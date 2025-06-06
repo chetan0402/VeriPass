@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"crypto/rand"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -11,7 +13,10 @@ type Admin struct {
 
 func (Admin) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("email"),
+		field.String("id").DefaultFunc(func() string {
+			return rand.Text()
+		}).Unique().MaxLen(26).Immutable(),
+		field.String("email").Unique(),
 		field.String("name"),
 		field.String("hostel"),
 		field.Bool("can_add_pass"),

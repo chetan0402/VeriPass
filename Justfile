@@ -12,9 +12,12 @@ fmt:
 
 gen:
     buf generate
-    go run -mod=mod entgo.io/ent/cmd/ent generate ./internal/ent/schema
+    just gen-ent
     go mod tidy
     just fmt
+
+gen-ent:
+    go run -mod=mod entgo.io/ent/cmd/ent generate ./internal/ent/schema
 
 hooks-set:
     git config --local core.hooksPath .githooks

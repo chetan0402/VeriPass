@@ -15,7 +15,7 @@ import (
 type Admin struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Email holds the value of the "email" field.
 	Email string `json:"email,omitempty"`
 	// Name holds the value of the "name" field.
@@ -34,9 +34,7 @@ func (*Admin) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case admin.FieldCanAddPass:
 			values[i] = new(sql.NullBool)
-		case admin.FieldID:
-			values[i] = new(sql.NullInt64)
-		case admin.FieldEmail, admin.FieldName, admin.FieldHostel:
+		case admin.FieldID, admin.FieldEmail, admin.FieldName, admin.FieldHostel:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -54,11 +52,11 @@ func (a *Admin) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case admin.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				a.ID = value.String
 			}
-			a.ID = int(value.Int64)
 		case admin.FieldEmail:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field email", values[i])
