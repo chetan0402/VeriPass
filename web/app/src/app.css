@@ -1,1 +1,69 @@
 @import 'tailwindcss';
+@import 'animate.css';
+@plugin 'flowbite/plugin';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+	--color-primary-50: #f8f8ff;
+	--color-primary-100: #ececff;
+	--color-primary-200: #d8d8ff;
+	--color-primary-300: #b6b6ff;
+	--color-primary-400: #9696ff;
+	--color-primary-500: #2b2a60; /* Base */
+	--color-primary-600: #3a3a85;
+	--color-primary-700: #31317a;
+	--color-primary-800: #2a2a6d;
+	--color-primary-900: #21215f;
+
+	--color-secondary-50: #fdf5ff;
+	--color-secondary-100: #f9e8ff;
+	--color-secondary-200: #f2d2ff;
+	--color-secondary-300: #e7b1ff;
+	--color-secondary-400: #dc94ff;
+	--color-secondary-500: #dba3ff; /* Base */
+	--color-secondary-600: #c37be6;
+	--color-secondary-700: #a65dc8;
+	--color-secondary-800: #893da9;
+	--color-secondary-900: #6d2c8c;
+}
+
+@source "../node_modules/flowbite-svelte/dist";
+@source "../node_modules/flowbite-svelte-icons/dist";
+
+@layer base {
+	/* disable chrome cancel button */
+	input[type='search']::-webkit-search-cancel-button {
+		display: none;
+	}
+}
+
+:root {
+	--app-primary: #2b2a60;
+	--app-secondary: #5555c2;
+	--app-tertiary: #dba3ff;
+}
+
+.bg-primary {
+	background-color: var(--app-primary);
+}
+
+.bg-secondary {
+	background-color: var(--app-secondary);
+}
+
+.bg-tertiary {
+	background-color: var(--app-tertiary);
+}
+
+.text-primary {
+	color: var(--app-primary);
+}
+
+.text-secondary {
+	color: var(--app-secondary);
+}
+
+.text-tertiary {
+	color: var(--app-tertiary);
+}
