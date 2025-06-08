@@ -4,14 +4,36 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     container_name: backend
+    env_file:
+      - ./cmd/veripass/.env
+    depends_on:
+      - pgdb
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     container_name: frontend
+    depends_on:
+      - backend
   nginx:
     image: nginx:latest
     ports:
       - "5002:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: always
+    depends_on:
+      - frontend
+      - backend
+  pgdb:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: veripass
+      POSTGRES_PASSWORD: veripass
+      POSTGRES_DB: veripass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: pgdb
+
+volumes:
+  pgdata:
