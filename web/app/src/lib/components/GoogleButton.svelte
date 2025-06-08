@@ -1,7 +1,6 @@
-<!-- GoogleLoginButton.svelte -->
 <script>
 	export let onClick = () => {};
-	export let className = ''; // renamed to avoid conflict
+	export let className = 'google-button';
 </script>
 
 <button on:click={onClick} class="gsi-material-button {className}">

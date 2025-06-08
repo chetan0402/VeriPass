@@ -5,6 +5,8 @@
 	import { onMount } from 'svelte';
 	import { Progressbar } from 'flowbite-svelte';
 
+	let status_message = $state<string>();
+	status_message = 'Getting things ready...';
 	let user = $state<User>();
 	$inspect(user);
 
@@ -28,8 +30,9 @@
 		}, 500);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function openNextScreen(user: User) {}
+	function openNextScreen(user: User) {
+		status_message = 'Welcome ' + user.name + '!';
+	}
 
 	function isUserLoggedIn() {
 		return false;
@@ -45,6 +48,7 @@
 			window.location.href = '/login';
 		}, 1600);
 	}
+
 	onMount(async () => {
 		startLoading();
 		if (isUserLoggedIn()) {
@@ -66,17 +70,5 @@
 	<img src="logo.png" class="animate__fadeIn animate__animated h-72 w-72" alt="logo" />
 	<h1 class="text-primary animate__fadeIn animate__animated text-5xl font-bold">VeriPass</h1>
 	<Progressbar class="mt-32 w-64" {progress} />
-	<p class="mt-5 font-normal dark:text-white">Getting things ready...</p>
+	<p class="mt-5 font-normal dark:text-white">{status_message}</p>
 </div>
-
-<!--
-<h1>Welcome to VeriPass</h1>
-
-{#if user}
-	<div>
-		<p><strong>ID:</strong> {user.id}</p>
-	</div>
-{:else}
-	<p>Loading user data...</p>
-{/if}
--->

@@ -1,20 +1,9 @@
 <script lang="ts">
-	import { transport } from '$lib';
-	import { UserService, type User } from '$lib/gen/veripass/v1/user_pb';
-	import { createClient } from '@connectrpc/connect';
-	import { onMount } from 'svelte';
 	import { Card, Button } from 'flowbite-svelte';
 	import { Toast } from 'flowbite-svelte';
 	import { ExclamationCircleOutline, QuestionCircleOutline } from 'flowbite-svelte-icons';
 	import { blur } from 'svelte/transition';
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
-
-	let user = $state<User>();
-	$inspect(user);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const client = createClient(UserService, transport);
-
-	onMount(async () => {});
 </script>
 
 <div
