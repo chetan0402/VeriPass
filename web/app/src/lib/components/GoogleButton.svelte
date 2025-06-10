@@ -1,8 +1,8 @@
 <script lang="ts">
-	let props = $props();
+	let { onclick, className } = $props<{ onclick: () => void; className: string }>();
 </script>
 
-<button onclick={props.onclick} class="gsi-material-button {props.class}">
+<button {onclick} class="gsi-material-button {className}">
 	<div class="gsi-material-button-state"></div>
 	<div class="gsi-material-button-content-wrapper">
 		<div class="gsi-material-button-icon">

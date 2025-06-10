@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CloseOutline } from 'flowbite-svelte-icons';
-	let { close } = $props();
+	let { close } = $props<{ close: () => void }>();
 </script>
 
 <div

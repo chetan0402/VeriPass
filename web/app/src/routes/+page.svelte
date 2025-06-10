@@ -4,6 +4,7 @@
 	import { createClient } from '@connectrpc/connect';
 	import { onMount } from 'svelte';
 	import { Progressbar } from 'flowbite-svelte';
+	import { goto } from '$app/navigation';
 
 	let status_message: string = $state<string>('Getting things ready...');
 	let user = $state<User>();
@@ -37,7 +38,7 @@
 	function openLoginScreen() {
 		status_message = 'Taking you to the login page...';
 		setTimeout(() => {
-			window.location.href = '/login';
+			goto('/login');
 		}, 1600);
 	}
 
