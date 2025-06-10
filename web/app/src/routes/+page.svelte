@@ -1,34 +1,26 @@
 <script lang="ts">
 	import { transport } from '$lib';
-	import { UserService, type User } from '$lib/gen/veripass/v1/user_pb';
+	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import { createClient } from '@connectrpc/connect';
 	import { onMount } from 'svelte';
 	import { Progressbar } from 'flowbite-svelte';
 
-	let status_message = $state<string>();
-	status_message = 'Getting things ready...';
+	let status_message: string = $state<string>('Getting things ready...');
 	let user = $state<User>();
-	$inspect(user);
 
-	let progressInterval = 0;
-	let maxProgress = 80;
-	let progress = $state<number>(0);
-	let progressHandler = () => {
+	let maxProgress: number = $state<number>(0);
+	let progress: number = $state<number>(0);
+
+	$effect(() => {
 		if (progress < maxProgress) {
-			progress = progress + 1;
+			const id = setTimeout(() => {
+				progress = progress + 1;
+			}, 10);
+			return () => clearTimeout(id);
 		}
-		if (progress == 100) {
-			clearInterval(progressInterval);
-		}
-	};
+	});
 
 	const client = createClient(UserService, transport);
-
-	function startLoading() {
-		setTimeout(() => {
-			progressInterval = setInterval(progressHandler, 10);
-		}, 500);
-	}
 
 	function openNextScreen(user: User) {
 		status_message = 'Welcome ' + user.name + '!';
@@ -39,28 +31,28 @@
 	}
 
 	function getUserID() {
-		return '';
+		return '12345';
 	}
 
 	function openLoginScreen() {
-		maxProgress = 100;
+		status_message = 'Taking you to the login page...';
 		setTimeout(() => {
 			window.location.href = '/login';
 		}, 1600);
 	}
 
 	onMount(async () => {
-		startLoading();
+		maxProgress = 80;
 		if (isUserLoggedIn()) {
 			try {
-				const response = await client.getUser({ id: getUserID() });
-				user = response;
+				user = await client.getUser({ id: getUserID() });
 				maxProgress = 100;
 				openNextScreen(user);
 			} catch (error) {
 				console.error('Error fetching user data:', error);
 			}
 		} else {
+			maxProgress = 100;
 			openLoginScreen();
 		}
 	});

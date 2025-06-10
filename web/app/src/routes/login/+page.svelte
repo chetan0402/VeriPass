@@ -5,10 +5,10 @@
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import LoginHelpDialog from '$lib/components/LoginHelpDialog.svelte';
 
-	let help_dialog = $state('hidden');
+	let show_help_dialog: boolean = $state(false);
 
-	function toggleHelpDialog() {
-		help_dialog = help_dialog === 'hidden' ? 'flex' : 'hidden';
+	function openGoogleLogin() {
+		alert('Not implemented yet');
 	}
 </script>
 
@@ -25,9 +25,9 @@
 		class="mt-5 flex h-full w-dvw flex-col items-center justify-center bg-[url('/wave-bg.svg')] bg-cover bg-top bg-no-repeat pt-10"
 	>
 		<p class="text-center text-2xl font-bold text-white">Login with <br /> institute's Email ID</p>
-		<GoogleButton className="scale-125 mt-10" />
+		<GoogleButton onclick={openGoogleLogin} class="mt-10 scale-125"></GoogleButton>
 		<button
-			onclick={toggleHelpDialog}
+			onclick={() => (show_help_dialog = true)}
 			class="w- mt-6 flex h-[40px] flex-row items-center justify-center rounded-full border-2 pr-[24px] pl-[12px] text-[12px] text-white"
 		>
 			<QuestionCircleOutline class="m-[8px]" />
@@ -47,9 +47,11 @@
 		</Toast>
 	</div>
 
-	<div
-		class="{help_dialog} absolute z-10 h-dvh w-dvw flex-row items-center justify-center bg-[#000000aa] backdrop-blur-2xl"
-	>
-		<LoginHelpDialog onClose={toggleHelpDialog} />
-	</div>
+	{#if show_help_dialog}
+		<div
+			class="absolute z-10 flex h-dvh w-dvw flex-row items-center justify-center bg-[#000000aa] backdrop-blur-2xl"
+		>
+			<LoginHelpDialog close={() => (show_help_dialog = false)} />
+		</div>
+	{/if}
 </div>

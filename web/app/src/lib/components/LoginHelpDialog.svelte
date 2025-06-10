@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import { CloseOutline } from 'flowbite-svelte-icons';
-	export let onClose = () => {};
+	let { close } = $props();
 </script>
 
 <div
@@ -31,7 +31,7 @@
 	</div>
 	<p class="text-secondary-700 mt-2 text-sm">Issue not listed here?</p>
 	<button class="bg-secondary w-full rounded-full p-3 text-white">Send Mail to Admin</button>
-	<button on:click={onClose} class="text-secondary absolute top-5 right-5">
+	<button onclick={close} class="text-secondary absolute top-5 right-5">
 		<CloseOutline />
 	</button>
 </div>

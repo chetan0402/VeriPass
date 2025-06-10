@@ -1,9 +1,8 @@
-<script>
-	export let onClick = () => {};
-	export let className = 'google-button';
+<script lang="ts">
+	let props = $props();
 </script>
 
-<button on:click={onClick} class="gsi-material-button {className}">
+<button onclick={props.onclick} class="gsi-material-button {props.class}">
 	<div class="gsi-material-button-state"></div>
 	<div class="gsi-material-button-content-wrapper">
 		<div class="gsi-material-button-icon">
@@ -40,10 +39,10 @@
 
 <style>
 	.gsi-material-button {
-		-moz-user-select: none;
+		user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
-		-webkit-appearance: none;
+		appearance: none;
 		background-color: WHITE;
 		background-image: none;
 		border: 1px solid #747775;
