@@ -1,4 +1,4 @@
-package veripass
+package userservice
 
 import (
 	"context"
@@ -18,6 +18,12 @@ type UserService struct {
 }
 
 var _ veripassv1connect.UserServiceHandler = (*UserService)(nil)
+
+func New(client *ent.Client) *UserService {
+	return &UserService{
+		client: client,
+	}
+}
 
 func (s *UserService) Entry(ctx context.Context, r *connect.Request[veripassv1.EntryRequest]) (*connect.Response[emptypb.Empty], error) {
 	var (
