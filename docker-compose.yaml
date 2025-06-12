@@ -7,7 +7,8 @@ services:
     env_file:
       - ./cmd/veripass/.env
     depends_on:
-      - pgdb
+      pgdb:
+        condition: service_healthy
   frontend:
     build:
       context: .
@@ -34,6 +35,12 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     container_name: pgdb
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "veripass"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
 
 volumes:
   pgdata:
