@@ -30,14 +30,14 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 				{
 					id: 'pass4',
 					userId: req.userId,
-					type: Pass_PassType.CLASS,
+					type: Pass_PassType.MARKET,
 					startTime: unixToTimestamp(1750008583),
 					$typeName: 'veripass.v1.Pass'
 				},
 				{
 					id: 'pass2',
 					userId: req.userId,
-					type: Pass_PassType.CLASS,
+					type: Pass_PassType.HOME,
 					startTime: unixToTimestamp(1750002483),
 					endTime: unixToTimestamp(1750008983),
 					$typeName: 'veripass.v1.Pass'

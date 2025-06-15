@@ -1,14 +1,18 @@
 <script lang="ts">
 	import { Select } from 'flowbite-svelte';
 	import { type User } from '$lib/gen/veripass/v1/user_pb';
+	import { Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
+
 	const { user } = $props<{ user: User }>();
 
 	let selected: string = $state('');
 
-	let purposes: { value: string; name: string }[] = [
-		{ value: 'class', name: 'classes' },
-		{ value: 'market', name: 'market' },
-		{ value: 'home', name: 'home' }
+	let purposes: { value: number; name: string }[] = [
+		{ value: Pass_PassType.CLASS, name: 'Class' },
+		{ value: Pass_PassType.MARKET, name: 'Market' },
+		{ value: Pass_PassType.HOME, name: 'Home' },
+		{ value: Pass_PassType.EVENT, name: 'Event' },
+		{ value: Pass_PassType.UNSPECIFIED, name: 'Other' }
 	];
 </script>
 

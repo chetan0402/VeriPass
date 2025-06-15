@@ -1,21 +1,43 @@
 <script lang="ts">
-	import type { Pass } from '$lib/gen/veripass/v1/pass_pb';
+	import { type Pass, Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
 	import { onMount } from 'svelte';
 	import type { Timestamp } from '@bufbuild/protobuf/wkt';
 
 	const { pass } = $props<{ pass: Pass }>();
+
 	let dateFormatted: string = $state('-- --- ----');
 	let endTime: string = $state('---');
 	let endTimeSuffix: string = $state('');
 	let startTime: string = $state('---');
 	let startTimeSuffix: string = $state('');
+	let passType: string = $state('General');
 
 	function timestampToDate(startTime: Timestamp) {
 		const startMillis = Number(startTime.seconds) * 1000 + Math.floor(startTime.nanos / 1e6);
 		return new Date(startMillis);
 	}
 
+	function setPassType() {
+		switch (pass.type) {
+			case Pass_PassType.CLASS:
+				passType = 'Class';
+				break;
+
+			case Pass_PassType.HOME:
+				passType = 'Home';
+				break;
+
+			case Pass_PassType.EVENT:
+				passType = 'Event';
+				break;
+			case Pass_PassType.MARKET:
+				passType = 'Market';
+				break;
+		}
+	}
+
 	onMount(() => {
+		setPassType();
 		if (pass.startTime) {
 			const startDate = timestampToDate(pass.startTime);
 			dateFormatted = startDate.toLocaleDateString('en-In', {
@@ -45,7 +67,7 @@
 
 <div class="flex w-full flex-row items-center justify-between pr-1 pl-5">
 	<div class="flex flex-col justify-center">
-		<h1 class="font-bold">Classes</h1>
+		<h1 class="font-bold">{passType}</h1>
 		<p class="text-secondary-700 mt-1 text-sm font-bold">{dateFormatted}</p>
 	</div>
 	<div class="mt-2 flex w-30 flex-col items-center">
