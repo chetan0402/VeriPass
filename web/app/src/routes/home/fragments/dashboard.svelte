@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Select } from 'flowbite-svelte';
-	const { user } = $props();
+	import { type User } from '$lib/gen/veripass/v1/user_pb';
+	const { user } = $props<{ user: User }>();
 
 	let selected: string = $state('');
 
@@ -11,7 +12,7 @@
 	];
 </script>
 
-<div class="animated animate__fadeIn flex h-[98%] flex-col items-center pt-4">
+<div class="flex h-[98%] flex-col items-center pt-4">
 	<h1 class="text-primary text-3xl font-bold">Dashboard</h1>
 
 	<div

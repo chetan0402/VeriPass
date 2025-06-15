@@ -49,8 +49,10 @@
 		{:else}
 			<div class="mt-10 h-full w-full text-center text-white">Loading user dashboard...</div>
 		{/if}
+	{:else if user}
+		<History {user} />
 	{:else}
-		<History />
+		<div class="mt-10 h-full w-full text-center text-white">Loading user history...</div>
 	{/if}
 	<nav
 		class="absolute bottom-0 flex h-30 w-full items-center justify-evenly bg-[url('/wave-bottom-nav.svg')] bg-cover bg-top bg-no-repeat pt-5"
