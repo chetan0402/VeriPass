@@ -10,7 +10,7 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/chetan0402/veripass/internal/ent"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
-	userservice "github.com/chetan0402/veripass/internal/services"
+	userservice "github.com/chetan0402/veripass/internal/services/user"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
