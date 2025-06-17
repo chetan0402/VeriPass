@@ -1,62 +1,63 @@
 <script lang="ts">
 	import { type Pass, Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
-	import { onMount } from 'svelte';
 	import type { Timestamp } from '@bufbuild/protobuf/wkt';
 
 	const { pass } = $props<{ pass: Pass }>();
 
-	let dateFormatted: string = $state('-- --- ----');
-	let endTime: string = $state('---');
-	let endTimeSuffix: string = $state('');
-	let startTime: string = $state('---');
-	let startTimeSuffix: string = $state('');
-	let passType: string = $state('General');
+	let dateFormatted: string = $derived(getFormattedDate(pass.startTime));
+	let endTime: string = $derived(getFormattedTime(pass.endTime));
+	let endTimeSuffix: string = $derived(getFormattedTimeSuffix(pass.endTime));
+	let startTime: string = $derived(getFormattedTime(pass.startTime));
+	let startTimeSuffix: string = $derived(getFormattedTimeSuffix(pass.startTime));
+	let passType: string = $derived(getPassType(pass));
+	let passClosed = $derived(!!pass.endTime);
 
 	function timestampToDate(startTime: Timestamp) {
 		const startMillis = Number(startTime.seconds) * 1000 + Math.floor(startTime.nanos / 1e6);
 		return new Date(startMillis);
 	}
 
-	function setPassType() {
-		switch (pass.type) {
+	function getPassType(passItem: Pass) {
+		switch (passItem.type) {
 			case Pass_PassType.CLASS:
-				passType = 'Class';
-				break;
-
+				return 'Class';
 			case Pass_PassType.HOME:
-				passType = 'Home';
-				break;
-
+				return 'Home';
 			case Pass_PassType.EVENT:
-				passType = 'Event';
-				break;
+				return 'Event';
 			case Pass_PassType.MARKET:
-				passType = 'Market';
-				break;
+				return 'Market';
+			default:
+				return 'Not specified';
 		}
 	}
 
-	onMount(() => {
-		setPassType();
-		if (pass.startTime) {
-			const startDate = timestampToDate(pass.startTime);
-			dateFormatted = startDate.toLocaleDateString('en-In', {
-				day: 'numeric',
-				month: 'short',
-				year: 'numeric'
-			});
-			startTime = formatTime(startDate);
-			startTimeSuffix = startDate.getHours() < 12 ? 'AM' : 'PM';
+	function getFormattedTimeSuffix(timeStamp: Timestamp) {
+		if (timeStamp) {
+			const startDate = timestampToDate(timeStamp);
+			return startDate.getHours() < 12 ? 'AM' : 'PM';
 		}
+		return '';
+	}
 
-		if (pass.endTime) {
-			const endDate = timestampToDate(pass.endTime);
-			endTime = formatTime(endDate);
-			endTimeSuffix = endDate.getHours() < 12 ? 'AM' : 'PM';
+	function getFormattedTime(timeStamp: Timestamp) {
+		if (timeStamp) {
+			const date = timestampToDate(timeStamp);
+			return formatTimeString(date);
 		}
-	});
+		return '----';
+	}
 
-	function formatTime(date: Date): string {
+	function getFormattedDate(startTime: Timestamp) {
+		const date = timestampToDate(startTime);
+		return date.toLocaleDateString('en-In', {
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric'
+		});
+	}
+
+	function formatTimeString(date: Date): string {
 		let hours = date.getHours();
 		let minutes = date.getMinutes();
 		let hour12 = hours % 12 || 12; // convert to 12-hour format
@@ -65,7 +66,10 @@
 	}
 </script>
 
-<div class="flex w-full flex-row items-center justify-between pr-1 pl-5">
+<div
+	class="flex w-full flex-row items-center justify-between pt-2 pr-1 pb-2 pl-5"
+	style="background-color: {passClosed ? '#f1f1f1' : 'white'}"
+>
 	<div class="flex flex-col justify-center">
 		<h1 class="font-bold">{passType}</h1>
 		<p class="text-secondary-700 mt-1 text-sm font-bold">{dateFormatted}</p>
@@ -81,4 +85,4 @@
 		<p class="text-secondary text-2xl">{endTime} <span class="text-sm">{endTimeSuffix}</span></p>
 	</div>
 </div>
-<div class="m-3 h-[1px] w-[95%] bg-gray-200"></div>
+<div class="h-[1px] w-[95%] bg-gray-200"></div>

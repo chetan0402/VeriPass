@@ -5,14 +5,13 @@
 
 	const { user } = $props<{ user: User }>();
 
-	let selected: string = $state('');
-
+	let selected: Pass_PassType = $state(Pass_PassType.UNSPECIFIED);
 	let purposes: { value: number; name: string }[] = [
+		{ value: Pass_PassType.UNSPECIFIED, name: 'Select the purpose of the exit' },
 		{ value: Pass_PassType.CLASS, name: 'Class' },
 		{ value: Pass_PassType.MARKET, name: 'Market' },
 		{ value: Pass_PassType.HOME, name: 'Home' },
-		{ value: Pass_PassType.EVENT, name: 'Event' },
-		{ value: Pass_PassType.UNSPECIFIED, name: 'Other' }
+		{ value: Pass_PassType.EVENT, name: 'Event' }
 	];
 </script>
 
@@ -50,14 +49,13 @@
 		<div class="flex h-full flex-col items-center rounded-[20px] bg-white pt-10">
 			<h1 class="text-primary w-full pl-10 text-2xl font-bold">Create new Exit Pass</h1>
 			<Select
-				class="mt-8 w-[clamp(200px,80%,500px)] text-amber-200"
+				class="select-style mt-8 w-[clamp(200px,80%,500px)]"
 				items={purposes}
 				bind:value={selected}
 				size="lg"
-				placeholder="Select the purpose of exit"
 			/>
 			<button
-				class="from-primary-600 to-secondary-600 mt-4 h-12 w-[clamp(200px,80%,500px)] rounded-[8px] bg-gradient-to-r font-semibold text-white focus:outline-amber-100"
+				class="from-primary-600 to-secondary-600 mt-4 h-12 w-[clamp(200px,80%,500px)] rounded-[18px] bg-gradient-to-r font-semibold text-white focus:outline-amber-100"
 			>
 				Generate pass
 			</button>
