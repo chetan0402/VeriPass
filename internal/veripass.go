@@ -9,6 +9,9 @@ import (
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/chetan0402/veripass/internal/ent"
+	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	passservice "github.com/chetan0402/veripass/internal/services/pass"
+	userservice "github.com/chetan0402/veripass/internal/services/user"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
@@ -36,5 +39,7 @@ func Run(databaseUrl string) {
 			return
 		}
 	})
+	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client)))
+	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client)))
 	log.Fatal(http.ListenAndServe("0.0.0.0:8000", h2c.NewHandler(mux, &http2.Server{})))
 }
