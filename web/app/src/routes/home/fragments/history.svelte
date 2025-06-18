@@ -1,14 +1,16 @@
 <script lang="ts">
-	const { user } = $props();
+	import { type Timestamp, timestampNow } from '@bufbuild/protobuf/wkt';
+	const { user } = $props<{ user: User }>();
 	import PassListItem from '$lib/components/PassListItem.svelte';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 	import { transport } from '$lib';
 	import { createClient } from '@connectrpc/connect';
 	import { type Pass, PassService } from '$lib/gen/veripass/v1/pass_pb';
+	import type { User } from '$lib/gen/veripass/v1/user_pb';
+	import { timestampToMs } from '$lib/timestamp_utils';
 
 	let loadMoreElem: HTMLDivElement;
-	let nextPageToken = '0';
+	let nextPageToken: Timestamp | undefined = timestampNow();
 	let loading: boolean = false;
 
 	const loadMorePassObserver = new IntersectionObserver(
@@ -21,10 +23,6 @@
 		},
 		{ threshold: 1.0 }
 	);
-
-	function isUserLoggedIn() {
-		return true;
-	}
 
 	const client = createClient(PassService, transport);
 
@@ -39,7 +37,7 @@
 			});
 			passes = [...passes, ...response.passes];
 			nextPageToken = response.nextPageToken;
-			if (response.passes.length == 0) {
+			if (timestampToMs(response.nextPageToken) == 0) {
 				endOfListReached('End of the list reached');
 			}
 		} catch (error) {
@@ -49,11 +47,7 @@
 	}
 
 	onMount(async () => {
-		if (isUserLoggedIn()) {
-			loadMorePassObserver.observe(loadMoreElem);
-		} else {
-			await goto('/login');
-		}
+		loadMorePassObserver.observe(loadMoreElem);
 	});
 
 	function endOfListReached(msg: string) {

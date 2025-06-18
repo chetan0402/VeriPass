@@ -24,7 +24,6 @@
 		if (isUserLoggedIn()) {
 			try {
 				user = await client.getUser({ id: getUserID() });
-				console.log(user);
 			} catch (error) {
 				console.error('Error fetching user data:', error);
 			}

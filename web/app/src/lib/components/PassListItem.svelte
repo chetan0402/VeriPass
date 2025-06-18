@@ -51,7 +51,7 @@
 	function getFormattedDate(startTime: Timestamp) {
 		const date = timestampToDate(startTime);
 		return date.toLocaleDateString('en-In', {
-			day: 'numeric',
+			day: '2-digit',
 			month: 'short',
 			year: 'numeric'
 		});
@@ -60,29 +60,36 @@
 	function formatTimeString(date: Date): string {
 		let hours = date.getHours();
 		let minutes = date.getMinutes();
-		let hour12 = hours % 12 || 12; // convert to 12-hour format
+		let hour12 = hours % 12 || 12;
 		let minuteStr = minutes.toString().padStart(2, '0');
-		return `${hour12}:${minuteStr}`;
+		let hoursStr = hour12.toString().padStart(2, '0');
+		return `${hoursStr}:${minuteStr}`;
 	}
 </script>
 
-<div
-	class="flex w-full flex-row items-center justify-between pt-2 pr-1 pb-2 pl-5"
-	style="background-color: {passClosed ? '#f1f1f1' : 'white'}"
->
-	<div class="flex flex-col justify-center">
-		<h1 class="font-bold">{passType}</h1>
-		<p class="text-secondary-700 mt-1 text-sm font-bold">{dateFormatted}</p>
-	</div>
-	<div class="mt-2 flex w-30 flex-col items-center">
-		<h1 class="text-sm font-bold text-gray-600">Out Time</h1>
-		<p class="text-secondary text-2xl">
-			{startTime} <span class="text-sm">{startTimeSuffix}</span>
-		</p>
-	</div>
-	<div class="mt-2 flex w-30 flex-col items-center">
-		<h1 class="text-sm font-bold text-gray-600">In Time</h1>
-		<p class="text-secondary text-2xl">{endTime} <span class="text-sm">{endTimeSuffix}</span></p>
+<div class="w-full bg-gray-50 pb-1">
+	<div
+		class="flex w-full flex-row items-center justify-between pt-2 pr-1 pb-4 pl-5"
+		style="background-color: {passClosed ? '#f1f1f1' : 'white'}"
+	>
+		<div class="flex flex-col justify-center">
+			<h1 class="font-bold">{passType}</h1>
+			<p class="text-secondary-700 mt-1 text-sm font-bold">{dateFormatted}</p>
+		</div>
+
+		<div class="flex flex-row">
+			<div class="mt-2 flex w-28 flex-col items-center">
+				<h1 class="text-sm font-bold text-gray-600">Out Time</h1>
+				<p class="text-secondary text-2xl">
+					{startTime} <span class="text-sm">{startTimeSuffix}</span>
+				</p>
+			</div>
+			<div class="mt-2 flex w-28 flex-col items-center">
+				<h1 class="text-sm font-bold text-gray-600">In Time</h1>
+				<p class="text-secondary text-2xl">
+					{endTime} <span class="text-sm">{endTimeSuffix}</span>
+				</p>
+			</div>
+		</div>
 	</div>
 </div>
-<div class="h-[1px] w-[95%] bg-gray-200"></div>

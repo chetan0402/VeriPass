@@ -7,7 +7,7 @@ import {
 	type Pass,
 	type ListPassesByUserRequest
 } from '$lib/gen/veripass/v1/pass_pb';
-import type { Timestamp } from '@bufbuild/protobuf/wkt';
+import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 
 const MOCK = true;
 
@@ -15,17 +15,16 @@ function generateMockPasesForPage(req: ListPassesByUserRequest): Pass[] {
 	const mockPasses: Pass[] = [];
 	for (let i = 0; i < req.pageSize; i++) {
 		let endtime;
-		if (i % 3 == 0) endtime = unixToTimestamp(1450008583 + i * 9288);
+		if (i % 3 == 0) endtime = msToTimestamp(timestampToMs(req.pageToken) - i * 92880000);
 		mockPasses.push({
-			id: 'pass' + i + req.pageToken,
+			id: 'pass' + i + timestampToMs(req.pageToken),
 			userId: req.userId,
 			type: Pass_PassType.CLASS,
-			startTime: unixToTimestamp(1450008583 + i * 8288),
+			startTime: msToTimestamp(timestampToMs(req.pageToken) - i * 828800000),
 			endTime: endtime,
 			$typeName: 'veripass.v1.Pass'
 		});
 	}
-	if (Number(req.pageToken) > 3) return [];
 	return mockPasses;
 }
 
@@ -41,19 +40,18 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(PassService.method.listPassesByUser, (req) => {
+		let pageToken = msToTimestamp(0);
+		const pageTokenMs = timestampToMs(req.pageToken);
+		if (pageTokenMs > new Date().getTime() - 500000000) {
+			pageToken = msToTimestamp(pageTokenMs - 100000000);
+		}
+
 		return {
 			passes: generateMockPasesForPage(req),
-			nextPageToken: String(Number(req.pageToken) + 1)
+			nextPageToken: pageToken
 		};
 	});
 });
-
-function unixToTimestamp(unixSeconds: number): Timestamp {
-	const date = new Date(unixSeconds * 1000);
-	const seconds = Math.floor(date.getTime() / 1000);
-	const nanos = (date.getTime() % 1000) * 1_000_000; // Convert milliseconds to nanoseconds
-	return { $typeName: 'google.protobuf.Timestamp', seconds: BigInt(seconds), nanos };
-}
 
 export const transport = createConnectTransport({
 	baseUrl: '/api',
