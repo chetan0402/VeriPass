@@ -304,7 +304,7 @@ func (x *GetLatestPassByUserRequest) GetUserId() string {
 type ListPassesByUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	PageToken     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	Type          *Pass_PassType         `protobuf:"varint,4,opt,name=type,proto3,enum=veripass.v1.Pass_PassType,oneof" json:"type,omitempty"`
 	StartTime     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3,oneof" json:"start_time,omitempty"`
@@ -350,11 +350,11 @@ func (x *ListPassesByUserRequest) GetUserId() string {
 	return ""
 }
 
-func (x *ListPassesByUserRequest) GetPageToken() string {
+func (x *ListPassesByUserRequest) GetPageToken() *timestamppb.Timestamp {
 	if x != nil {
 		return x.PageToken
 	}
-	return ""
+	return nil
 }
 
 func (x *ListPassesByUserRequest) GetPageSize() int32 {
@@ -388,7 +388,7 @@ func (x *ListPassesByUserRequest) GetEndTime() *timestamppb.Timestamp {
 type ListPassesByUserResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Passes        []*Pass                `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	NextPageToken *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -430,11 +430,11 @@ func (x *ListPassesByUserResponse) GetPasses() []*Pass {
 	return nil
 }
 
-func (x *ListPassesByUserResponse) GetNextPageToken() string {
+func (x *ListPassesByUserResponse) GetNextPageToken() *timestamppb.Timestamp {
 	if x != nil {
 		return x.NextPageToken
 	}
-	return ""
+	return nil
 }
 
 var File_veripass_v1_pass_proto protoreflect.FileDescriptor
@@ -464,11 +464,11 @@ const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\x0eGetPassRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"5\n" +
 	"\x1aGetLatestPassByUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"\xc4\x02\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"\xe0\x02\n" +
 	"\x17ListPassesByUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x129\n" +
 	"\n" +
-	"page_token\x18\x02 \x01(\tR\tpageToken\x12\x1b\n" +
+	"page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tpageToken\x12\x1b\n" +
 	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x123\n" +
 	"\x04type\x18\x04 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeH\x00R\x04type\x88\x01\x01\x12>\n" +
 	"\n" +
@@ -476,10 +476,10 @@ const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\bend_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampH\x02R\aendTime\x88\x01\x01B\a\n" +
 	"\x05_typeB\r\n" +
 	"\v_start_timeB\v\n" +
-	"\t_end_time\"m\n" +
+	"\t_end_time\"\x89\x01\n" +
 	"\x18ListPassesByUserResponse\x12)\n" +
-	"\x06passes\x18\x01 \x03(\v2\x11.veripass.v1.PassR\x06passes\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\xc9\x02\n" +
+	"\x06passes\x18\x01 \x03(\v2\x11.veripass.v1.PassR\x06passes\x12B\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\rnextPageToken2\xc9\x02\n" +
 	"\vPassService\x12K\n" +
 	"\x10CreateManualPass\x12$.veripass.v1.CreateManualPassRequest\x1a\x11.veripass.v1.Pass\x129\n" +
 	"\aGetPass\x12\x1b.veripass.v1.GetPassRequest\x1a\x11.veripass.v1.Pass\x12Q\n" +
@@ -516,23 +516,25 @@ var file_veripass_v1_pass_proto_depIdxs = []int32{
 	7,  // 1: veripass.v1.Pass.start_time:type_name -> google.protobuf.Timestamp
 	7,  // 2: veripass.v1.Pass.end_time:type_name -> google.protobuf.Timestamp
 	0,  // 3: veripass.v1.CreateManualPassRequest.type:type_name -> veripass.v1.Pass.PassType
-	0,  // 4: veripass.v1.ListPassesByUserRequest.type:type_name -> veripass.v1.Pass.PassType
-	7,  // 5: veripass.v1.ListPassesByUserRequest.start_time:type_name -> google.protobuf.Timestamp
-	7,  // 6: veripass.v1.ListPassesByUserRequest.end_time:type_name -> google.protobuf.Timestamp
-	1,  // 7: veripass.v1.ListPassesByUserResponse.passes:type_name -> veripass.v1.Pass
-	2,  // 8: veripass.v1.PassService.CreateManualPass:input_type -> veripass.v1.CreateManualPassRequest
-	3,  // 9: veripass.v1.PassService.GetPass:input_type -> veripass.v1.GetPassRequest
-	4,  // 10: veripass.v1.PassService.GetLatestPassByUser:input_type -> veripass.v1.GetLatestPassByUserRequest
-	5,  // 11: veripass.v1.PassService.ListPassesByUser:input_type -> veripass.v1.ListPassesByUserRequest
-	1,  // 12: veripass.v1.PassService.CreateManualPass:output_type -> veripass.v1.Pass
-	1,  // 13: veripass.v1.PassService.GetPass:output_type -> veripass.v1.Pass
-	1,  // 14: veripass.v1.PassService.GetLatestPassByUser:output_type -> veripass.v1.Pass
-	6,  // 15: veripass.v1.PassService.ListPassesByUser:output_type -> veripass.v1.ListPassesByUserResponse
-	12, // [12:16] is the sub-list for method output_type
-	8,  // [8:12] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	7,  // 4: veripass.v1.ListPassesByUserRequest.page_token:type_name -> google.protobuf.Timestamp
+	0,  // 5: veripass.v1.ListPassesByUserRequest.type:type_name -> veripass.v1.Pass.PassType
+	7,  // 6: veripass.v1.ListPassesByUserRequest.start_time:type_name -> google.protobuf.Timestamp
+	7,  // 7: veripass.v1.ListPassesByUserRequest.end_time:type_name -> google.protobuf.Timestamp
+	1,  // 8: veripass.v1.ListPassesByUserResponse.passes:type_name -> veripass.v1.Pass
+	7,  // 9: veripass.v1.ListPassesByUserResponse.next_page_token:type_name -> google.protobuf.Timestamp
+	2,  // 10: veripass.v1.PassService.CreateManualPass:input_type -> veripass.v1.CreateManualPassRequest
+	3,  // 11: veripass.v1.PassService.GetPass:input_type -> veripass.v1.GetPassRequest
+	4,  // 12: veripass.v1.PassService.GetLatestPassByUser:input_type -> veripass.v1.GetLatestPassByUserRequest
+	5,  // 13: veripass.v1.PassService.ListPassesByUser:input_type -> veripass.v1.ListPassesByUserRequest
+	1,  // 14: veripass.v1.PassService.CreateManualPass:output_type -> veripass.v1.Pass
+	1,  // 15: veripass.v1.PassService.GetPass:output_type -> veripass.v1.Pass
+	1,  // 16: veripass.v1.PassService.GetLatestPassByUser:output_type -> veripass.v1.Pass
+	6,  // 17: veripass.v1.PassService.ListPassesByUser:output_type -> veripass.v1.ListPassesByUserResponse
+	14, // [14:18] is the sub-list for method output_type
+	10, // [10:14] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_veripass_v1_pass_proto_init() }

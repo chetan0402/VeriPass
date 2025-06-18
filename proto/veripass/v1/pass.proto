@@ -42,7 +42,7 @@ message GetLatestPassByUserRequest {
 
 message ListPassesByUserRequest {
     string user_id = 1;
-    string page_token = 2;
+    google.protobuf.Timestamp page_token = 2;
     int32 page_size = 3;
     optional Pass.PassType type = 4;
     optional google.protobuf.Timestamp start_time = 5;
@@ -51,5 +51,5 @@ message ListPassesByUserRequest {
 
 message ListPassesByUserResponse {
     repeated Pass passes = 1;
-    string next_page_token = 2;
+    google.protobuf.Timestamp next_page_token = 2;
 }

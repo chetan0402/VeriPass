@@ -31,19 +31,8 @@ func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[v
 	var (
 		adminEmail = r.Msg.AdminEmail
 		userId     = r.Msg.UserId
-		passType   = pass.TypeUnspecified
+		passType   = protoPassTypeToEnt(r.Msg.Type)
 	)
-
-	switch r.Msg.Type {
-	case veripassv1.Pass_PASS_TYPE_CLASS:
-		passType = pass.TypeClass
-	case veripassv1.Pass_PASS_TYPE_MARKET:
-		passType = pass.TypeMarket
-	case veripassv1.Pass_PASS_TYPE_HOME:
-		passType = pass.TypeHome
-	case veripassv1.Pass_PASS_TYPE_EVENT:
-		passType = pass.TypeEvent
-	}
 
 	admin, err := s.client.Admin.Query().Where(admin.Email(adminEmail)).First(ctx)
 	if err != nil {
@@ -113,8 +102,58 @@ func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1
 	return connect.NewResponse(toProto(pass)), nil
 }
 
-func (s *PassService) ListPassesByUser(context.Context, *connect.Request[veripassv1.ListPassesByUserRequest]) (*connect.Response[veripassv1.ListPassesByUserResponse], error) {
-	panic("unimplemented")
+func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[veripassv1.ListPassesByUserRequest]) (*connect.Response[veripassv1.ListPassesByUserResponse], error) {
+	var (
+		userId    = r.Msg.UserId
+		pageToken = r.Msg.PageToken
+		pageSize  = r.Msg.PageSize
+		passType  = r.Msg.Type
+		startTime = r.Msg.StartTime
+		endTime   = r.Msg.EndTime
+	)
+
+	query := s.client.Pass.Query().
+		Order(pass.ByStartTime(sql.OrderDesc())).
+		Where(
+			pass.UserID(userId),
+		).Limit(int(pageSize) + 1)
+
+	if passType != nil {
+		query = query.Where(
+			pass.TypeEQ(protoPassTypeToEnt(*passType)),
+		)
+	}
+
+	if startTime != nil {
+		query = query.Where(
+			pass.StartTimeGTE(startTime.AsTime()),
+		)
+	}
+
+	if endTime != nil {
+		query = query.Where(
+			pass.StartTimeLTE(endTime.AsTime()),
+		)
+	}
+
+	passes, err := query.Where(
+		pass.StartTimeLTE(pageToken.AsTime()),
+	).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &veripassv1.ListPassesByUserResponse{}
+
+	if len(passes) == int(pageSize)+1 {
+		response.NextPageToken = timestamppb.New(passes[len(passes)-1].StartTime)
+	}
+
+	for _, pass := range passes {
+		response.Passes = append(response.Passes, toProto(pass))
+	}
+
+	return connect.NewResponse(response), nil
 }
 
 func toProto(entPass *ent.Pass) *veripassv1.Pass {
@@ -136,5 +175,20 @@ func toProto(entPass *ent.Pass) *veripassv1.Pass {
 		Type:      passType,
 		StartTime: timestamppb.New(entPass.StartTime),
 		EndTime:   timestamppb.New(entPass.EndTime),
+	}
+}
+
+func protoPassTypeToEnt(passType veripassv1.Pass_PassType) pass.Type {
+	switch passType {
+	case veripassv1.Pass_PASS_TYPE_CLASS:
+		return pass.TypeClass
+	case veripassv1.Pass_PASS_TYPE_MARKET:
+		return pass.TypeMarket
+	case veripassv1.Pass_PASS_TYPE_HOME:
+		return pass.TypeHome
+	case veripassv1.Pass_PASS_TYPE_EVENT:
+		return pass.TypeEvent
+	default:
+		return pass.TypeUnspecified
 	}
 }
