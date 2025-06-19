@@ -2,6 +2,7 @@ package passservice
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"connectrpc.com/connect"
@@ -112,13 +113,17 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 		endTime   = r.Msg.EndTime
 	)
 
+	if pageToken == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid page token"))
+	}
+
 	query := s.client.Pass.Query().
 		Order(pass.ByStartTime(sql.OrderDesc())).
 		Where(
 			pass.UserID(userId),
 		).Limit(int(pageSize) + 1)
 
-	if passType != nil {
+	if passType != nil && *passType != veripassv1.Pass_PASS_TYPE_UNSPECIFIED {
 		query = query.Where(
 			pass.TypeEQ(protoPassTypeToEnt(*passType)),
 		)
@@ -149,7 +154,10 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 		response.NextPageToken = timestamppb.New(passes[len(passes)-1].StartTime)
 	}
 
-	for _, pass := range passes {
+	for index, pass := range passes {
+		if index == int(pageSize) {
+			break
+		}
 		response.Passes = append(response.Passes, toProto(pass))
 	}
 
