@@ -4,11 +4,16 @@
 	import { blur } from 'svelte/transition';
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import LoginHelpDialog from '$lib/components/LoginHelpDialog.svelte';
+	import { goto } from '$app/navigation';
 
 	let show_help_dialog: boolean = $state(false);
 
 	function openGoogleLogin() {
 		alert('Not implemented yet');
+		loginSuccess();
+	}
+	function loginSuccess() {
+		goto('/home');
 	}
 </script>
 
@@ -25,7 +30,7 @@
 		class="mt-5 flex h-full w-dvw flex-col items-center justify-center bg-[url('/wave-bg.svg')] bg-cover bg-top bg-no-repeat pt-10"
 	>
 		<p class="text-center text-2xl font-bold text-white">Login with <br /> institute's Email ID</p>
-		<GoogleButton onclick={openGoogleLogin} class="mt-10 scale-125"></GoogleButton>
+		<GoogleButton className="mt-10 scale-125" onclick={openGoogleLogin}></GoogleButton>
 		<button
 			onclick={() => (show_help_dialog = true)}
 			class="w- mt-6 flex h-[40px] flex-row items-center justify-center rounded-full border-2 pr-[24px] pl-[12px] text-[12px] text-white"
