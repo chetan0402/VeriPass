@@ -8,6 +8,7 @@ import {
 	type ListPassesByUserRequest
 } from '$lib/gen/veripass/v1/pass_pb';
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
+import { timestampNow } from '@bufbuild/protobuf/wkt';
 
 const MOCK = true;
 
@@ -36,6 +37,17 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			hostel: 'Mock Hostel',
 			room: 'Mock Room',
 			phone: '1234567890'
+		};
+	});
+
+	rpc(PassService.method.getLatestPassByUser, (req) => {
+		return {
+			id: 'pass' + req.userId,
+			userId: req.userId,
+			type: Pass_PassType.CLASS,
+			startTime: msToTimestamp(timestampToMs(timestampNow()) - 4 * 60 * 60 * 1000),
+			endTime: msToTimestamp(timestampToMs(timestampNow()) - 60 * 60 * 1000),
+			$typeName: 'veripass.v1.Pass'
 		};
 	});
 
