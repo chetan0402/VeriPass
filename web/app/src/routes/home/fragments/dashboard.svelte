@@ -2,6 +2,8 @@
 	import { Select } from 'flowbite-svelte';
 	import { type User } from '$lib/gen/veripass/v1/user_pb';
 	import { Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
+	import PassActionDialog from '$lib/components/PassActionDialog.svelte';
+	import { fade } from 'svelte/transition';
 
 	const { user } = $props<{ user: User }>();
 
@@ -13,10 +15,26 @@
 		{ value: Pass_PassType.HOME, name: 'Home' },
 		{ value: Pass_PassType.EVENT, name: 'Event' }
 	];
+
+	let show_generating_box = $state(false);
+
+	function generatePass() {
+		if (selected === Pass_PassType.UNSPECIFIED) {
+			return;
+		}
+		show_generating_box = true;
+	}
+
+	function generatePassByServer() {}
+
+	function getPurposeNameByType(type: number): string {
+		const item = purposes.find((p) => p.value === type);
+		return item ? item?.name : 'unspecified';
+	}
 </script>
 
-<div class="flex h-[98%] flex-col items-center pt-4">
-	<h1 class="text-primary text-3xl font-bold">Dashboard</h1>
+<div class="flex h-[98%] flex-col items-center overflow-x-hidden">
+	<h1 class="text-primary mt-4 text-3xl font-bold">Dashboard</h1>
 
 	<div
 		class="from-primary-600 to-secondary-600 m-7 h-fit w-[94%] rounded-[12px] bg-gradient-to-r p-[1px]"
@@ -55,10 +73,25 @@
 				size="lg"
 			/>
 			<button
+				onclick={generatePass}
 				class="from-primary-600 to-secondary-600 mt-4 h-12 w-[clamp(200px,80%,500px)] rounded-[18px] bg-gradient-to-r font-semibold text-white focus:outline-amber-100"
+				style={selected === Pass_PassType.UNSPECIFIED ? 'opacity: 0.3' : ''}
 			>
 				Generate pass
 			</button>
 		</div>
 	</div>
+	{#if show_generating_box}
+		<div
+			transition:fade
+			class="absolute z-10 flex h-dvh w-dvw flex-row items-center justify-center bg-[#000000aa] backdrop-blur-2xl"
+		>
+			<PassActionDialog
+				purpose={getPurposeNameByType(selected)}
+				generating={true}
+				onProceed={generatePassByServer}
+				close={() => (show_generating_box = false)}
+			/>
+		</div>
+	{/if}
 </div>

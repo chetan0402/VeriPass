@@ -9,13 +9,18 @@
 	import BorderDiv from '$lib/components/BorderDiv.svelte';
 	import { msToDurationString, timestampToMs } from '$lib/timestamp_utils';
 	import { timestampNow } from '@bufbuild/protobuf/wkt';
+	import { page } from '$app/state';
+	import PassActionDialog from '$lib/components/PassActionDialog.svelte';
+	import { fade } from 'svelte/transition';
 
+	let passId: string = $derived(page.params.id);
 	let pass = $state<Pass>();
 	let isClosed: boolean = $derived(pass ? pass.endTime != null : false);
 	let user = $state<User>();
 	let passFetchStatus = $state('Loading Pass Data...');
 	const userClient = createClient(UserService, transport);
 	const passClient = createClient(PassService, transport);
+	let show_closing_box = $state(false);
 
 	function isUserLoggedIn() {
 		return true;
@@ -25,6 +30,24 @@
 		return '12345';
 	}
 
+	async function loadLatestPass() {
+		try {
+			pass = await passClient.getLatestPassByUser({ userId: getUserID() });
+		} catch (error) {
+			console.error('Error fetching pass data:', error);
+			passFetchStatus = "Pass Details Can't be Fetched.";
+		}
+	}
+
+	async function loadPassOfGivenId() {
+		try {
+			pass = await passClient.getPass({ id: passId });
+		} catch (error) {
+			console.error('Error fetching pass data:', error);
+			passFetchStatus = "Pass Details Can't be Fetched.";
+		}
+	}
+
 	onMount(async () => {
 		if (isUserLoggedIn()) {
 			try {
@@ -32,11 +55,10 @@
 			} catch (error) {
 				console.error('Error fetching user data:', error);
 			}
-			try {
-				pass = await passClient.getLatestPassByUser({ userId: getUserID() });
-			} catch (error) {
-				console.error('Error fetching pass data:', error);
-				passFetchStatus = "Pass Details Can't be Fetched.";
+			if (passId) {
+				await loadPassOfGivenId();
+			} else {
+				await loadLatestPass();
 			}
 		} else {
 			await goto('/login');
@@ -62,7 +84,6 @@
 		if (!pass) return 'loading';
 		if (pass.endTime) {
 			let diff = Math.floor(Math.abs(timestampToMs(pass.endTime) - timestampToMs(pass.startTime)));
-			console.log(diff);
 			return msToDurationString(diff);
 		} else {
 			let diff = Math.floor(
@@ -76,23 +97,31 @@
 	let duration: string = $derived(getDurationFromPass(pass));
 
 	function gotoHome() {
-		goto('./home');
+		goto('../home');
+	}
+
+	function showClosePassDialog() {
+		show_closing_box = true;
+	}
+
+	function closePassByServer() {
+		console.log('Closing Pass');
 	}
 </script>
 
 <div
-	class={`animate__fadeIn animated flex h-svh w-svw flex-col items-center pt-4
+	class={`animate__fadeIn animated flex h-svh w-svw flex-col items-center
          ${
 						!isClosed
 							? 'from-primary-600 to-secondary-600 bg-radial-[100%_80%_at_50%_50%]'
 							: 'bg-radial-[100%_80%_at_50%_50%] from-[#00643A] to-[#6AE7BB]'
 					}`}
 >
-	<h1 class="mb-3 text-3xl font-bold text-white">Exit Pass</h1>
+	<h1 class="mt-4 mb-3 text-3xl font-bold text-white">Exit Pass</h1>
 
 	{#if user}
 		<div class="from-primary-600 to-secondary-600 h-25 rounded-[12px] bg-gradient-to-r p-[1px]">
-			<img src="placeholder.png" class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
+			<img src="../placeholder.png" class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
 		</div>
 		<h1 class="mt-4 text-2xl font-bold text-white">{user.name}</h1>
 		<p class="text-l mt-2 font-bold text-white">{user.id}</p>
@@ -103,15 +132,15 @@
 			className="flex flex-row pl-4 pr-4 pb-2 pt-2 justify-center items-center bg-white"
 		>
 			<div class="flex flex-row items-center">
-				<img class="h-4" alt="hostel" src="hostel.svg" />
+				<img class="h-4" alt="hostel" src="../hostel.svg" />
 				<p class="text-secondary ml-1 text-[0.7rem] font-bold">{user.hostel}</p>
 			</div>
 			<div class="mr-2 ml-2 flex flex-row items-center">
-				<img class="h-4" alt="room" src="room.svg" />
+				<img class="h-4" alt="room" src="../room.svg" />
 				<p class="text-secondary ml-1 text-[0.7rem] font-bold">{user.room}</p>
 			</div>
 			<div class="flex flex-row items-center">
-				<img class="h-4" alt="phone" src="phone.svg" />
+				<img class="h-4" alt="phone" src="../phone.svg" />
 				<p class="text-secondary ml-1 text-[0.7rem] font-bold text-wrap">{user.phone}</p>
 			</div>
 		</BorderDiv>
@@ -148,7 +177,7 @@
 					roundBox="full"
 					className="bg-white flex flex-row items-center pt-2 pb-2 pl-4"
 				>
-					<img class="h-4 w-4" alt="hostel" src="purpose.svg" />
+					<img class="h-4 w-4" alt="hostel" src="../purpose.svg" />
 					<p class="text-secondary ml-1 text-[0.8rem]">Purpose</p>
 					<p class="text-secondary-600 ml-10 text-[1rem] font-extrabold">{getPassType(pass)}</p>
 				</BorderDiv>
@@ -158,7 +187,7 @@
 					roundBox="full"
 					className="bg-white flex flex-row items-center pt-2 pb-2 pl-4"
 				>
-					<img class="h-4 w-4" alt="hostel" src="clock.svg" />
+					<img class="h-4 w-4" alt="hostel" src="../clock.svg" />
 					<p class="text-secondary ml-1 text-[0.8rem]">Out Time</p>
 					<p class="text-secondary-600 ml-10 text-[1rem] font-extrabold">{duration}</p>
 				</BorderDiv>
@@ -176,6 +205,7 @@
 					<div class="absolute bottom-0 w-full p-4 pb-6">
 						<p class="text-center text-sm font-bold">Close the pass before showing to guard</p>
 						<button
+							onclick={showClosePassDialog}
 							class="from-primary-600 to-secondary-600 mt-2 h-12 w-full rounded-[18px] bg-gradient-to-r font-semibold text-white focus:outline-amber-100"
 						>
 							Close Pass
@@ -185,4 +215,17 @@
 			{/if}
 		</div>
 	</div>
+	{#if show_closing_box && pass}
+		<div
+			transition:fade
+			class="absolute z-10 flex h-dvh w-dvw flex-row items-center justify-center bg-[#000000aa] backdrop-blur-2xl"
+		>
+			<PassActionDialog
+				purpose={getPassType(pass)}
+				generating={false}
+				onProceed={closePassByServer}
+				close={() => (show_closing_box = false)}
+			/>
+		</div>
+	{/if}
 </div>

@@ -8,6 +8,7 @@
 	import { type Pass, PassService } from '$lib/gen/veripass/v1/pass_pb';
 	import type { User } from '$lib/gen/veripass/v1/user_pb';
 	import { timestampToMs } from '$lib/timestamp_utils';
+	import { goto } from '$app/navigation';
 
 	let loadMoreElem: HTMLDivElement;
 	let nextPageToken: Timestamp | undefined = timestampNow();
@@ -67,7 +68,7 @@
 			class="hide-scrollbar flex h-full w-svw flex-col items-center overflow-x-hidden rounded-[20px] bg-white pb-26"
 		>
 			{#each passes as pass (pass.id)}
-				<PassListItem {pass} />
+				<PassListItem {pass} onclick={() => goto(`/pass/${pass.id}`)} />
 			{/each}
 			<div bind:this={loadMoreElem} class="m-2 flex w-full justify-center">{listFooterMessage}</div>
 		</div>

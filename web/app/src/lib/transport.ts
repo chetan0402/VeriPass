@@ -16,12 +16,14 @@ function generateMockPasesForPage(req: ListPassesByUserRequest): Pass[] {
 	const mockPasses: Pass[] = [];
 	for (let i = 0; i < req.pageSize; i++) {
 		let endtime;
-		if (i % 3 == 0) endtime = msToTimestamp(timestampToMs(req.pageToken) - i * 92880000);
+		const idIdentifier = timestampToMs(req.pageToken) - i * 60 * 60 * 1000;
+		if (idIdentifier % 3 == 0) endtime = msToTimestamp(idIdentifier - 4 * 60 * 60 * 1000);
+		const id = 'pass' + idIdentifier;
 		mockPasses.push({
-			id: 'pass' + i + timestampToMs(req.pageToken),
+			id: id,
 			userId: req.userId,
 			type: Pass_PassType.CLASS,
-			startTime: msToTimestamp(timestampToMs(req.pageToken) - i * 828800000),
+			startTime: msToTimestamp(idIdentifier - 60 * 60 * 1000),
 			endTime: endtime,
 			$typeName: 'veripass.v1.Pass'
 		});
@@ -47,6 +49,21 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			type: Pass_PassType.CLASS,
 			startTime: msToTimestamp(timestampToMs(timestampNow()) - 4 * 60 * 60 * 1000),
 			endTime: msToTimestamp(timestampToMs(timestampNow()) - 60 * 60 * 1000),
+			$typeName: 'veripass.v1.Pass'
+		};
+	});
+	rpc(PassService.method.getPass, (req) => {
+		let endtime;
+		const idIdentifier = Number(req.id.replace('pass', ''));
+		if (idIdentifier % 3 == 0) endtime = msToTimestamp(idIdentifier - 4 * 60 * 60 * 1000);
+		const id = 'pass' + idIdentifier;
+
+		return {
+			id: id,
+			userId: '12345',
+			type: Pass_PassType.CLASS,
+			startTime: msToTimestamp(idIdentifier - 60 * 60 * 1000),
+			endTime: endtime,
 			$typeName: 'veripass.v1.Pass'
 		};
 	});
