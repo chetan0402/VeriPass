@@ -3,6 +3,7 @@ package veripass_test
 import (
 	"context"
 	"database/sql"
+	"math"
 	"net/http"
 	"testing"
 	"time"
@@ -15,10 +16,12 @@ import (
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
+// TODO - test passClient create manual after create admin entity
 func TestMain(t *testing.T) {
 	timeout := time.After(30 * time.Second)
 	host := "http://localhost:8000"
@@ -36,7 +39,8 @@ func TestMain(t *testing.T) {
 		}
 	}
 
-	client := veripassv1connect.NewUserServiceClient(&http.Client{}, host)
+	userClient := veripassv1connect.NewUserServiceClient(&http.Client{}, host)
+	passClient := veripassv1connect.NewPassServiceClient(&http.Client{}, host)
 	ctx := context.Background()
 
 	db, err := sql.Open("pgx", dbUrl)
@@ -52,6 +56,16 @@ func TestMain(t *testing.T) {
 		Phone:  "1234567890",
 	}
 
+	mockPass1 := veripassv1.Pass{
+		UserId: mockUser.Id,
+		Type:   veripassv1.Pass_PASS_TYPE_CLASS,
+	}
+
+	mockPass2 := veripassv1.Pass{
+		UserId: mockUser.Id,
+		Type:   veripassv1.Pass_PASS_TYPE_HOME,
+	}
+
 	if err := dbClient.User.Create().
 		SetID(mockUser.Id).
 		SetName(mockUser.Name).
@@ -64,7 +78,7 @@ func TestMain(t *testing.T) {
 		}
 	}
 
-	user, err := client.GetUser(ctx, connect.NewRequest(&veripassv1.GetUserRequest{
+	user, err := userClient.GetUser(ctx, connect.NewRequest(&veripassv1.GetUserRequest{
 		Id: mockUser.Id,
 	}))
 	attest(t, err)
@@ -72,21 +86,94 @@ func TestMain(t *testing.T) {
 		t.Fatal("User response not equal")
 	}
 
-	exitResponse, err := client.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
-		Id:   mockUser.Id,
-		Type: veripassv1.ExitRequest_EXIT_TYPE_CLASS,
+	exitResponse, err := userClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
+		Id:   mockPass1.UserId,
+		Type: veripassv1.ExitRequest_ExitType(mockPass1.Type),
 	}))
 	attest(t, err)
 
-	_, err = client.Entry(ctx, connect.NewRequest(&veripassv1.EntryRequest{
-		PassId: exitResponse.Msg.PassId,
+	mockPass1.Id = exitResponse.Msg.PassId
+	mockPass1.StartTime = timestamppb.Now()
+
+	_, err = userClient.Entry(ctx, connect.NewRequest(&veripassv1.EntryRequest{
+		PassId: mockPass1.Id,
 	}))
 	attest(t, err)
+
+	mockPass1.EndTime = timestamppb.Now()
+
+	exitResponse2, err := userClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
+		Id:   mockPass2.UserId,
+		Type: veripassv1.ExitRequest_ExitType(mockPass2.Type),
+	}))
+	attest(t, err)
+
+	mockPass2.Id = exitResponse2.Msg.PassId
+	mockPass2.StartTime = timestamppb.Now()
+
+	pass, err := passClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
+		Id: mockPass1.Id,
+	}))
+	attest(t, err)
+
+	failIfNotEqualPass(t, pass.Msg, &mockPass1)
+
+	pass2, err := passClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
+		Id: mockPass2.Id,
+	}))
+	attest(t, err)
+
+	failIfNotEqualPass(t, pass2.Msg, &mockPass2)
+
+	latestPass, err := passClient.GetLatestPassByUser(ctx, connect.NewRequest(&veripassv1.GetLatestPassByUserRequest{
+		UserId: mockUser.Id,
+	}))
+	attest(t, err)
+
+	failIfNotEqualPass(t, latestPass.Msg, &mockPass2)
+
+	pageToken := timestamppb.Now()
+
+	passList1, err := passClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
+		UserId:    mockUser.Id,
+		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED.Enum(),
+		PageToken: pageToken,
+		PageSize:  1,
+	}))
+	attest(t, err)
+	if passList1.Msg.NextPageToken.Seconds != pass.Msg.StartTime.Seconds {
+		t.Fatalf("Expected %v, got %v", pass.Msg.StartTime, passList1.Msg.NextPageToken)
+	}
+	failIfNotEqualPass(t, passList1.Msg.Passes[0], pass2.Msg)
+	pageToken = passList1.Msg.NextPageToken
+
+	passList2, err := passClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
+		UserId:    mockUser.Id,
+		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED.Enum(),
+		PageToken: pageToken,
+		PageSize:  1,
+	}))
+	attest(t, err)
+	if passList2.Msg.NextPageToken != nil {
+		t.Fatal("Expected nil next page token")
+	}
+	failIfNotEqualPass(t, passList2.Msg.Passes[0], pass.Msg)
 }
 
 func attest(t *testing.T, err error) {
 	if err != nil {
 		t.Helper()
 		t.Fatal(err)
+	}
+}
+
+func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1.Pass) {
+	t.Helper()
+	if got.Id != expected.Id ||
+		got.UserId != expected.UserId ||
+		got.Type != expected.Type ||
+		math.Abs(float64(got.StartTime.Seconds-expected.StartTime.Seconds)) > 1 ||
+		(expected.EndTime != nil && math.Abs(float64(got.EndTime.Seconds-expected.EndTime.Seconds)) > 1) {
+		t.Fatalf("Expected %v, got %v", expected, got)
 	}
 }
