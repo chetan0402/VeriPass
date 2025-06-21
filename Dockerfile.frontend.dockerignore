@@ -1,3 +1,4 @@
 web/app/node_modules
 web/app/build
 web/app/.svelte-kit
+node_modules
