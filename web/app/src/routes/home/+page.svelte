@@ -1,15 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import { transport } from '$lib';
 	import { createClient } from '@connectrpc/connect';
 	import Dashboard from './fragments/dashboard.svelte';
 	import History from './fragments/history.svelte';
-
-	function isUserLoggedIn() {
-		return true;
-	}
 
 	let dashboardVisible: boolean = $state<boolean>(true);
 
@@ -21,14 +16,10 @@
 	}
 
 	onMount(async () => {
-		if (isUserLoggedIn()) {
-			try {
-				user = await client.getUser({ id: getUserID() });
-			} catch (error) {
-				console.error('Error fetching user data:', error);
-			}
-		} else {
-			await goto('/login', { replaceState: true });
+		try {
+			user = await client.getUser({ id: getUserID() });
+		} catch (error) {
+			console.error('Error fetching user data:', error);
 		}
 	});
 

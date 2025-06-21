@@ -54,14 +54,13 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(PassService.method.getLatestPassByUser, (req) => {
-		return {
-			id: 'pass' + req.userId,
-			userId: req.userId,
-			type: Pass_PassType.CLASS,
-			startTime: msToTimestamp(timestampToMs(timestampNow()) - 4 * 60 * 60 * 1000),
-			endTime: msToTimestamp(timestampToMs(timestampNow()) - 60 * 60 * 1000),
-			$typeName: 'veripass.v1.Pass'
-		};
+		const sortedPasses = Object.values(mockPasses)
+			.filter((p) => p.userId === req.userId)
+			.sort((a, b) => timestampToMs(b.startTime) - timestampToMs(a.startTime));
+		if (!sortedPasses[0]) {
+			throw new ConnectError('Pass not found', Code.NotFound);
+		}
+		return sortedPasses[0];
 	});
 
 	rpc(UserService.method.exit, (req) => {

@@ -18,6 +18,7 @@
 	let isClosed: boolean = $derived(pass ? pass.endTime != null : false);
 	let user = $state<User>();
 	let passFetchStatus = $state('Loading Pass Data...');
+	let currentTime = $state('loading...');
 	const userClient = createClient(UserService, transport);
 	const passClient = createClient(PassService, transport);
 	let show_closing_box = $state(false);
@@ -134,6 +135,18 @@
 			show_closing_box = false;
 		}
 	}
+
+	function updateTimeTicker() {
+		const now = new Date();
+		currentTime = now.toLocaleTimeString('en-In', {
+			day: '2-digit',
+			month: 'short',
+			year: 'numeric'
+		});
+	}
+
+	setInterval(updateTimeTicker, 1000);
+	updateTimeTicker();
 </script>
 
 <div
@@ -218,28 +231,29 @@
 					<p class="text-secondary ml-1 text-[0.8rem]">Out Time</p>
 					<p class="text-secondary-600 ml-10 text-[1rem] font-extrabold">{duration}</p>
 				</BorderDiv>
-				{#if isClosed}
-					<div class="absolute bottom-0 w-full p-4 pb-6">
-						<p class="text-center text-sm font-bold">Pass is already closed</p>
-						<button
-							onclick={() => gotoHome()}
-							class="from-primary-200 to-secondary-200 text-primary-600 mt-2 h-12 w-full rounded-[18px] border-2 border-solid bg-gradient-to-r font-semibold focus:outline-amber-100"
-						>
-							Back to Dashboard
-						</button>
-					</div>
-				{:else}
-					<div class="absolute bottom-0 w-full p-4 pb-6">
-						<p class="text-center text-sm font-bold">Close the pass before showing to guard</p>
-						<button
-							onclick={showClosePassDialog}
-							class="from-primary-600 to-secondary-600 mt-2 h-12 w-full rounded-[18px] bg-gradient-to-r font-semibold text-white focus:outline-amber-100"
-						>
-							Close Pass
-						</button>
-					</div>
-				{/if}
 			{/if}
+			<div class="absolute bottom-0 w-full p-4 pb-6">
+				<div class="bg-primary-50 live-time-ticker mb-3 rounded-2xl">
+					<p class="font-extrabold">{currentTime}</p>
+				</div>
+				{#if isClosed || !pass}
+					<p class="text-center text-sm font-bold">Pass is already closed</p>
+					<button
+						onclick={() => gotoHome()}
+						class="from-primary-200 to-secondary-200 text-primary-600 mt-2 h-12 w-full rounded-[18px] border-2 border-solid bg-gradient-to-r font-semibold focus:outline-amber-100"
+					>
+						Back to Dashboard
+					</button>
+				{:else}
+					<p class="text-center text-sm font-bold">Close the pass before showing to guard</p>
+					<button
+						onclick={showClosePassDialog}
+						class="from-primary-600 to-secondary-600 mt-2 h-12 w-full rounded-[18px] bg-gradient-to-r font-semibold text-white focus:outline-amber-100"
+					>
+						Close Pass
+					</button>
+				{/if}
+			</div>
 		</div>
 	</div>
 	{#if show_closing_box && pass}

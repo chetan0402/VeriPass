@@ -9,9 +9,7 @@
 	}>();
 </script>
 
-<div
-	class={`from-primary-600 to-secondary-600 bg-gradient-to-r p-[2px] rounded-${roundParent} ${classNameParent}`}
->
+<div class={`rotating-bg rotating-vg p-[2px] rounded-${roundParent} ${classNameParent}`}>
 	<div class={className + ` rounded-${roundBox}`}>
 		{@render children()}
 	</div>
