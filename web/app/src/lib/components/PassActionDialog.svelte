@@ -75,7 +75,7 @@
 			</div>
 		</div>
 	{/if}
-	<Progressbar class="mt-12 w-64" {progress} />
+	<Progressbar class="mt-12 w-[90%]" {progress} />
 	<p class="text-secondary-700 m-2 text-sm">
 		{#if !cancelled}
 			Auto {generating ? 'generating' : 'closing'} in {seconds} seconds
@@ -83,14 +83,11 @@
 			Sending Pass Request
 		{/if}
 	</p>
-	<div class="mt-2 flex flex-row">
-		<button onclick={stopAndClose} class="mr-2 w-30 rounded-full bg-red-500 p-2 text-sm text-white">
+	<div class="mt-2 flex w-full flex-row">
+		<button onclick={stopAndClose} class="mr-2 grow rounded-full bg-red-500 p-3 text-sm text-white">
 			Cancel
 		</button>
-		<button
-			onclick={doAction}
-			class="bg-secondary w-30 rounded-full border-2 border-solid p-2 text-sm text-white"
-		>
+		<button onclick={doAction} class="bg-primary-600 grow rounded-full p-3 text-sm text-white">
 			{generating ? 'Generate Now' : 'Close Now'}
 		</button>
 	</div>

@@ -53,7 +53,6 @@
 			let response: ExitResponse = await client.exit({ id: user.id, type: getExitType(selected) });
 			await goto(`../pass/${response.passId}`);
 		} catch (error: unknown) {
-			show_generating_box = false;
 			if (error instanceof ConnectError) {
 				switch (error.code) {
 					case Code.NotFound:
@@ -69,6 +68,7 @@
 				alert('An unknown error occurred.');
 			}
 		}
+		show_generating_box = false;
 	}
 
 	function getPurposeNameByType(type: number): string {
