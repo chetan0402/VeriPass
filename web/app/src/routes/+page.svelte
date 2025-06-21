@@ -25,6 +25,9 @@
 
 	function openNextScreen(user: User) {
 		status_message = 'Welcome ' + user.name + '!';
+		setTimeout(() => {
+			goto('/home', { replaceState: true });
+		}, 1600);
 	}
 
 	function isUserLoggedIn() {
@@ -38,7 +41,7 @@
 	function openLoginScreen() {
 		status_message = 'Taking you to the login page...';
 		setTimeout(() => {
-			goto('/login');
+			goto('/login', { replaceState: true });
 		}, 1600);
 	}
 

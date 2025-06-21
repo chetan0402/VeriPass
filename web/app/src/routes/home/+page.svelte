@@ -1,15 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import { transport } from '$lib';
 	import { createClient } from '@connectrpc/connect';
 	import Dashboard from './fragments/dashboard.svelte';
 	import History from './fragments/history.svelte';
-
-	function isUserLoggedIn() {
-		return true;
-	}
 
 	let dashboardVisible: boolean = $state<boolean>(true);
 
@@ -21,14 +16,10 @@
 	}
 
 	onMount(async () => {
-		if (isUserLoggedIn()) {
-			try {
-				user = await client.getUser({ id: getUserID() });
-			} catch (error) {
-				console.error('Error fetching user data:', error);
-			}
-		} else {
-			await goto('/login');
+		try {
+			user = await client.getUser({ id: getUserID() });
+		} catch (error) {
+			console.error('Error fetching user data:', error);
 		}
 	});
 
@@ -46,12 +37,16 @@
 		{#if user}
 			<Dashboard {user} />
 		{:else}
-			<div class="mt-10 h-full w-full text-center text-white">Loading user dashboard...</div>
+			<div class="text-primary-500 relative top-10 w-full pt-50 text-center text-xl font-bold">
+				Loading user dashboard...
+			</div>
 		{/if}
 	{:else if user}
 		<History {user} />
 	{:else}
-		<div class="mt-10 h-full w-full text-center text-white">Loading user history...</div>
+		<div class="text-primary-500 relative top-10 w-full pt-50 text-center text-xl font-bold">
+			Loading user history...
+		</div>
 	{/if}
 	<nav
 		class="absolute bottom-0 flex h-30 w-full items-center justify-evenly bg-[url('/wave-bottom-nav.svg')] bg-cover bg-top bg-no-repeat pt-5"
