@@ -2,7 +2,7 @@
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { createClient } from '@connectrpc/connect';
+	import { Code, ConnectError, createClient } from '@connectrpc/connect';
 	import { transport } from '$lib';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
 	import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
@@ -48,6 +48,14 @@
 		}
 	}
 
+	async function refreshPass() {
+		if (passId) {
+			await loadPassOfGivenId();
+		} else {
+			await loadLatestPass();
+		}
+	}
+
 	onMount(async () => {
 		if (isUserLoggedIn()) {
 			try {
@@ -55,13 +63,9 @@
 			} catch (error) {
 				console.error('Error fetching user data:', error);
 			}
-			if (passId) {
-				await loadPassOfGivenId();
-			} else {
-				await loadLatestPass();
-			}
+			await refreshPass();
 		} else {
-			await goto('/login');
+			await goto('/login', { replaceState: true });
 		}
 	});
 
@@ -89,7 +93,6 @@
 			let diff = Math.floor(
 				Math.abs(timestampToMs(timestampNow()) - timestampToMs(pass.startTime))
 			);
-			console.log(diff);
 			return msToDurationString(diff);
 		}
 	}
@@ -97,15 +100,39 @@
 	let duration: string = $derived(getDurationFromPass(pass));
 
 	function gotoHome() {
-		goto('../home');
+		goto('../home', { replaceState: true });
 	}
 
 	function showClosePassDialog() {
 		show_closing_box = true;
 	}
 
-	function closePassByServer() {
-		console.log('Closing Pass');
+	async function closePassByServer() {
+		if (pass) {
+			try {
+				await userClient.entry({ passId: pass.id });
+				await refreshPass();
+			} catch (error: unknown) {
+				if (error instanceof ConnectError) {
+					switch (error.code) {
+						case Code.NotFound:
+							console.error('Pass not found');
+							alert('Pass not found. It may have already been closed.');
+							break;
+						case Code.InvalidArgument:
+							alert('Invalid pass ID. Please try again.');
+							break;
+						default:
+							alert(`Unexpected error: ${error.message}`);
+							break;
+					}
+				} else {
+					console.error('Unexpected error type', error);
+					alert('An unknown error occurred.');
+				}
+			}
+			show_closing_box = false;
+		}
 	}
 </script>
 

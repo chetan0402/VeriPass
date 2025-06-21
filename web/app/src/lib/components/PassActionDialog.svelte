@@ -13,15 +13,17 @@
 	let maxTime = 6;
 	let progress: number = $state(0);
 	let seconds: number = $derived(Math.floor((maxTime * 1000 - progress * maxTime * 10) / 1000));
-	let cancelled = false;
+	let cancelled = $state(false);
 	$effect(() => {
 		if (progress < 100) {
-			const id = setTimeout(() => {
-				progress = progress + 1;
-			}, maxTime * 10);
-			return () => {
-				clearTimeout(id);
-			};
+			if (!cancelled) {
+				const id = setTimeout(() => {
+					progress = progress + 1;
+				}, maxTime * 10);
+				return () => {
+					clearTimeout(id);
+				};
+			}
 		} else {
 			if (!cancelled) {
 				doAction();
@@ -35,6 +37,7 @@
 	}
 
 	function doAction() {
+		cancelled = true;
 		onProceed();
 	}
 </script>
@@ -74,7 +77,11 @@
 	{/if}
 	<Progressbar class="mt-12 w-64" {progress} />
 	<p class="text-secondary-700 m-2 text-sm">
-		Auto {generating ? 'generating' : 'closing'} in {seconds} seconds
+		{#if !cancelled}
+			Auto {generating ? 'generating' : 'closing'} in {seconds} seconds
+		{:else}
+			Sending Pass Request
+		{/if}
 	</p>
 	<div class="mt-2 flex flex-row">
 		<button onclick={stopAndClose} class="mr-2 w-30 rounded-full bg-red-500 p-2 text-sm text-white">

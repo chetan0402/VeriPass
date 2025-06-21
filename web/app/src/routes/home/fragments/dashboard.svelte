@@ -1,12 +1,20 @@
 <script lang="ts">
 	import { Select } from 'flowbite-svelte';
-	import { type User } from '$lib/gen/veripass/v1/user_pb';
+	import {
+		ExitRequest_ExitType,
+		type ExitResponse,
+		type User,
+		UserService
+	} from '$lib/gen/veripass/v1/user_pb';
 	import { Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
 	import PassActionDialog from '$lib/components/PassActionDialog.svelte';
 	import { fade } from 'svelte/transition';
+	import { Code, ConnectError, createClient } from '@connectrpc/connect';
+	import { transport } from '$lib';
+	import { goto } from '$app/navigation';
 
 	const { user } = $props<{ user: User }>();
-
+	const client = createClient(UserService, transport);
 	let selected: Pass_PassType = $state(Pass_PassType.UNSPECIFIED);
 	let purposes: { value: number; name: string }[] = [
 		{ value: Pass_PassType.UNSPECIFIED, name: 'Select the purpose of the exit' },
@@ -25,7 +33,43 @@
 		show_generating_box = true;
 	}
 
-	function generatePassByServer() {}
+	function getExitType(selected: Pass_PassType): ExitRequest_ExitType {
+		const map: Record<Pass_PassType, ExitRequest_ExitType> = {
+			[Pass_PassType.CLASS]: ExitRequest_ExitType.CLASS,
+			[Pass_PassType.MARKET]: ExitRequest_ExitType.MARKET,
+			[Pass_PassType.HOME]: ExitRequest_ExitType.HOME,
+			[Pass_PassType.EVENT]: ExitRequest_ExitType.EVENT,
+			[Pass_PassType.UNSPECIFIED]: ExitRequest_ExitType.UNSPECIFIED
+		};
+		return map[selected] ?? ExitRequest_ExitType.UNSPECIFIED;
+	}
+
+	async function generatePassByServer() {
+		if (!user) {
+			alert('User not found: Try logging in again.');
+			await goto('../login', { replaceState: true });
+		}
+		try {
+			let response: ExitResponse = await client.exit({ id: user.id, type: getExitType(selected) });
+			await goto(`../pass/${response.passId}`);
+		} catch (error: unknown) {
+			show_generating_box = false;
+			if (error instanceof ConnectError) {
+				switch (error.code) {
+					case Code.NotFound:
+						console.error('User not found');
+						alert('User not found. Try refreshing or logging in again.');
+						break;
+					default:
+						alert(`Unexpected error: ${error.message}`);
+						break;
+				}
+			} else {
+				console.error('Unexpected error type', error);
+				alert('An unknown error occurred.');
+			}
+		}
+	}
 
 	function getPurposeNameByType(type: number): string {
 		const item = purposes.find((p) => p.value === type);

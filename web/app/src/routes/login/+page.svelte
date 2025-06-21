@@ -13,7 +13,7 @@
 		loginSuccess();
 	}
 	function loginSuccess() {
-		goto('/home');
+		goto('/home', { replaceState: true });
 	}
 </script>
 

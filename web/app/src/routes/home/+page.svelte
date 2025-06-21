@@ -6,7 +6,6 @@
 	import { createClient } from '@connectrpc/connect';
 	import Dashboard from './fragments/dashboard.svelte';
 	import History from './fragments/history.svelte';
-	import { fade } from 'svelte/transition';
 
 	function isUserLoggedIn() {
 		return true;
@@ -29,7 +28,7 @@
 				console.error('Error fetching user data:', error);
 			}
 		} else {
-			await goto('/login');
+			await goto('/login', { replaceState: true });
 		}
 	});
 
@@ -47,14 +46,14 @@
 		{#if user}
 			<Dashboard {user} />
 		{:else}
-			<div transition:fade class="mt-10 h-full w-full text-center text-white">
+			<div class="text-primary-500 relative top-10 w-full pt-50 text-center text-xl font-bold">
 				Loading user dashboard...
 			</div>
 		{/if}
 	{:else if user}
 		<History {user} />
 	{:else}
-		<div transition:fade class="mt-10 h-full w-full text-center text-white">
+		<div class="text-primary-500 relative top-10 w-full pt-50 text-center text-xl font-bold">
 			Loading user history...
 		</div>
 	{/if}
