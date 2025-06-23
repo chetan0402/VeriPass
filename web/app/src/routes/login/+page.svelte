@@ -10,6 +10,7 @@
 
 	function openGoogleLogin() {
 		alert('Not implemented yet');
+		localStorage.setItem('user_id', '12345');
 		loginSuccess();
 	}
 	function loginSuccess() {
