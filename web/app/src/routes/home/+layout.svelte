@@ -23,12 +23,12 @@
 			let pass = await passClient.getLatestPassByUser({ userId: getUserID() });
 			if (!pass.endTime) {
 				await goto('../pass', { replaceState: true });
-				console.log('open pass found', pass);
+				console.log('open pass found');
 			} else {
-				console.log('no open pass found', pass);
+				console.log('no open pass found');
 			}
 		} else {
-			await goto('..//login', { replaceState: true });
+			await goto('../login', { replaceState: true });
 		}
 	});
 </script>

@@ -104,7 +104,6 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(PassService.method.listPassesByUser, (req) => {
 		const pageSize = req.pageSize;
 		const pageTokenMs = timestampToMs(req.pageToken);
-		console.log('listPassesByUser', req.userId, pageSize);
 		if (Object.values(mockPasses).length < 10) {
 			generateMockPasesForPage();
 		}
@@ -115,8 +114,6 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		const passes = paginated.slice(0, pageSize);
 		const nextPageToken =
 			paginated.length > pageSize ? passes[passes.length - 1].startTime : msToTimestamp(0);
-		console.log(mockPasses);
-		console.log(passes);
 		return {
 			passes,
 			nextPageToken

@@ -1,74 +1,28 @@
 <script lang="ts">
-	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { Code, ConnectError, createClient } from '@connectrpc/connect';
-	import { transport } from '$lib';
-	import PassTimeView from '$lib/components/PassTimeView.svelte';
-	import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
 	import BorderDiv from '$lib/components/BorderDiv.svelte';
+	import { type Pass, Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
+	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
+	import PassTimeView from '$lib/components/PassTimeView.svelte';
+	import { goto } from '$app/navigation';
 	import { msToDurationString, timestampToMs } from '$lib/timestamp_utils';
 	import { timestampNow } from '@bufbuild/protobuf/wkt';
-	import { page } from '$app/state';
 	import PassActionDialog from '$lib/components/PassActionDialog.svelte';
 	import { fade } from 'svelte/transition';
+	import { Code, ConnectError, createClient } from '@connectrpc/connect';
+	import { onMount } from 'svelte';
+	import { transport } from '$lib';
 
-	let passId: string = $derived(page.params.id);
-	let pass = $state<Pass>();
+	let { pass, user, passFetchStatus, refreshPass } = $props<{
+		pass: Pass | undefined;
+		user: User | undefined;
+		passFetchStatus: string;
+		refreshPass: () => void;
+	}>();
+
 	let isClosed: boolean = $derived(pass ? pass.endTime != null : false);
-	let user = $state<User>();
-	let passFetchStatus = $state('Loading Pass Data...');
 	let currentTime = $state('loading...');
-	const userClient = createClient(UserService, transport);
-	const passClient = createClient(PassService, transport);
 	let show_closing_box = $state(false);
-
-	function isUserLoggedIn() {
-		return true;
-	}
-
-	function getUserID() {
-		return '12345';
-	}
-
-	async function loadLatestPass() {
-		try {
-			pass = await passClient.getLatestPassByUser({ userId: getUserID() });
-		} catch (error) {
-			console.error('Error fetching pass data:', error);
-			passFetchStatus = "Pass Details Can't be Fetched.";
-		}
-	}
-
-	async function loadPassOfGivenId() {
-		try {
-			pass = await passClient.getPass({ id: passId });
-		} catch (error) {
-			console.error('Error fetching pass data:', error);
-			passFetchStatus = "Pass Details Can't be Fetched.";
-		}
-	}
-
-	async function refreshPass() {
-		if (passId) {
-			await loadPassOfGivenId();
-		} else {
-			await loadLatestPass();
-		}
-	}
-
-	onMount(async () => {
-		if (isUserLoggedIn()) {
-			try {
-				user = await userClient.getUser({ id: getUserID() });
-			} catch (error) {
-				console.error('Error fetching user data:', error);
-			}
-			await refreshPass();
-		} else {
-			await goto('/login', { replaceState: true });
-		}
-	});
+	let duration: string = $state(getDurationFromPass(pass));
 
 	function getPassType(passItem: Pass) {
 		switch (passItem.type) {
@@ -98,8 +52,6 @@
 		}
 	}
 
-	let duration: string = $derived(getDurationFromPass(pass));
-
 	function gotoHome() {
 		goto('../home', { replaceState: true });
 	}
@@ -108,9 +60,25 @@
 		show_closing_box = true;
 	}
 
+	onMount(() => {
+		const interval = setInterval(updateTimeTicker, 1000);
+		return () => clearInterval(interval);
+	});
+
+	function updateTimeTicker() {
+		const now = new Date();
+		currentTime = now.toLocaleTimeString('en-In', {
+			day: '2-digit',
+			month: 'short',
+			year: 'numeric'
+		});
+		duration = getDurationFromPass(pass);
+	}
+
 	async function closePassByServer() {
 		if (pass) {
 			try {
+				const userClient = createClient(UserService, transport);
 				await userClient.entry({ passId: pass.id });
 				await refreshPass();
 			} catch (error: unknown) {
@@ -135,18 +103,6 @@
 			show_closing_box = false;
 		}
 	}
-
-	function updateTimeTicker() {
-		const now = new Date();
-		currentTime = now.toLocaleTimeString('en-In', {
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric'
-		});
-	}
-
-	setInterval(updateTimeTicker, 1000);
-	updateTimeTicker();
 </script>
 
 <div

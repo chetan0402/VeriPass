@@ -68,7 +68,7 @@
 			class="hide-scrollbar flex h-full w-svw flex-col items-center overflow-x-hidden rounded-[20px] bg-white pb-26"
 		>
 			{#each passes as pass (pass.id)}
-				<PassListItem {pass} onclick={() => goto(`/pass/${pass.id}`)} />
+				<PassListItem {pass} onclick={() => goto(`/view/${pass.id}`)} />
 			{/each}
 			<div bind:this={loadMoreElem} class="m-2 flex w-full justify-center">{listFooterMessage}</div>
 		</div>

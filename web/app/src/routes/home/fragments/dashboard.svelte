@@ -51,7 +51,11 @@
 		}
 		try {
 			let response: ExitResponse = await client.exit({ id: user.id, type: getExitType(selected) });
-			await goto(`../pass/${response.passId}`, { replaceState: true });
+			if (response.passId) {
+				await goto(`../pass`, { replaceState: true });
+			} else {
+				alert('An error occurred while generating the pass. Please try again.');
+			}
 		} catch (error: unknown) {
 			if (error instanceof ConnectError) {
 				switch (error.code) {
