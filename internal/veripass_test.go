@@ -66,12 +66,30 @@ func TestMain(t *testing.T) {
 		Type:   veripassv1.Pass_PASS_TYPE_HOME,
 	}
 
+	mockAdmin := veripassv1.Admin{
+		Email:      "test_email",
+		Name:       "test_name",
+		Hostel:     "test_hostel",
+		CanAddPass: true,
+	}
+
 	if err := dbClient.User.Create().
 		SetID(mockUser.Id).
 		SetName(mockUser.Name).
 		SetRoom(mockUser.Room).
 		SetHostel(mockUser.Hostel).
 		SetPhone(mockUser.Phone).
+		Exec(ctx); err != nil {
+		if !ent.IsConstraintError(err) {
+			t.Fatal(err)
+		}
+	}
+
+	if err := dbClient.Admin.Create().
+		SetEmail(mockAdmin.Email).
+		SetName(mockAdmin.Name).
+		SetHostel(mockAdmin.Hostel).
+		SetCanAddPass(mockAdmin.CanAddPass).
 		Exec(ctx); err != nil {
 		if !ent.IsConstraintError(err) {
 			t.Fatal(err)
