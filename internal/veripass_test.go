@@ -41,6 +41,7 @@ func TestMain(t *testing.T) {
 
 	userClient := veripassv1connect.NewUserServiceClient(&http.Client{}, host)
 	passClient := veripassv1connect.NewPassServiceClient(&http.Client{}, host)
+	adminClient := veripassv1connect.NewAdminServiceClient(&http.Client{}, host)
 	ctx := context.Background()
 
 	db, err := sql.Open("pgx", dbUrl)
@@ -66,12 +67,30 @@ func TestMain(t *testing.T) {
 		Type:   veripassv1.Pass_PASS_TYPE_HOME,
 	}
 
+	mockAdmin := veripassv1.Admin{
+		Email:      "test_email",
+		Name:       "test_name",
+		Hostel:     "test_hostel",
+		CanAddPass: true,
+	}
+
 	if err := dbClient.User.Create().
 		SetID(mockUser.Id).
 		SetName(mockUser.Name).
 		SetRoom(mockUser.Room).
 		SetHostel(mockUser.Hostel).
 		SetPhone(mockUser.Phone).
+		Exec(ctx); err != nil {
+		if !ent.IsConstraintError(err) {
+			t.Fatal(err)
+		}
+	}
+
+	if err := dbClient.Admin.Create().
+		SetEmail(mockAdmin.Email).
+		SetName(mockAdmin.Name).
+		SetHostel(mockAdmin.Hostel).
+		SetCanAddPass(mockAdmin.CanAddPass).
 		Exec(ctx); err != nil {
 		if !ent.IsConstraintError(err) {
 			t.Fatal(err)
@@ -158,6 +177,15 @@ func TestMain(t *testing.T) {
 		t.Fatal("Expected nil next page token")
 	}
 	failIfNotEqualPass(t, passList2.Msg.Passes[0], pass.Msg)
+
+	admin, err := adminClient.GetAdmin(ctx, connect.NewRequest(&veripassv1.GetAdminRequest{
+		Email: mockAdmin.Email,
+	}))
+	attest(t, err)
+
+	if !proto.Equal(admin.Msg, &mockAdmin) {
+		t.Fatalf("Expected %v, got %v", &mockAdmin, admin.Msg)
+	}
 }
 
 func attest(t *testing.T, err error) {
