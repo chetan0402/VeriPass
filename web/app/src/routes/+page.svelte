@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { transport } from '$lib';
-	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
-	import { createClient } from '@connectrpc/connect';
 	import { onMount } from 'svelte';
 	import { Progressbar } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
+	import { getUserFromState } from '$lib/state/user_state';
+	import type { User } from '$lib/gen/veripass/v1/user_pb';
+	import { NoUserSessionFound } from '$lib/errors';
 
 	let status_message: string = $state<string>('Getting things ready...');
-	let user = $state<User>();
 
 	let maxProgress: number = $state<number>(0);
 	let progress: number = $state<number>(0);
@@ -21,43 +20,33 @@
 		}
 	});
 
-	const client = createClient(UserService, transport);
-
 	function openNextScreen(user: User) {
-		status_message = 'Welcome ' + user.name + '!';
+		status_message = 'Welcome ' + user?.name + '!';
 		setTimeout(() => {
 			goto('/home', { replaceState: true });
 		}, 1600);
 	}
 
-	function isUserLoggedIn() {
-		return false;
-	}
-
-	function getUserID() {
-		return '12345';
-	}
-
 	function openLoginScreen() {
 		status_message = 'Taking you to the login page...';
 		setTimeout(() => {
-			goto('/login', { replaceState: true });
+			goto('../login', { replaceState: true });
 		}, 1600);
 	}
 
 	onMount(async () => {
 		maxProgress = 80;
-		if (isUserLoggedIn()) {
-			try {
-				user = await client.getUser({ id: getUserID() });
-				maxProgress = 100;
-				openNextScreen(user);
-			} catch (error) {
-				console.error('Error fetching user data:', error);
-			}
-		} else {
+		try {
+			let user = await getUserFromState();
 			maxProgress = 100;
-			openLoginScreen();
+			openNextScreen(user);
+		} catch (error) {
+			if (error instanceof NoUserSessionFound) {
+				openLoginScreen();
+			} else {
+				console.error('Unexpected error:', error);
+				status_message = 'Something went wrong. Please try again.';
+			}
 		}
 	});
 </script>
