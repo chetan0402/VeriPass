@@ -41,6 +41,7 @@ func TestMain(t *testing.T) {
 
 	userClient := veripassv1connect.NewUserServiceClient(&http.Client{}, host)
 	passClient := veripassv1connect.NewPassServiceClient(&http.Client{}, host)
+	adminClient := veripassv1connect.NewAdminServiceClient(&http.Client{}, host)
 	ctx := context.Background()
 
 	db, err := sql.Open("pgx", dbUrl)
@@ -176,6 +177,15 @@ func TestMain(t *testing.T) {
 		t.Fatal("Expected nil next page token")
 	}
 	failIfNotEqualPass(t, passList2.Msg.Passes[0], pass.Msg)
+
+	admin, err := adminClient.GetAdmin(ctx, connect.NewRequest(&veripassv1.GetAdminRequest{
+		Email: mockAdmin.Email,
+	}))
+	attest(t, err)
+
+	if !proto.Equal(admin.Msg, &mockAdmin) {
+		t.Fatalf("Expected %v, got %v", &mockAdmin, admin.Msg)
+	}
 }
 
 func attest(t *testing.T, err error) {
