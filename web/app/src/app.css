@@ -126,3 +126,21 @@
 		transform: translateX(-50%);
 	}
 }
+.light-grad {
+	background: linear-gradient(
+		270deg,
+		var(--color-primary-100),
+		var(--color-secondary-100),
+		var(--color-primary-100)
+	);
+	background-size: 200% 200%;
+	animation: gradientMove 5s ease infinite;
+}
+
+/* Disable on desktop */
+@media (min-width: 768px) {
+	.light-grad {
+		background: none !important;
+		animation: none !important;
+	}
+}

@@ -60,8 +60,8 @@
 			if (error instanceof ConnectError) {
 				switch (error.code) {
 					case Code.NotFound:
-						console.error('User not found');
-						alert('User not found. Try refreshing or logging in again.');
+						console.error('Not found');
+						alert(`Error : ${error.message}`);
 						break;
 					default:
 						alert(`Unexpected error: ${error.message}`);
