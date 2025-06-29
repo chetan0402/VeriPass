@@ -4,6 +4,7 @@ import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { PassService, Pass_PassType, type Pass } from '$lib/gen/veripass/v1/pass_pb';
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 import { timestampNow } from '@bufbuild/protobuf/wkt';
+import { type Admin, AdminService } from '$lib/gen/veripass/v1/admin_pb';
 
 const MOCK = true;
 
@@ -51,6 +52,16 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			room: 'Mock Room',
 			phone: '1234567890'
 		};
+	});
+
+	rpc(AdminService.method.getAdmin, (req) => {
+		return {
+			email: req.email,
+			name: 'Mock Admin',
+			hostel: 'Mock Hostel',
+			canAddPass: true,
+			$typeName: 'veripass.v1.Admin'
+		} satisfies Admin;
 	});
 
 	rpc(PassService.method.getLatestPassByUser, (req) => {
