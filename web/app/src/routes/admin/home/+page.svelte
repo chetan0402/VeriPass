@@ -3,7 +3,7 @@
 	import type { Admin } from '$lib/gen/veripass/v1/admin_pb';
 	import { getAdminFromState } from '$lib/state/admin_state';
 	import HostelPassesList from './fragment/HostelPassesList.svelte';
-	import { HomeSolid, ChartPieSolid } from 'flowbite-svelte-icons';
+	import { HomeSolid } from 'flowbite-svelte-icons';
 
 	let listVisible: boolean = $state<boolean>(false);
 	let status: string = $state<string>('Loading Admin Details...');
@@ -13,15 +13,23 @@
 	onMount(async () => {
 		try {
 			admin = await getAdminFromState();
+			if (admin.name) {
+				status = `Welcome ${admin.name}`;
+				listVisible = true;
+			}
 		} catch (error) {
 			console.log(error);
 			status = `Error ${error}`;
 			alert('error no admin session found, Please login again after logout!');
 		}
 	});
+	function logout() {
+		localStorage.removeItem('admin_email');
+		window.location.href = '../admin';
+	}
 </script>
 
-<div class="flex h-dvh w-dvw flex-col overflow-y-hidden bg-white md:flex-row">
+<div class="flex h-dvh w-dvw flex-col overflow-y-hidden bg-[#FBF6FE] md:flex-row">
 	<div
 		class="relative flex h-auto w-full flex-col bg-gradient-to-b from-[#F6E8FF] to-[#E5E5FF] px-4 md:m-[3dvh] md:h-[94dvh] md:w-70 md:rounded-2xl"
 	>
@@ -33,34 +41,23 @@
 			</div>
 		</div>
 		<div class="md:mt-o mt-4 flex flex-row p-2 md:flex-col md:p-0">
-			<div
+			<button
 				class="text-primary-600 bg-secondary-200 flex flex-row items-center rounded-xl px-5 py-2 md:mt-2 md:w-full md:py-3"
 			>
 				<HomeSolid />
-				<p class="ml-2 text-sm">Hostels</p>
-			</div>
-			<div
-				class="text-primary-600 flex flex-row items-center rounded-xl px-5 py-2 md:w-full md:py-3"
-			>
-				<ChartPieSolid />
-				<p class="ml-2 text-sm">Analytics</p>
-			</div>
+				<p class="ml-2 text-sm">Hostel</p>
+			</button>
 		</div>
-		<div
+		<button
+			onclick={logout}
 			class="text-primary-600 absolute top-5 right-2 flex scale-80 flex-row items-center rounded-xl bg-[#D5D3F7] px-5 py-3 md:inset-x-4 md:top-auto md:bottom-4 md:scale-100"
 		>
 			<img class="h-[20px] w-[20px]" src="../logout.svg" alt="logout" />
 			<p class="ml-2 text-sm">Logout</p>
-		</div>
+		</button>
 	</div>
-	{#if admin}
-		{#if listVisible}
-			<HostelPassesList {admin} />
-		{:else}
-			<div class="text-primary-500 relative top-10 w-full pt-50 text-center text-xl font-bold">
-				{`Loading passes list of ${admin.hostel}`}
-			</div>
-		{/if}
+	{#if admin && listVisible}
+		<HostelPassesList {admin} />
 	{:else}
 		<div class="text-primary-500 relative top-10 w-full pt-50 text-center text-xl font-bold">
 			{status}
