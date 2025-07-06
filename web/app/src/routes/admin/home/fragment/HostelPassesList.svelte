@@ -3,11 +3,11 @@
 	import { Select } from 'flowbite-svelte';
 	import { type Timestamp, timestampNow } from '@bufbuild/protobuf/wkt';
 	import { createClient } from '@connectrpc/connect';
-	import { type Pass, PassService } from '$lib/gen/veripass/v1/pass_pb';
+	import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
 	import { transport } from '$lib';
 	import { timestampToMs } from '$lib/timestamp_utils';
 	import { onMount } from 'svelte';
-	import PassListItem from '$lib/components/PassListItem.svelte';
+	import AdminPassListItem from '$lib/components/AdminPassListItem.svelte';
 
 	let { admin } = $props<{ admin: Admin }>();
 
@@ -17,6 +17,7 @@
 		{ value: 'yesterday', name: 'Yesterday' }
 	];
 	let selectedDate = $state('all');
+
 	let typeOptions: { value: string; name: string }[] = [
 		{ value: 'all', name: 'All' },
 		{ value: 'open', name: 'Open' },
@@ -24,10 +25,31 @@
 	];
 	let selectedType = $state('all');
 
+	let purposeOptions: { value: number; name: string }[] = [
+		{ value: Pass_PassType.UNSPECIFIED, name: 'All' },
+		{ value: Pass_PassType.CLASS, name: 'Class' },
+		{ value: Pass_PassType.MARKET, name: 'Market' },
+		{ value: Pass_PassType.HOME, name: 'Home' },
+		{ value: Pass_PassType.EVENT, name: 'Event' }
+	];
+	let selectedPurpose = $state(0);
+
 	let loadMoreElem: HTMLDivElement;
 	let nextPageToken: Timestamp | undefined = timestampNow();
 	let loading: boolean = false;
 
+	let passes: Pass[] = $state([]);
+	function filterPasses(originalPasses: Pass[], type: string) {
+		if (type === `all`) {
+			return originalPasses;
+		} else if (type === `open`) {
+			return originalPasses.filter((pass) => !pass.endTime);
+		} else if (type === `closed`) {
+			return originalPasses.filter((pass) => pass.endTime);
+		}
+		return originalPasses;
+	}
+	let filterPassList: Pass[] = $derived(filterPasses(passes, selectedType));
 	const loadMorePassObserver = new IntersectionObserver(
 		async (entries) => {
 			if (entries[0].isIntersecting && !loading) {
@@ -40,8 +62,6 @@
 	);
 
 	const client = createClient(PassService, transport);
-
-	let passes: Pass[] = $state([]);
 
 	async function fetchPasses() {
 		try {
@@ -84,14 +104,43 @@
 		<Select class="select-style-filter" items={dateOptions} bind:value={selectedDate} size="sm" />
 		<p class="text-xs text-gray-800">Type</p>
 		<Select class="select-style-filter" items={typeOptions} bind:value={selectedType} size="sm" />
+		<p class="text-xs text-gray-800">Purpose</p>
+		<Select
+			class="select-style-filter"
+			items={purposeOptions}
+			bind:value={selectedPurpose}
+			size="sm"
+		/>
 	</div>
 	<p class="text-xs font-bold text-[#5555C2]">___ returned out of ___ exits</p>
 	<div
-		class="flex w-full flex-1 flex-col items-center overflow-x-hidden overflow-y-scroll rounded-2xl bg-white"
+		class="flex w-full flex-1 flex-col items-center overflow-x-hidden rounded-2xl border-1 border-[#D9D9F2] bg-white"
 	>
-		{#each passes as pass (pass.id)}
-			<PassListItem {pass} onclick={() => {}} />
-		{/each}
-		<div bind:this={loadMoreElem} class="m-2 flex w-full justify-center">{listFooterMessage}</div>
+		<div class="flex h-8 w-full items-center bg-[#F4F4FB] py-4 pr-2 pl-3 md:px-5 md:py-4">
+			<div class="flex h-full w-[50%] flex-1 flex-col justify-center md:flex-row md:items-center">
+				<p class="flex-1 text-[0.7rem] font-semibold text-gray-700 md:hidden">Student</p>
+				<p class="hidden flex-1 text-[0.7rem] font-semibold text-gray-700 md:block">Name</p>
+				<p class="hidden text-[0.7rem] font-semibold text-gray-700 md:block md:w-30">Scholar no.</p>
+				<p class="hidden text-[0.7rem] font-semibold text-gray-700 md:block md:w-20">Room</p>
+			</div>
+			<div class="flex h-full w-[25%] flex-col justify-center md:flex-row md:items-center">
+				<p class="text-[0.7rem] font-semibold text-gray-700 md:hidden md:w-30">Purpose</p>
+				<p class="hidden text-[0.7rem] font-semibold text-gray-700 md:block md:w-30">Purpose</p>
+				<p class="hidden text-[0.7rem] font-semibold text-gray-700 md:block md:w-30">Date</p>
+			</div>
+
+			<div class="flex w-[30%] flex-row md:w-[20%]">
+				<p class="mr-4 text-[0.7rem] font-semibold text-gray-700 md:mr-0 md:w-30">Out Time</p>
+				<p class="text-[0.7rem] font-semibold text-gray-700 md:w-30">In time</p>
+			</div>
+		</div>
+		<div
+			class="flex w-full flex-1 flex-col items-center overflow-x-hidden overflow-y-scroll border-1 border-[#D9D9F2]"
+		>
+			{#each filterPassList as pass (pass.id)}
+				<AdminPassListItem {pass} onclick={() => {}} />
+			{/each}
+			<div bind:this={loadMoreElem} class="m-2 flex w-full justify-center">{listFooterMessage}</div>
+		</div>
 	</div>
 </div>

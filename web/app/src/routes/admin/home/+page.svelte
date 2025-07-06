@@ -29,9 +29,11 @@
 	}
 </script>
 
-<div class="flex h-dvh w-dvw flex-col overflow-y-hidden bg-[#FBF6FE] md:flex-row">
+<div
+	class="to-primary-50 flex h-dvh w-dvw flex-col overflow-y-hidden bg-gradient-to-b from-white md:flex-row"
+>
 	<div
-		class="relative flex h-auto w-full flex-col bg-gradient-to-b from-[#F6E8FF] to-[#E5E5FF] px-4 md:m-[3dvh] md:h-[94dvh] md:w-70 md:rounded-2xl"
+		class="relative flex h-auto w-full flex-col border-1 border-[#D9D9F2] bg-white px-4 md:m-[3dvh] md:h-[94dvh] md:w-70 md:rounded-2xl"
 	>
 		<div class="flex flex-row items-center pt-5">
 			<img src="../logo.png" class="h-12 w-12" alt="logo" />
