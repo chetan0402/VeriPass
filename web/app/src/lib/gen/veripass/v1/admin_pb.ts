@@ -4,13 +4,17 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
+import type { Pass, Pass_PassType } from "./pass_pb";
+import { file_veripass_v1_pass } from "./pass_pb";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file veripass/v1/admin.proto.
  */
 export const file_veripass_v1_admin: GenFile = /*@__PURE__*/
-  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCTJMCgxBZG1pblNlcnZpY2USPAoIR2V0QWRtaW4SHC52ZXJpcGFzcy52MS5HZXRBZG1pblJlcXVlc3QaEi52ZXJpcGFzcy52MS5BZG1pbkKuAQoPY29tLnZlcmlwYXNzLnYxQgpBZG1pblByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z");
+  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCSLgAQobR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgxwYXNzX2lzX29wZW4YBCABKAgSKAoEdHlwZRgFIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUSEQoJcGFnZV9zaXplGAYgASgFEi4KCnBhZ2VfdG9rZW4YByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wInYKHEdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2USIQoGcGFzc2VzGAEgAygLMhEudmVyaXBhc3MudjEuUGFzcxIzCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wMrkBCgxBZG1pblNlcnZpY2USPAoIR2V0QWRtaW4SHC52ZXJpcGFzcy52MS5HZXRBZG1pblJlcXVlc3QaEi52ZXJpcGFzcy52MS5BZG1pbhJrChRHZXRBbGxQYXNzZXNCeUhvc3RlbBIoLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVxdWVzdBopLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2VCrgEKD2NvbS52ZXJpcGFzcy52MUIKQWRtaW5Qcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw", [file_veripass_v1_pass, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message veripass.v1.Admin
@@ -62,6 +66,72 @@ export const GetAdminRequestSchema: GenMessage<GetAdminRequest> = /*@__PURE__*/
   messageDesc(file_veripass_v1_admin, 1);
 
 /**
+ * @generated from message veripass.v1.GetAllPassesByHostelRequest
+ */
+export type GetAllPassesByHostelRequest = Message<"veripass.v1.GetAllPassesByHostelRequest"> & {
+  /**
+   * @generated from field: string hostel = 1;
+   */
+  hostel: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp start_time = 2;
+   */
+  startTime?: Timestamp;
+
+  /**
+   * @generated from field: bool pass_is_open = 4;
+   */
+  passIsOpen: boolean;
+
+  /**
+   * @generated from field: veripass.v1.Pass.PassType type = 5;
+   */
+  type: Pass_PassType;
+
+  /**
+   * @generated from field: int32 page_size = 6;
+   */
+  pageSize: number;
+
+  /**
+   * Based on start_time
+   *
+   * @generated from field: google.protobuf.Timestamp page_token = 7;
+   */
+  pageToken?: Timestamp;
+};
+
+/**
+ * Describes the message veripass.v1.GetAllPassesByHostelRequest.
+ * Use `create(GetAllPassesByHostelRequestSchema)` to create a new message.
+ */
+export const GetAllPassesByHostelRequestSchema: GenMessage<GetAllPassesByHostelRequest> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_admin, 2);
+
+/**
+ * @generated from message veripass.v1.GetAllPassesByHostelResponse
+ */
+export type GetAllPassesByHostelResponse = Message<"veripass.v1.GetAllPassesByHostelResponse"> & {
+  /**
+   * @generated from field: repeated veripass.v1.Pass passes = 1;
+   */
+  passes: Pass[];
+
+  /**
+   * @generated from field: google.protobuf.Timestamp next_page_token = 2;
+   */
+  nextPageToken?: Timestamp;
+};
+
+/**
+ * Describes the message veripass.v1.GetAllPassesByHostelResponse.
+ * Use `create(GetAllPassesByHostelResponseSchema)` to create a new message.
+ */
+export const GetAllPassesByHostelResponseSchema: GenMessage<GetAllPassesByHostelResponse> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_admin, 3);
+
+/**
  * @generated from service veripass.v1.AdminService
  */
 export const AdminService: GenService<{
@@ -72,6 +142,14 @@ export const AdminService: GenService<{
     methodKind: "unary";
     input: typeof GetAdminRequestSchema;
     output: typeof AdminSchema;
+  },
+  /**
+   * @generated from rpc veripass.v1.AdminService.GetAllPassesByHostel
+   */
+  getAllPassesByHostel: {
+    methodKind: "unary";
+    input: typeof GetAllPassesByHostelRequestSchema;
+    output: typeof GetAllPassesByHostelResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_veripass_v1_admin, 0);

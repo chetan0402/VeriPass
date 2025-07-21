@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 package veripass.v1;
+import "veripass/v1/pass.proto";
+import "google/protobuf/timestamp.proto";
 
 message Admin {
     string email = 1;
@@ -11,8 +13,23 @@ message Admin {
 
 service AdminService {
     rpc GetAdmin(GetAdminRequest) returns (Admin); 
+    rpc GetAllPassesByHostel(GetAllPassesByHostelRequest) returns (GetAllPassesByHostelResponse);
 }
 
 message GetAdminRequest {
     string email = 1;
+}
+
+message GetAllPassesByHostelRequest {
+    string hostel = 1;
+    google.protobuf.Timestamp start_time = 2;
+    bool pass_is_open = 4;
+    Pass.PassType type = 5;
+    int32 page_size = 6;
+    google.protobuf.Timestamp page_token = 7; // Based on start_time
+}
+
+message GetAllPassesByHostelResponse {
+    repeated Pass passes = 1;
+    google.protobuf.Timestamp next_page_token = 2;
 }

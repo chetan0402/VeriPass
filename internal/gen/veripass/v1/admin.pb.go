@@ -9,6 +9,7 @@ package veripassv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -133,11 +134,147 @@ func (x *GetAdminRequest) GetEmail() string {
 	return ""
 }
 
+type GetAllPassesByHostelRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Hostel        string                 `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	StartTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	PassIsOpen    bool                   `protobuf:"varint,4,opt,name=pass_is_open,json=passIsOpen,proto3" json:"pass_is_open,omitempty"`
+	Type          Pass_PassType          `protobuf:"varint,5,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
+	PageSize      int32                  `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"` // Based on start_time
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAllPassesByHostelRequest) Reset() {
+	*x = GetAllPassesByHostelRequest{}
+	mi := &file_veripass_v1_admin_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllPassesByHostelRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllPassesByHostelRequest) ProtoMessage() {}
+
+func (x *GetAllPassesByHostelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_admin_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllPassesByHostelRequest.ProtoReflect.Descriptor instead.
+func (*GetAllPassesByHostelRequest) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_admin_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetAllPassesByHostelRequest) GetHostel() string {
+	if x != nil {
+		return x.Hostel
+	}
+	return ""
+}
+
+func (x *GetAllPassesByHostelRequest) GetStartTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartTime
+	}
+	return nil
+}
+
+func (x *GetAllPassesByHostelRequest) GetPassIsOpen() bool {
+	if x != nil {
+		return x.PassIsOpen
+	}
+	return false
+}
+
+func (x *GetAllPassesByHostelRequest) GetType() Pass_PassType {
+	if x != nil {
+		return x.Type
+	}
+	return Pass_PASS_TYPE_UNSPECIFIED
+}
+
+func (x *GetAllPassesByHostelRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetAllPassesByHostelRequest) GetPageToken() *timestamppb.Timestamp {
+	if x != nil {
+		return x.PageToken
+	}
+	return nil
+}
+
+type GetAllPassesByHostelResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Passes        []*Pass                `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
+	NextPageToken *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAllPassesByHostelResponse) Reset() {
+	*x = GetAllPassesByHostelResponse{}
+	mi := &file_veripass_v1_admin_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllPassesByHostelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllPassesByHostelResponse) ProtoMessage() {}
+
+func (x *GetAllPassesByHostelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_admin_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllPassesByHostelResponse.ProtoReflect.Descriptor instead.
+func (*GetAllPassesByHostelResponse) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_admin_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetAllPassesByHostelResponse) GetPasses() []*Pass {
+	if x != nil {
+		return x.Passes
+	}
+	return nil
+}
+
+func (x *GetAllPassesByHostelResponse) GetNextPageToken() *timestamppb.Timestamp {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return nil
+}
+
 var File_veripass_v1_admin_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\n" +
-	"\x17veripass/v1/admin.proto\x12\vveripass.v1\"k\n" +
+	"\x17veripass/v1/admin.proto\x12\vveripass.v1\x1a\x16veripass/v1/pass.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"k\n" +
 	"\x05Admin\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
@@ -145,9 +282,23 @@ const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\fcan_add_pass\x18\x04 \x01(\bR\n" +
 	"canAddPass\"'\n" +
 	"\x0fGetAdminRequest\x12\x14\n" +
-	"\x05email\x18\x01 \x01(\tR\x05email2L\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"\x9a\x02\n" +
+	"\x1bGetAllPassesByHostelRequest\x12\x16\n" +
+	"\x06hostel\x18\x01 \x01(\tR\x06hostel\x129\n" +
+	"\n" +
+	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12 \n" +
+	"\fpass_is_open\x18\x04 \x01(\bR\n" +
+	"passIsOpen\x12.\n" +
+	"\x04type\x18\x05 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\x12\x1b\n" +
+	"\tpage_size\x18\x06 \x01(\x05R\bpageSize\x129\n" +
+	"\n" +
+	"page_token\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tpageToken\"\x8d\x01\n" +
+	"\x1cGetAllPassesByHostelResponse\x12)\n" +
+	"\x06passes\x18\x01 \x03(\v2\x11.veripass.v1.PassR\x06passes\x12B\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\rnextPageToken2\xb9\x01\n" +
 	"\fAdminService\x12<\n" +
-	"\bGetAdmin\x12\x1c.veripass.v1.GetAdminRequest\x1a\x12.veripass.v1.AdminB\xae\x01\n" +
+	"\bGetAdmin\x12\x1c.veripass.v1.GetAdminRequest\x1a\x12.veripass.v1.Admin\x12k\n" +
+	"\x14GetAllPassesByHostel\x12(.veripass.v1.GetAllPassesByHostelRequest\x1a).veripass.v1.GetAllPassesByHostelResponseB\xae\x01\n" +
 	"\x0fcom.veripass.v1B\n" +
 	"AdminProtoP\x01ZBgithub.com/chetan0402/veripass/internal/gen/veripass/v1;veripassv1\xa2\x02\x03VXX\xaa\x02\vVeripass.V1\xca\x02\vVeripass\\V1\xe2\x02\x17Veripass\\V1\\GPBMetadata\xea\x02\fVeripass::V1b\x06proto3"
 
@@ -163,19 +314,31 @@ func file_veripass_v1_admin_proto_rawDescGZIP() []byte {
 	return file_veripass_v1_admin_proto_rawDescData
 }
 
-var file_veripass_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_veripass_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_veripass_v1_admin_proto_goTypes = []any{
-	(*Admin)(nil),           // 0: veripass.v1.Admin
-	(*GetAdminRequest)(nil), // 1: veripass.v1.GetAdminRequest
+	(*Admin)(nil),                        // 0: veripass.v1.Admin
+	(*GetAdminRequest)(nil),              // 1: veripass.v1.GetAdminRequest
+	(*GetAllPassesByHostelRequest)(nil),  // 2: veripass.v1.GetAllPassesByHostelRequest
+	(*GetAllPassesByHostelResponse)(nil), // 3: veripass.v1.GetAllPassesByHostelResponse
+	(*timestamppb.Timestamp)(nil),        // 4: google.protobuf.Timestamp
+	(Pass_PassType)(0),                   // 5: veripass.v1.Pass.PassType
+	(*Pass)(nil),                         // 6: veripass.v1.Pass
 }
 var file_veripass_v1_admin_proto_depIdxs = []int32{
-	1, // 0: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
-	0, // 1: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: veripass.v1.GetAllPassesByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
+	5, // 1: veripass.v1.GetAllPassesByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
+	4, // 2: veripass.v1.GetAllPassesByHostelRequest.page_token:type_name -> google.protobuf.Timestamp
+	6, // 3: veripass.v1.GetAllPassesByHostelResponse.passes:type_name -> veripass.v1.Pass
+	4, // 4: veripass.v1.GetAllPassesByHostelResponse.next_page_token:type_name -> google.protobuf.Timestamp
+	1, // 5: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
+	2, // 6: veripass.v1.AdminService.GetAllPassesByHostel:input_type -> veripass.v1.GetAllPassesByHostelRequest
+	0, // 7: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
+	3, // 8: veripass.v1.AdminService.GetAllPassesByHostel:output_type -> veripass.v1.GetAllPassesByHostelResponse
+	7, // [7:9] is the sub-list for method output_type
+	5, // [5:7] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_veripass_v1_admin_proto_init() }
@@ -183,13 +346,14 @@ func file_veripass_v1_admin_proto_init() {
 	if File_veripass_v1_admin_proto != nil {
 		return
 	}
+	file_veripass_v1_pass_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_veripass_v1_admin_proto_rawDesc), len(file_veripass_v1_admin_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
