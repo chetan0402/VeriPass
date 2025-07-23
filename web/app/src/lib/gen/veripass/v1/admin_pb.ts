@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file veripass/v1/admin.proto.
  */
 export const file_veripass_v1_admin: GenFile = /*@__PURE__*/
-  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCSLgAQobR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgxwYXNzX2lzX29wZW4YBCABKAgSKAoEdHlwZRgFIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUSEQoJcGFnZV9zaXplGAYgASgFEi4KCnBhZ2VfdG9rZW4YByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wInYKHEdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2USIQoGcGFzc2VzGAEgAygLMhEudmVyaXBhc3MudjEuUGFzcxIzCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wMrkBCgxBZG1pblNlcnZpY2USPAoIR2V0QWRtaW4SHC52ZXJpcGFzcy52MS5HZXRBZG1pblJlcXVlc3QaEi52ZXJpcGFzcy52MS5BZG1pbhJrChRHZXRBbGxQYXNzZXNCeUhvc3RlbBIoLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVxdWVzdBopLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2VCrgEKD2NvbS52ZXJpcGFzcy52MUIKQWRtaW5Qcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw", [file_veripass_v1_pass, file_google_protobuf_timestamp]);
+  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCSLgAQobR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgxwYXNzX2lzX29wZW4YBCABKAgSKAoEdHlwZRgFIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUSEQoJcGFnZV9zaXplGAYgASgFEi4KCnBhZ2VfdG9rZW4YByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIoACChxHZXRBbGxQYXNzZXNCeUhvc3RlbFJlc3BvbnNlEkoKBnBhc3NlcxgBIAMoCzI6LnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2UuSW5mb0luY2x1ZGVkUGFzcxIzCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wGl8KEEluZm9JbmNsdWRlZFBhc3MSHwoEcGFzcxgBIAEoCzIRLnZlcmlwYXNzLnYxLlBhc3MSFAoMc3R1ZGVudF9uYW1lGAIgASgJEhQKDHN0dWRlbnRfcm9vbRgDIAEoCTK5AQoMQWRtaW5TZXJ2aWNlEjwKCEdldEFkbWluEhwudmVyaXBhc3MudjEuR2V0QWRtaW5SZXF1ZXN0GhIudmVyaXBhc3MudjEuQWRtaW4SawoUR2V0QWxsUGFzc2VzQnlIb3N0ZWwSKC52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlcXVlc3QaKS52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlc3BvbnNlQq4BCg9jb20udmVyaXBhc3MudjFCCkFkbWluUHJvdG9QAVpCZ2l0aHViLmNvbS9jaGV0YW4wNDAyL3ZlcmlwYXNzL2ludGVybmFsL2dlbi92ZXJpcGFzcy92MTt2ZXJpcGFzc3YxogIDVlhYqgILVmVyaXBhc3MuVjHKAgtWZXJpcGFzc1xWMeICF1ZlcmlwYXNzXFYxXEdQQk1ldGFkYXRh6gIMVmVyaXBhc3M6OlYxYgZwcm90bzM", [file_veripass_v1_pass, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message veripass.v1.Admin
@@ -114,9 +114,9 @@ export const GetAllPassesByHostelRequestSchema: GenMessage<GetAllPassesByHostelR
  */
 export type GetAllPassesByHostelResponse = Message<"veripass.v1.GetAllPassesByHostelResponse"> & {
   /**
-   * @generated from field: repeated veripass.v1.Pass passes = 1;
+   * @generated from field: repeated veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass passes = 1;
    */
-  passes: Pass[];
+  passes: GetAllPassesByHostelResponse_InfoIncludedPass[];
 
   /**
    * @generated from field: google.protobuf.Timestamp next_page_token = 2;
@@ -130,6 +130,33 @@ export type GetAllPassesByHostelResponse = Message<"veripass.v1.GetAllPassesByHo
  */
 export const GetAllPassesByHostelResponseSchema: GenMessage<GetAllPassesByHostelResponse> = /*@__PURE__*/
   messageDesc(file_veripass_v1_admin, 3);
+
+/**
+ * @generated from message veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
+ */
+export type GetAllPassesByHostelResponse_InfoIncludedPass = Message<"veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass"> & {
+  /**
+   * @generated from field: veripass.v1.Pass pass = 1;
+   */
+  pass?: Pass;
+
+  /**
+   * @generated from field: string student_name = 2;
+   */
+  studentName: string;
+
+  /**
+   * @generated from field: string student_room = 3;
+   */
+  studentRoom: string;
+};
+
+/**
+ * Describes the message veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass.
+ * Use `create(GetAllPassesByHostelResponse_InfoIncludedPassSchema)` to create a new message.
+ */
+export const GetAllPassesByHostelResponse_InfoIncludedPassSchema: GenMessage<GetAllPassesByHostelResponse_InfoIncludedPass> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_admin, 3, 0);
 
 /**
  * @generated from service veripass.v1.AdminService

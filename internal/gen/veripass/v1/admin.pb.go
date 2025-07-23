@@ -219,9 +219,9 @@ func (x *GetAllPassesByHostelRequest) GetPageToken() *timestamppb.Timestamp {
 }
 
 type GetAllPassesByHostelResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Passes        []*Pass                `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
-	NextPageToken *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state         protoimpl.MessageState                           `protogen:"open.v1"`
+	Passes        []*GetAllPassesByHostelResponse_InfoIncludedPass `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
+	NextPageToken *timestamppb.Timestamp                           `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -256,7 +256,7 @@ func (*GetAllPassesByHostelResponse) Descriptor() ([]byte, []int) {
 	return file_veripass_v1_admin_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetAllPassesByHostelResponse) GetPasses() []*Pass {
+func (x *GetAllPassesByHostelResponse) GetPasses() []*GetAllPassesByHostelResponse_InfoIncludedPass {
 	if x != nil {
 		return x.Passes
 	}
@@ -268,6 +268,66 @@ func (x *GetAllPassesByHostelResponse) GetNextPageToken() *timestamppb.Timestamp
 		return x.NextPageToken
 	}
 	return nil
+}
+
+type GetAllPassesByHostelResponse_InfoIncludedPass struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Pass          *Pass                  `protobuf:"bytes,1,opt,name=pass,proto3" json:"pass,omitempty"`
+	StudentName   string                 `protobuf:"bytes,2,opt,name=student_name,json=studentName,proto3" json:"student_name,omitempty"`
+	StudentRoom   string                 `protobuf:"bytes,3,opt,name=student_room,json=studentRoom,proto3" json:"student_room,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAllPassesByHostelResponse_InfoIncludedPass) Reset() {
+	*x = GetAllPassesByHostelResponse_InfoIncludedPass{}
+	mi := &file_veripass_v1_admin_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllPassesByHostelResponse_InfoIncludedPass) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllPassesByHostelResponse_InfoIncludedPass) ProtoMessage() {}
+
+func (x *GetAllPassesByHostelResponse_InfoIncludedPass) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_admin_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllPassesByHostelResponse_InfoIncludedPass.ProtoReflect.Descriptor instead.
+func (*GetAllPassesByHostelResponse_InfoIncludedPass) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_admin_proto_rawDescGZIP(), []int{3, 0}
+}
+
+func (x *GetAllPassesByHostelResponse_InfoIncludedPass) GetPass() *Pass {
+	if x != nil {
+		return x.Pass
+	}
+	return nil
+}
+
+func (x *GetAllPassesByHostelResponse_InfoIncludedPass) GetStudentName() string {
+	if x != nil {
+		return x.StudentName
+	}
+	return ""
+}
+
+func (x *GetAllPassesByHostelResponse_InfoIncludedPass) GetStudentRoom() string {
+	if x != nil {
+		return x.StudentRoom
+	}
+	return ""
 }
 
 var File_veripass_v1_admin_proto protoreflect.FileDescriptor
@@ -292,10 +352,14 @@ const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\x04type\x18\x05 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\x12\x1b\n" +
 	"\tpage_size\x18\x06 \x01(\x05R\bpageSize\x129\n" +
 	"\n" +
-	"page_token\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tpageToken\"\x8d\x01\n" +
-	"\x1cGetAllPassesByHostelResponse\x12)\n" +
-	"\x06passes\x18\x01 \x03(\v2\x11.veripass.v1.PassR\x06passes\x12B\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\rnextPageToken2\xb9\x01\n" +
+	"page_token\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tpageToken\"\xb7\x02\n" +
+	"\x1cGetAllPassesByHostelResponse\x12R\n" +
+	"\x06passes\x18\x01 \x03(\v2:.veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPassR\x06passes\x12B\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\rnextPageToken\x1a\x7f\n" +
+	"\x10InfoIncludedPass\x12%\n" +
+	"\x04pass\x18\x01 \x01(\v2\x11.veripass.v1.PassR\x04pass\x12!\n" +
+	"\fstudent_name\x18\x02 \x01(\tR\vstudentName\x12!\n" +
+	"\fstudent_room\x18\x03 \x01(\tR\vstudentRoom2\xb9\x01\n" +
 	"\fAdminService\x12<\n" +
 	"\bGetAdmin\x12\x1c.veripass.v1.GetAdminRequest\x1a\x12.veripass.v1.Admin\x12k\n" +
 	"\x14GetAllPassesByHostel\x12(.veripass.v1.GetAllPassesByHostelRequest\x1a).veripass.v1.GetAllPassesByHostelResponseB\xae\x01\n" +
@@ -314,31 +378,33 @@ func file_veripass_v1_admin_proto_rawDescGZIP() []byte {
 	return file_veripass_v1_admin_proto_rawDescData
 }
 
-var file_veripass_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_veripass_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_veripass_v1_admin_proto_goTypes = []any{
-	(*Admin)(nil),                        // 0: veripass.v1.Admin
-	(*GetAdminRequest)(nil),              // 1: veripass.v1.GetAdminRequest
-	(*GetAllPassesByHostelRequest)(nil),  // 2: veripass.v1.GetAllPassesByHostelRequest
-	(*GetAllPassesByHostelResponse)(nil), // 3: veripass.v1.GetAllPassesByHostelResponse
-	(*timestamppb.Timestamp)(nil),        // 4: google.protobuf.Timestamp
-	(Pass_PassType)(0),                   // 5: veripass.v1.Pass.PassType
-	(*Pass)(nil),                         // 6: veripass.v1.Pass
+	(*Admin)(nil),                                         // 0: veripass.v1.Admin
+	(*GetAdminRequest)(nil),                               // 1: veripass.v1.GetAdminRequest
+	(*GetAllPassesByHostelRequest)(nil),                   // 2: veripass.v1.GetAllPassesByHostelRequest
+	(*GetAllPassesByHostelResponse)(nil),                  // 3: veripass.v1.GetAllPassesByHostelResponse
+	(*GetAllPassesByHostelResponse_InfoIncludedPass)(nil), // 4: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
+	(*timestamppb.Timestamp)(nil),                         // 5: google.protobuf.Timestamp
+	(Pass_PassType)(0),                                    // 6: veripass.v1.Pass.PassType
+	(*Pass)(nil),                                          // 7: veripass.v1.Pass
 }
 var file_veripass_v1_admin_proto_depIdxs = []int32{
-	4, // 0: veripass.v1.GetAllPassesByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
-	5, // 1: veripass.v1.GetAllPassesByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
-	4, // 2: veripass.v1.GetAllPassesByHostelRequest.page_token:type_name -> google.protobuf.Timestamp
-	6, // 3: veripass.v1.GetAllPassesByHostelResponse.passes:type_name -> veripass.v1.Pass
-	4, // 4: veripass.v1.GetAllPassesByHostelResponse.next_page_token:type_name -> google.protobuf.Timestamp
-	1, // 5: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
-	2, // 6: veripass.v1.AdminService.GetAllPassesByHostel:input_type -> veripass.v1.GetAllPassesByHostelRequest
-	0, // 7: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
-	3, // 8: veripass.v1.AdminService.GetAllPassesByHostel:output_type -> veripass.v1.GetAllPassesByHostelResponse
-	7, // [7:9] is the sub-list for method output_type
-	5, // [5:7] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	5, // 0: veripass.v1.GetAllPassesByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
+	6, // 1: veripass.v1.GetAllPassesByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
+	5, // 2: veripass.v1.GetAllPassesByHostelRequest.page_token:type_name -> google.protobuf.Timestamp
+	4, // 3: veripass.v1.GetAllPassesByHostelResponse.passes:type_name -> veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
+	5, // 4: veripass.v1.GetAllPassesByHostelResponse.next_page_token:type_name -> google.protobuf.Timestamp
+	7, // 5: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass.pass:type_name -> veripass.v1.Pass
+	1, // 6: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
+	2, // 7: veripass.v1.AdminService.GetAllPassesByHostel:input_type -> veripass.v1.GetAllPassesByHostelRequest
+	0, // 8: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
+	3, // 9: veripass.v1.AdminService.GetAllPassesByHostel:output_type -> veripass.v1.GetAllPassesByHostelResponse
+	8, // [8:10] is the sub-list for method output_type
+	6, // [6:8] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_veripass_v1_admin_proto_init() }
@@ -353,7 +419,7 @@ func file_veripass_v1_admin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_veripass_v1_admin_proto_rawDesc), len(file_veripass_v1_admin_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

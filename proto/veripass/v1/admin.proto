@@ -30,6 +30,11 @@ message GetAllPassesByHostelRequest {
 }
 
 message GetAllPassesByHostelResponse {
-    repeated Pass passes = 1;
+    message InfoIncludedPass {
+        Pass pass = 1;
+        string student_name = 2;
+        string student_room = 3;
+    }
+    repeated InfoIncludedPass passes = 1;
     google.protobuf.Timestamp next_page_token = 2;
 }
