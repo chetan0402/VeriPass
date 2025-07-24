@@ -14,6 +14,11 @@ type AdminService struct {
 	client *ent.Client
 }
 
+// GetAllPassesByHostel implements veripassv1connect.AdminServiceHandler.
+func (s *AdminService) GetAllPassesByHostel(context.Context, *connect.Request[veripassv1.GetAllPassesByHostelRequest]) (*connect.Response[veripassv1.GetAllPassesByHostelResponse], error) {
+	panic("unimplemented")
+}
+
 var _ veripassv1connect.AdminServiceHandler = (*AdminService)(nil)
 
 func New(client *ent.Client) *AdminService {
