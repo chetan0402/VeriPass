@@ -37,8 +37,10 @@
 	}
 
 	function doAction() {
-		cancelled = true;
-		onProceed();
+		if (!cancelled) {
+			cancelled = true;
+			onProceed();
+		}
 	}
 </script>
 
@@ -83,7 +85,7 @@
 			Sending Pass Request
 		{/if}
 	</p>
-	<div class="mt-2 flex w-full flex-row">
+	<div class={`mt-2 flex w-full flex-row ${cancelled ? 'hidden' : ''}`}>
 		<button onclick={stopAndClose} class="mr-2 grow rounded-full bg-red-500 p-3 text-sm text-white">
 			Cancel
 		</button>
