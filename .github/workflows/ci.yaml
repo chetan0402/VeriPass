@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+    - '*'
+  push:
+    branches:
+    - master
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+    
+    - name: Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Setup Buf
+      uses: bufbuild/buf-action@v1
+      with:
+        version: latest
+    
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 9
+    
+    - name: Setup golangci
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: latest
+    
+    - name: Setup just
+      uses: just-actions/just@v1
+      with:
+        version: latest
+    
+    - name: Perform lint
+      run: |
+        just lint
+        just fmt
+        git diff --exit-code
+        just gen
+        git diff --exit-code
