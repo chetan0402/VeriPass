@@ -45,9 +45,7 @@ jobs:
         version: latest
     
     - name: Setup just
-      uses: just-actions/just@v1
-      with:
-        version: latest
+      uses: extractions/setup-just@v3
     
     - name: Perform lint
       run: |
