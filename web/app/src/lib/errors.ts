@@ -4,3 +4,9 @@ export class NoUserSessionFound extends Error {
 		this.name = 'NoUserSessionFound';
 	}
 }
+export class NoAdminSessionFound extends Error {
+	constructor(message = 'No admin session found') {
+		super(message);
+		this.name = 'NoAdminSessionFound';
+	}
+}

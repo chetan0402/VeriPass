@@ -1,8 +1,11 @@
 <script lang="ts">
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
+	import { goto } from '$app/navigation';
 
 	function openGoogleLogin() {
 		alert('Google login not implemented yet');
+		localStorage.setItem('admin_email', 'mock@veripass.app');
+		goto('../admin/home', { replaceState: true });
 	}
 </script>
 

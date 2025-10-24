@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { type User } from '$lib/gen/veripass/v1/user_pb';
 	import { transport } from '$lib';
-	import { createClient } from '@connectrpc/connect';
+	import { Code, createClient } from '@connectrpc/connect';
 	import Dashboard from './fragments/dashboard.svelte';
 	import History from './fragments/history.svelte';
 	import { NoUserSessionFound } from '$lib/errors';
@@ -19,23 +19,33 @@
 			return;
 		}
 		const passClient = createClient(PassService, transport);
-		let pass = await passClient.getLatestPassByUser({ userId: user.id });
-		if (!pass.endTime) {
-			await goto('../pass', { replaceState: true });
-			console.log('open pass found');
-		} else {
-			console.log('no open pass found');
+		try {
+			let pass = await passClient.getLatestPassByUser({ userId: user.id });
+			if (!pass.endTime) {
+				await goto('../pass', { replaceState: true });
+				console.log('open pass found');
+			} else {
+				console.log('no open pass found');
+			}
+		} catch (error) {
+			if (error == Code.NotFound) {
+				console.log('no open pass found');
+			}
 		}
 	}
 
 	onMount(async () => {
 		try {
 			user = await getUserFromState();
-			await checkForActivePass();
 		} catch (error) {
 			if (error instanceof NoUserSessionFound) {
 				goto('../login', { replaceState: true });
+			} else {
+				goto('../', { replaceState: true });
 			}
+		}
+		if (user) {
+			await checkForActivePass();
 		}
 	});
 
