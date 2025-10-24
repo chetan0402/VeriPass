@@ -4,10 +4,14 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
+	"entgo.io/ent/dialect/sql"
 	"github.com/chetan0402/veripass/internal/ent"
 	"github.com/chetan0402/veripass/internal/ent/admin"
+	"github.com/chetan0402/veripass/internal/ent/pass"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	passservice "github.com/chetan0402/veripass/internal/services/pass"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type AdminService struct {
@@ -15,8 +19,59 @@ type AdminService struct {
 }
 
 // GetAllPassesByHostel implements veripassv1connect.AdminServiceHandler.
-func (s *AdminService) GetAllPassesByHostel(context.Context, *connect.Request[veripassv1.GetAllPassesByHostelRequest]) (*connect.Response[veripassv1.GetAllPassesByHostelResponse], error) {
-	panic("unimplemented")
+func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Request[veripassv1.GetAllPassesByHostelRequest]) (*connect.Response[veripassv1.GetAllPassesByHostelResponse], error) {
+	var (
+		_            = r.Msg.Hostel
+		start_time   = r.Msg.StartTime.AsTime()
+		pass_is_open = r.Msg.PassIsOpen
+		pass_type    = r.Msg.Type
+		page_size    = int(r.Msg.PageSize)
+		page_token   = r.Msg.PageToken
+	)
+
+	query := s.client.Pass.Query().Order(
+		pass.ByStartTime(sql.OrderDesc()),
+	).Limit(page_size + 1)
+
+	query = query.Where(
+		pass.StartTimeGTE(start_time),
+		pass.StartTimeLTE(page_token.AsTime()),
+	)
+
+	if pass_is_open {
+		query = query.Where(pass.EndTimeIsNil())
+	}
+
+	if pass_type != veripassv1.Pass_PASS_TYPE_UNSPECIFIED {
+		query = query.Where(pass.TypeEQ(passservice.ProtoPassTypeToEnt(pass_type)))
+	}
+
+	// TODO - Filter by hostel
+
+	passes, err := query.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO - include student information
+	response := &veripassv1.GetAllPassesByHostelResponse{}
+
+	if len(passes) > page_size {
+		response.NextPageToken = timestamppb.New(passes[len(passes)-1].StartTime)
+	}
+
+	for index, pass := range passes {
+		if index == int(page_size) {
+			break
+		}
+		response.Passes = append(response.Passes, &veripassv1.GetAllPassesByHostelResponse_InfoIncludedPass{
+			Pass:        passservice.ToProto(pass),
+			StudentName: "TODO",
+			StudentRoom: "TODO",
+		})
+	}
+
+	return connect.NewResponse(response), nil
 }
 
 var _ veripassv1connect.AdminServiceHandler = (*AdminService)(nil)

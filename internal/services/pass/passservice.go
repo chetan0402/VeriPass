@@ -32,7 +32,7 @@ func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[v
 	var (
 		adminEmail = r.Msg.AdminEmail
 		userId     = r.Msg.UserId
-		passType   = protoPassTypeToEnt(r.Msg.Type)
+		passType   = ProtoPassTypeToEnt(r.Msg.Type)
 	)
 
 	admin, err := s.client.Admin.Query().Where(admin.Email(adminEmail)).First(ctx)
@@ -79,7 +79,7 @@ func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Reques
 		return nil, err
 	}
 
-	return connect.NewResponse(toProto(entPass)), nil
+	return connect.NewResponse(ToProto(entPass)), nil
 }
 
 func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1.GetPassRequest]) (*connect.Response[veripassv1.Pass], error) {
@@ -100,7 +100,7 @@ func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1
 		return nil, err
 	}
 
-	return connect.NewResponse(toProto(pass)), nil
+	return connect.NewResponse(ToProto(pass)), nil
 }
 
 func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[veripassv1.ListPassesByUserRequest]) (*connect.Response[veripassv1.ListPassesByUserResponse], error) {
@@ -125,7 +125,7 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 
 	if passType != nil && *passType != veripassv1.Pass_PASS_TYPE_UNSPECIFIED {
 		query = query.Where(
-			pass.TypeEQ(protoPassTypeToEnt(*passType)),
+			pass.TypeEQ(ProtoPassTypeToEnt(*passType)),
 		)
 	}
 
@@ -158,13 +158,13 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 		if index == int(pageSize) {
 			break
 		}
-		response.Passes = append(response.Passes, toProto(pass))
+		response.Passes = append(response.Passes, ToProto(pass))
 	}
 
 	return connect.NewResponse(response), nil
 }
 
-func toProto(entPass *ent.Pass) *veripassv1.Pass {
+func ToProto(entPass *ent.Pass) *veripassv1.Pass {
 	passType := veripassv1.Pass_PASS_TYPE_UNSPECIFIED
 
 	switch entPass.Type {
@@ -186,7 +186,7 @@ func toProto(entPass *ent.Pass) *veripassv1.Pass {
 	}
 }
 
-func protoPassTypeToEnt(passType veripassv1.Pass_PassType) pass.Type {
+func ProtoPassTypeToEnt(passType veripassv1.Pass_PassType) pass.Type {
 	switch passType {
 	case veripassv1.Pass_PASS_TYPE_CLASS:
 		return pass.TypeClass
