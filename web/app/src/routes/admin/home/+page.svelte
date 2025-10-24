@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Admin } from '$lib/gen/veripass/v1/admin_pb';
-	import { getAdminFromState } from '$lib/state/admin_state';
+	import { getAdminFromState, invalidateAdminSession } from '$lib/state/admin_state';
 	import HostelPassesList from './fragment/HostelPassesList.svelte';
 	import { HomeSolid } from 'flowbite-svelte-icons';
+	import { goto } from '$app/navigation';
 
 	let listVisible: boolean = $state<boolean>(false);
 	let status: string = $state<string>('Loading Admin Details...');
@@ -20,11 +21,13 @@
 		} catch (error) {
 			console.log(error);
 			status = `Error ${error}`;
-			alert('error no admin session found, Please login again after logout!');
+			await logout();
+			await goto('../admin', { replaceState: true });
+			alert('error no admin session found, Please login again');
 		}
 	});
-	function logout() {
-		localStorage.removeItem('admin_email');
+	async function logout() {
+		await invalidateAdminSession();
 		window.location.href = '../admin';
 	}
 </script>

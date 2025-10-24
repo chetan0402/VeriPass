@@ -29,3 +29,9 @@ function getSavedAdminEmail() {
 	//To retrieve the saved user id after login; below is only for testing
 	return localStorage.getItem('admin_email');
 }
+
+export async function invalidateAdminSession() {
+	//Reset all the session info
+	localStorage.removeItem('admin_email');
+	return;
+}

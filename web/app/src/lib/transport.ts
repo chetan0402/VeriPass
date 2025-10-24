@@ -45,13 +45,17 @@ function getPassType(selected: ExitRequest_ExitType): Pass_PassType {
 
 const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(UserService.method.getUser, (req) => {
-		return {
-			id: req.id,
-			name: 'Mock User',
-			hostel: 'Mock Hostel',
-			room: 'Mock Room',
-			phone: '1234567890'
-		};
+		if (req.id === '12345') {
+			return {
+				id: req.id,
+				name: 'Mock User',
+				hostel: 'Mock Hostel',
+				room: 'Mock Room',
+				phone: '1234567890'
+			};
+		} else {
+			throw new ConnectError('User not found', Code.NotFound);
+		}
 	});
 
 	rpc(AdminService.method.getAdmin, (req) => {
