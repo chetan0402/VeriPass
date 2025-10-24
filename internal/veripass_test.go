@@ -186,6 +186,34 @@ func TestMain(t *testing.T) {
 	if !proto.Equal(admin.Msg, &mockAdmin) {
 		t.Fatalf("Expected %v, got %v", &mockAdmin, admin.Msg)
 	}
+
+	hostelPassList1, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
+		Hostel:     "H mock",
+		StartTime:  timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
+		PassIsOpen: false,
+		Type:       veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
+		PageSize:   1,
+		PageToken:  timestamppb.Now(),
+	}))
+	attest(t, err)
+	if hostelPassList1.Msg.NextPageToken.Seconds != pass.Msg.StartTime.Seconds {
+		t.Fatalf("Expected %v, got %v", pass.Msg.StartTime, hostelPassList1.Msg.NextPageToken)
+	}
+	failIfNotEqualPass(t, hostelPassList1.Msg.Passes[0].Pass, pass2.Msg)
+
+	hostelPassList2, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
+		Hostel:     "H mock",
+		StartTime:  timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
+		PassIsOpen: false,
+		Type:       veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
+		PageSize:   1,
+		PageToken:  hostelPassList1.Msg.NextPageToken,
+	}))
+	attest(t, err)
+	if hostelPassList2.Msg.NextPageToken != nil {
+		t.Fatal("Expected nil next page token")
+	}
+	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg)
 }
 
 func attest(t *testing.T, err error) {
