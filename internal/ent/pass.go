@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/chetan0402/veripass/internal/ent/pass"
+	"github.com/chetan0402/veripass/internal/ent/user"
 	"github.com/google/uuid"
 )
 
@@ -25,8 +26,31 @@ type Pass struct {
 	// StartTime holds the value of the "start_time" field.
 	StartTime time.Time `json:"start_time,omitempty"`
 	// EndTime holds the value of the "end_time" field.
-	EndTime      time.Time `json:"end_time,omitempty"`
+	EndTime time.Time `json:"end_time,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the PassQuery when eager-loading is set.
+	Edges        PassEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// PassEdges holds the relations/edges for other nodes in the graph.
+type PassEdges struct {
+	// User holds the value of the user edge.
+	User *User `json:"user,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PassEdges) UserOrErr() (*User, error) {
+	if e.User != nil {
+		return e.User, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: user.Label}
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -96,6 +120,11 @@ func (pa *Pass) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (pa *Pass) Value(name string) (ent.Value, error) {
 	return pa.selectValues.Get(name)
+}
+
+// QueryUser queries the "user" edge of the Pass entity.
+func (pa *Pass) QueryUser() *UserQuery {
+	return NewPassClient(pa.config).QueryUser(pa)
 }
 
 // Update returns a builder for updating this Pass.

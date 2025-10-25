@@ -10,8 +10,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/chetan0402/veripass/internal/ent/pass"
 	"github.com/chetan0402/veripass/internal/ent/predicate"
 	"github.com/chetan0402/veripass/internal/ent/user"
+	"github.com/google/uuid"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -83,9 +85,45 @@ func (uu *UserUpdate) SetNillablePhone(s *string) *UserUpdate {
 	return uu
 }
 
+// AddPassIDs adds the "passes" edge to the Pass entity by IDs.
+func (uu *UserUpdate) AddPassIDs(ids ...uuid.UUID) *UserUpdate {
+	uu.mutation.AddPassIDs(ids...)
+	return uu
+}
+
+// AddPasses adds the "passes" edges to the Pass entity.
+func (uu *UserUpdate) AddPasses(p ...*Pass) *UserUpdate {
+	ids := make([]uuid.UUID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.AddPassIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
+}
+
+// ClearPasses clears all "passes" edges to the Pass entity.
+func (uu *UserUpdate) ClearPasses() *UserUpdate {
+	uu.mutation.ClearPasses()
+	return uu
+}
+
+// RemovePassIDs removes the "passes" edge to Pass entities by IDs.
+func (uu *UserUpdate) RemovePassIDs(ids ...uuid.UUID) *UserUpdate {
+	uu.mutation.RemovePassIDs(ids...)
+	return uu
+}
+
+// RemovePasses removes "passes" edges to Pass entities.
+func (uu *UserUpdate) RemovePasses(p ...*Pass) *UserUpdate {
+	ids := make([]uuid.UUID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.RemovePassIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -135,6 +173,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.Phone(); ok {
 		_spec.SetField(user.FieldPhone, field.TypeString, value)
+	}
+	if uu.mutation.PassesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PassesTable,
+			Columns: []string{user.PassesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pass.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedPassesIDs(); len(nodes) > 0 && !uu.mutation.PassesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PassesTable,
+			Columns: []string{user.PassesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pass.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.PassesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PassesTable,
+			Columns: []string{user.PassesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pass.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -212,9 +295,45 @@ func (uuo *UserUpdateOne) SetNillablePhone(s *string) *UserUpdateOne {
 	return uuo
 }
 
+// AddPassIDs adds the "passes" edge to the Pass entity by IDs.
+func (uuo *UserUpdateOne) AddPassIDs(ids ...uuid.UUID) *UserUpdateOne {
+	uuo.mutation.AddPassIDs(ids...)
+	return uuo
+}
+
+// AddPasses adds the "passes" edges to the Pass entity.
+func (uuo *UserUpdateOne) AddPasses(p ...*Pass) *UserUpdateOne {
+	ids := make([]uuid.UUID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.AddPassIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
+}
+
+// ClearPasses clears all "passes" edges to the Pass entity.
+func (uuo *UserUpdateOne) ClearPasses() *UserUpdateOne {
+	uuo.mutation.ClearPasses()
+	return uuo
+}
+
+// RemovePassIDs removes the "passes" edge to Pass entities by IDs.
+func (uuo *UserUpdateOne) RemovePassIDs(ids ...uuid.UUID) *UserUpdateOne {
+	uuo.mutation.RemovePassIDs(ids...)
+	return uuo
+}
+
+// RemovePasses removes "passes" edges to Pass entities.
+func (uuo *UserUpdateOne) RemovePasses(p ...*Pass) *UserUpdateOne {
+	ids := make([]uuid.UUID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.RemovePassIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -294,6 +413,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.Phone(); ok {
 		_spec.SetField(user.FieldPhone, field.TypeString, value)
+	}
+	if uuo.mutation.PassesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PassesTable,
+			Columns: []string{user.PassesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pass.FieldID, field.TypeUUID),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedPassesIDs(); len(nodes) > 0 && !uuo.mutation.PassesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PassesTable,
+			Columns: []string{user.PassesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pass.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.PassesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PassesTable,
+			Columns: []string{user.PassesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pass.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues

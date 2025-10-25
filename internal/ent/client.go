@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/chetan0402/veripass/internal/ent/admin"
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	"github.com/chetan0402/veripass/internal/ent/user"
@@ -458,6 +459,22 @@ func (c *PassClient) GetX(ctx context.Context, id uuid.UUID) *Pass {
 	return obj
 }
 
+// QueryUser queries the user edge of a Pass.
+func (c *PassClient) QueryUser(pa *Pass) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(pass.Table, pass.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, pass.UserTable, pass.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(pa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *PassClient) Hooks() []Hook {
 	return c.hooks.Pass
@@ -589,6 +606,22 @@ func (c *UserClient) GetX(ctx context.Context, id string) *User {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryPasses queries the passes edge of a User.
+func (c *UserClient) QueryPasses(u *User) *PassQuery {
+	query := (&PassClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(pass.Table, pass.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PassesTable, user.PassesColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

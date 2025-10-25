@@ -25,16 +25,24 @@ var (
 	// PassesColumns holds the columns for the "passes" table.
 	PassesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "user_id", Type: field.TypeString},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"unspecified", "class", "market", "home", "event"}, Default: "unspecified"},
 		{Name: "start_time", Type: field.TypeTime},
 		{Name: "end_time", Type: field.TypeTime, Nullable: true},
+		{Name: "user_id", Type: field.TypeString},
 	}
 	// PassesTable holds the schema information for the "passes" table.
 	PassesTable = &schema.Table{
 		Name:       "passes",
 		Columns:    PassesColumns,
 		PrimaryKey: []*schema.Column{PassesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "passes_users_passes",
+				Columns:    []*schema.Column{PassesColumns[4]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
@@ -59,4 +67,5 @@ var (
 )
 
 func init() {
+	PassesTable.ForeignKeys[0].RefTable = UsersTable
 }

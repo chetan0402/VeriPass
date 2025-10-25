@@ -23,8 +23,29 @@ type User struct {
 	// Hostel holds the value of the "hostel" field.
 	Hostel string `json:"hostel,omitempty"`
 	// Phone holds the value of the "phone" field.
-	Phone        string `json:"phone,omitempty"`
+	Phone string `json:"phone,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges        UserEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Passes holds the value of the passes edge.
+	Passes []*Pass `json:"passes,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// PassesOrErr returns the Passes value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PassesOrErr() ([]*Pass, error) {
+	if e.loadedTypes[0] {
+		return e.Passes, nil
+	}
+	return nil, &NotLoadedError{edge: "passes"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -90,6 +111,11 @@ func (u *User) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
+}
+
+// QueryPasses queries the "passes" edge of the User entity.
+func (u *User) QueryPasses() *PassQuery {
+	return NewUserClient(u.config).QueryPasses(u)
 }
 
 // Update returns a builder for updating this User.
