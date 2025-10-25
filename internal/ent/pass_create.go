@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/chetan0402/veripass/internal/ent/pass"
+	"github.com/chetan0402/veripass/internal/ent/user"
 	"github.com/google/uuid"
 )
 
@@ -75,6 +76,11 @@ func (pc *PassCreate) SetNillableID(u *uuid.UUID) *PassCreate {
 	return pc
 }
 
+// SetUser sets the "user" edge to the User entity.
+func (pc *PassCreate) SetUser(u *User) *PassCreate {
+	return pc.SetUserID(u.ID)
+}
+
 // Mutation returns the PassMutation object of the builder.
 func (pc *PassCreate) Mutation() *PassMutation {
 	return pc.mutation
@@ -136,6 +142,9 @@ func (pc *PassCreate) check() error {
 	if _, ok := pc.mutation.StartTime(); !ok {
 		return &ValidationError{Name: "start_time", err: errors.New(`ent: missing required field "Pass.start_time"`)}
 	}
+	if len(pc.mutation.UserIDs()) == 0 {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Pass.user"`)}
+	}
 	return nil
 }
 
@@ -171,10 +180,6 @@ func (pc *PassCreate) createSpec() (*Pass, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := pc.mutation.UserID(); ok {
-		_spec.SetField(pass.FieldUserID, field.TypeString, value)
-		_node.UserID = value
-	}
 	if value, ok := pc.mutation.GetType(); ok {
 		_spec.SetField(pass.FieldType, field.TypeEnum, value)
 		_node.Type = value
@@ -186,6 +191,23 @@ func (pc *PassCreate) createSpec() (*Pass, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.EndTime(); ok {
 		_spec.SetField(pass.FieldEndTime, field.TypeTime, value)
 		_node.EndTime = value
+	}
+	if nodes := pc.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   pass.UserTable,
+			Columns: []string{pass.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.UserID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

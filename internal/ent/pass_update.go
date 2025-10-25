@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	"github.com/chetan0402/veripass/internal/ent/predicate"
+	"github.com/chetan0402/veripass/internal/ent/user"
 )
 
 // PassUpdate is the builder for updating Pass entities.
@@ -90,9 +91,20 @@ func (pu *PassUpdate) ClearEndTime() *PassUpdate {
 	return pu
 }
 
+// SetUser sets the "user" edge to the User entity.
+func (pu *PassUpdate) SetUser(u *User) *PassUpdate {
+	return pu.SetUserID(u.ID)
+}
+
 // Mutation returns the PassMutation object of the builder.
 func (pu *PassUpdate) Mutation() *PassMutation {
 	return pu.mutation
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (pu *PassUpdate) ClearUser() *PassUpdate {
+	pu.mutation.ClearUser()
+	return pu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -129,6 +141,9 @@ func (pu *PassUpdate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Pass.type": %w`, err)}
 		}
 	}
+	if pu.mutation.UserCleared() && len(pu.mutation.UserIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Pass.user"`)
+	}
 	return nil
 }
 
@@ -144,9 +159,6 @@ func (pu *PassUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := pu.mutation.UserID(); ok {
-		_spec.SetField(pass.FieldUserID, field.TypeString, value)
-	}
 	if value, ok := pu.mutation.GetType(); ok {
 		_spec.SetField(pass.FieldType, field.TypeEnum, value)
 	}
@@ -158,6 +170,35 @@ func (pu *PassUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if pu.mutation.EndTimeCleared() {
 		_spec.ClearField(pass.FieldEndTime, field.TypeTime)
+	}
+	if pu.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   pass.UserTable,
+			Columns: []string{pass.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   pass.UserTable,
+			Columns: []string{pass.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -241,9 +282,20 @@ func (puo *PassUpdateOne) ClearEndTime() *PassUpdateOne {
 	return puo
 }
 
+// SetUser sets the "user" edge to the User entity.
+func (puo *PassUpdateOne) SetUser(u *User) *PassUpdateOne {
+	return puo.SetUserID(u.ID)
+}
+
 // Mutation returns the PassMutation object of the builder.
 func (puo *PassUpdateOne) Mutation() *PassMutation {
 	return puo.mutation
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (puo *PassUpdateOne) ClearUser() *PassUpdateOne {
+	puo.mutation.ClearUser()
+	return puo
 }
 
 // Where appends a list predicates to the PassUpdate builder.
@@ -293,6 +345,9 @@ func (puo *PassUpdateOne) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Pass.type": %w`, err)}
 		}
 	}
+	if puo.mutation.UserCleared() && len(puo.mutation.UserIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Pass.user"`)
+	}
 	return nil
 }
 
@@ -325,9 +380,6 @@ func (puo *PassUpdateOne) sqlSave(ctx context.Context) (_node *Pass, err error) 
 			}
 		}
 	}
-	if value, ok := puo.mutation.UserID(); ok {
-		_spec.SetField(pass.FieldUserID, field.TypeString, value)
-	}
 	if value, ok := puo.mutation.GetType(); ok {
 		_spec.SetField(pass.FieldType, field.TypeEnum, value)
 	}
@@ -339,6 +391,35 @@ func (puo *PassUpdateOne) sqlSave(ctx context.Context) (_node *Pass, err error) 
 	}
 	if puo.mutation.EndTimeCleared() {
 		_spec.ClearField(pass.FieldEndTime, field.TypeTime)
+	}
+	if puo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   pass.UserTable,
+			Columns: []string{pass.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   pass.UserTable,
+			Columns: []string{pass.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Pass{config: puo.config}
 	_spec.Assign = _node.assignValues
