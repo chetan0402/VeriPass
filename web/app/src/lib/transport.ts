@@ -4,7 +4,12 @@ import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { PassService, Pass_PassType, type Pass } from '$lib/gen/veripass/v1/pass_pb';
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 import { timestampNow } from '@bufbuild/protobuf/wkt';
-import { type Admin, AdminService } from '$lib/gen/veripass/v1/admin_pb';
+import {
+	type Admin,
+	AdminService,
+	type GetAllPassesByHostelResponse,
+	type GetAllPassesByHostelResponse_InfoIncludedPass
+} from '$lib/gen/veripass/v1/admin_pb';
 
 const MOCK = true;
 
@@ -133,6 +138,35 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			passes,
 			nextPageToken
 		};
+	});
+
+	rpc(AdminService.method.getAllPassesByHostel, (req) => {
+		const pageSize = req.pageSize;
+		const pageTokenMs = timestampToMs(req.pageToken);
+		if (Object.values(mockPasses).length < 10) {
+			generateMockPasesForPage();
+		}
+		const sortedPasses = Object.values(mockPasses).sort(
+			(a, b) => timestampToMs(b.startTime) - timestampToMs(a.startTime)
+		);
+		const paginated = sortedPasses.filter((p) => timestampToMs(p.startTime) < pageTokenMs);
+		const passes = paginated.slice(0, pageSize);
+		const nextPageToken =
+			paginated.length > pageSize ? passes[passes.length - 1].startTime : msToTimestamp(0);
+		const infoIncludedPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] = [];
+		for (const pass of passes) {
+			infoIncludedPasses.push({
+				pass,
+				studentName: 'Alice Jhonson',
+				studentRoom: 'C103',
+				$typeName: 'veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass'
+			});
+		}
+		console.log(infoIncludedPasses);
+		return {
+			passes: infoIncludedPasses,
+			nextPageToken: nextPageToken
+		} as GetAllPassesByHostelResponse;
 	});
 });
 

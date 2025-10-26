@@ -1,94 +1,98 @@
 <script lang="ts">
-	import type { Admin } from '$lib/gen/veripass/v1/admin_pb';
+	import {
+		type Admin,
+		AdminService,
+		type GetAllPassesByHostelRequest,
+		type GetAllPassesByHostelResponse,
+		type GetAllPassesByHostelResponse_InfoIncludedPass
+	} from '$lib/gen/veripass/v1/admin_pb';
 	import { Select } from 'flowbite-svelte';
-	import { type Timestamp, timestampNow } from '@bufbuild/protobuf/wkt';
+	import { type Timestamp, timestampFromDate, timestampNow } from '@bufbuild/protobuf/wkt';
 	import { createClient } from '@connectrpc/connect';
-	import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
 	import { transport } from '$lib';
-	import { timestampToMs } from '$lib/timestamp_utils';
+	import { get12OClockDate, timestampToMs } from '$lib/timestamp_utils';
 	import { onMount } from 'svelte';
 	import AdminPassListItem from '$lib/components/AdminPassListItem.svelte';
+	import DateSelector from '$lib/components/DateSelector.svelte';
+	import { PassStatus, purposeOptions, statusOptions } from '$lib/helper/dashboard';
+	import { Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
 
 	let { admin } = $props<{ admin: Admin }>();
 
-	let dateOptions: { value: string; name: string }[] = [
-		{ value: 'all', name: 'All' },
-		{ value: 'today', name: 'Today' },
-		{ value: 'yesterday', name: 'Yesterday' }
-	];
-	let selectedDate = $state('all');
+	let selectedDate = $state(get12OClockDate(new Date(Date.now())));
 
-	let typeOptions: { value: string; name: string }[] = [
-		{ value: 'all', name: 'All' },
-		{ value: 'open', name: 'Open' },
-		{ value: 'closed', name: 'Closed' }
-	];
-	let selectedType = $state('all');
+	let dateDialog: boolean = $state(false);
 
-	let purposeOptions: { value: number; name: string }[] = [
-		{ value: Pass_PassType.UNSPECIFIED, name: 'All' },
-		{ value: Pass_PassType.CLASS, name: 'Class' },
-		{ value: Pass_PassType.MARKET, name: 'Market' },
-		{ value: Pass_PassType.HOME, name: 'Home' },
-		{ value: Pass_PassType.EVENT, name: 'Event' }
-	];
-	let selectedPurpose = $state(0);
+	let selectedStatus = $state(PassStatus.All);
+
+	let selectedPurpose = $state(Pass_PassType.UNSPECIFIED);
 
 	let loadMoreElem: HTMLDivElement;
+
 	let nextPageToken: Timestamp | undefined = timestampNow();
+
 	let loading: boolean = false;
 
-	let passes: Pass[] = $state([]);
-	function filterPasses(originalPasses: Pass[], type: string) {
-		if (type === `all`) {
-			return originalPasses;
-		} else if (type === `open`) {
-			return originalPasses.filter((pass) => !pass.endTime);
-		} else if (type === `closed`) {
-			return originalPasses.filter((pass) => pass.endTime);
-		}
-		return originalPasses;
-	}
-	let filterPassList: Pass[] = $derived(filterPasses(passes, selectedType));
+	let observing: boolean = $state(false);
+
+	let passes: GetAllPassesByHostelResponse_InfoIncludedPass[] = $state([]);
+
+	$effect(() => {
+		passes = [];
+		nextPageToken = timestampNow();
+		fetchPasses(selectedDate, selectedStatus, selectedPurpose);
+	});
+
 	const loadMorePassObserver = new IntersectionObserver(
 		async (entries) => {
 			if (entries[0].isIntersecting && !loading) {
 				loading = true;
-				await fetchPasses();
+				await fetchPasses(selectedDate, selectedStatus, selectedPurpose);
 				loading = false;
 			}
 		},
 		{ threshold: 1.0 }
 	);
 
-	const client = createClient(PassService, transport);
+	const client = createClient(AdminService, transport);
 
-	async function fetchPasses() {
+	async function fetchPasses(date: Date, status: PassStatus, purpose: Pass_PassType) {
 		try {
-			//For testing, it is using the same list used for user.
-			//Replace it by load passes from the hostel
-			let response = await client.listPassesByUser({
-				userId: '12345',
+			let response = (await client.getAllPassesByHostel({
+				$typeName: 'veripass.v1.GetAllPassesByHostelRequest',
+				hostel: admin.hostel,
+				startTime: timestampFromDate(date),
+				passIsOpen: status !== PassStatus.Closed,
+				type: purpose,
 				pageSize: 10,
 				pageToken: nextPageToken
-			});
+			} as GetAllPassesByHostelRequest)) as GetAllPassesByHostelResponse;
 			passes = [...passes, ...response.passes];
 			nextPageToken = response.nextPageToken;
+
 			if (timestampToMs(response.nextPageToken) == 0) {
-				endOfListReached('End of the list reached');
+				endOfListReached('End of the list');
+			} else {
+				if (!observing) observeMorePasses();
 			}
 		} catch (error) {
-			console.error('Error fetching user data:', error);
+			console.error('Error fetching data:', error);
 			endOfListReached('Could not load more passes');
 		}
 	}
 
 	onMount(async () => {
-		loadMorePassObserver.observe(loadMoreElem);
+		observeMorePasses();
 	});
+
+	function observeMorePasses() {
+		loadMorePassObserver.observe(loadMoreElem);
+		observing = true;
+	}
 
 	function endOfListReached(msg: string) {
 		listFooterMessage = msg;
+		observing = false;
 		loadMorePassObserver.unobserve(loadMoreElem);
 	}
 
@@ -100,11 +104,24 @@
 
 	<div class="hide-scrollbar flex h-auto flex-row items-center gap-2 overflow-scroll">
 		<img class="h-4 w-4" src="../filter.svg" alt="filter" />
-		<p class="text-xs text-gray-800">Range</p>
-		<Select class="select-style-filter" items={dateOptions} bind:value={selectedDate} size="sm" />
-		<p class="text-xs text-gray-800">Type</p>
-		<Select class="select-style-filter" items={typeOptions} bind:value={selectedType} size="sm" />
-		<p class="text-xs text-gray-800">Purpose</p>
+		<p class="text-xs font-semibold text-gray-800">Date</p>
+		<div class="select-style-filter">
+			<button class="text-gray-800" onclick={() => (dateDialog = true)}
+				>{selectedDate.toLocaleDateString('en-GB', {
+					day: '2-digit',
+					month: 'short',
+					year: 'numeric'
+				})}</button
+			>
+		</div>
+		<p class="text-xs font-semibold text-gray-800">Type</p>
+		<Select
+			class="select-style-filter"
+			items={statusOptions}
+			bind:value={selectedStatus}
+			size="sm"
+		/>
+		<p class="text-xs font-semibold text-gray-800">Purpose</p>
 		<Select
 			class="select-style-filter"
 			items={purposeOptions}
@@ -112,7 +129,6 @@
 			size="sm"
 		/>
 	</div>
-	<p class="text-xs font-bold text-[#5555C2]">___ returned out of ___ exits</p>
 	<div
 		class="flex w-full flex-1 flex-col items-center overflow-x-hidden rounded-2xl border-1 border-[#D9D9F2] bg-white"
 	>
@@ -137,10 +153,20 @@
 		<div
 			class="flex w-full flex-1 flex-col items-center overflow-x-hidden overflow-y-scroll border-1 border-[#D9D9F2]"
 		>
-			{#each filterPassList as pass (pass.id)}
-				<AdminPassListItem {pass} onclick={() => {}} />
+			{#each passes as pass (pass.pass?.id)}
+				<AdminPassListItem infoPass={pass} onclick={() => {}} />
 			{/each}
 			<div bind:this={loadMoreElem} class="m-2 flex w-full justify-center">{listFooterMessage}</div>
 		</div>
 	</div>
 </div>
+{#if dateDialog}
+	<DateSelector
+		{selectedDate}
+		toClose={() => (dateDialog = false)}
+		toProceed={(date: Date) => {
+			selectedDate = date;
+			dateDialog = false;
+		}}
+	/>
+{/if}

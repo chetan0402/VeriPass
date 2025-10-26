@@ -1,12 +1,17 @@
 <script lang="ts">
 	import { type Pass, Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
 	import type { Timestamp } from '@bufbuild/protobuf/wkt';
+	import type { GetAllPassesByHostelResponse_InfoIncludedPass } from '$lib/gen/veripass/v1/admin_pb';
 
-	const { onclick, pass } = $props<{ onclick: () => void; pass: Pass }>();
+	const { onclick, infoPass } = $props<{
+		onclick: () => void;
+		infoPass: GetAllPassesByHostelResponse_InfoIncludedPass;
+	}>();
 
-	let sName = $state('Lorem Ipsum');
+	let sName = $state(infoPass.studentName);
+	let pass = $derived(infoPass.pass);
 	let sNumber = $derived(pass.userId);
-	let sRoom = $state('D-0001');
+	let sRoom = $state(infoPass.studentRoom);
 
 	let dateFormatted: string = $derived(getFormattedDate(pass.startTime));
 	let endTime: string = $derived(getFormattedTime(pass.endTime));
