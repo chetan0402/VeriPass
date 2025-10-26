@@ -53,7 +53,6 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 		return nil, err
 	}
 
-	// TODO - include student information
 	response := &veripassv1.GetAllPassesByHostelResponse{}
 
 	if len(passes) > page_size {
@@ -64,10 +63,14 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 		if index == int(page_size) {
 			break
 		}
+		user, err := pass.QueryUser().Only(ctx)
+		if err != nil {
+			return nil, err
+		}
 		response.Passes = append(response.Passes, &veripassv1.GetAllPassesByHostelResponse_InfoIncludedPass{
 			Pass:        passservice.ToProto(pass),
-			StudentName: "TODO",
-			StudentRoom: "TODO",
+			StudentName: user.Name,
+			StudentRoom: user.Room,
 		})
 	}
 

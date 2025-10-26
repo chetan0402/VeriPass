@@ -199,6 +199,12 @@ func TestMain(t *testing.T) {
 	if hostelPassList1.Msg.NextPageToken.Seconds != pass.Msg.StartTime.Seconds {
 		t.Fatalf("Expected %v, got %v", pass.Msg.StartTime, hostelPassList1.Msg.NextPageToken)
 	}
+	if hostelPassList1.Msg.Passes[0].StudentName != mockUser.Name {
+		t.Fatalf("Expected student name %v, got %v", mockUser.Name, hostelPassList1.Msg.Passes[0].StudentName)
+	}
+	if hostelPassList1.Msg.Passes[0].StudentRoom != mockUser.Room {
+		t.Fatalf("Expected student room %v, got %v", mockUser.Room, hostelPassList1.Msg.Passes[0].StudentRoom)
+	}
 	failIfNotEqualPass(t, hostelPassList1.Msg.Passes[0].Pass, pass2.Msg)
 
 	hostelPassList2, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
@@ -212,6 +218,12 @@ func TestMain(t *testing.T) {
 	attest(t, err)
 	if hostelPassList2.Msg.NextPageToken != nil {
 		t.Fatal("Expected nil next page token")
+	}
+	if hostelPassList2.Msg.Passes[0].StudentName != mockUser.Name {
+		t.Fatalf("Expected student name %v, got %v", mockUser.Name, hostelPassList2.Msg.Passes[0].StudentName)
+	}
+	if hostelPassList2.Msg.Passes[0].StudentRoom != mockUser.Room {
+		t.Fatalf("Expected student room %v, got %v", mockUser.Room, hostelPassList2.Msg.Passes[0].StudentRoom)
 	}
 	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg)
 }
