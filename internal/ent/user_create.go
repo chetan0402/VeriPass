@@ -9,7 +9,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/chetan0402/veripass/internal/ent/pass"
 	"github.com/chetan0402/veripass/internal/ent/user"
+	"github.com/google/uuid"
 )
 
 // UserCreate is the builder for creating a User entity.
@@ -47,6 +49,21 @@ func (uc *UserCreate) SetPhone(s string) *UserCreate {
 func (uc *UserCreate) SetID(s string) *UserCreate {
 	uc.mutation.SetID(s)
 	return uc
+}
+
+// AddPassIDs adds the "passes" edge to the Pass entity by IDs.
+func (uc *UserCreate) AddPassIDs(ids ...uuid.UUID) *UserCreate {
+	uc.mutation.AddPassIDs(ids...)
+	return uc
+}
+
+// AddPasses adds the "passes" edges to the Pass entity.
+func (uc *UserCreate) AddPasses(p ...*Pass) *UserCreate {
+	ids := make([]uuid.UUID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uc.AddPassIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -145,6 +162,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Phone(); ok {
 		_spec.SetField(user.FieldPhone, field.TypeString, value)
 		_node.Phone = value
+	}
+	if nodes := uc.mutation.PassesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PassesTable,
+			Columns: []string{user.PassesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(pass.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

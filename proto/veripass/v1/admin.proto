@@ -2,17 +2,40 @@ syntax = "proto3";
 
 package veripass.v1;
 
+import "google/protobuf/timestamp.proto";
+import "veripass/v1/pass.proto";
+
 message Admin {
-    string email = 1;
-    string name = 2;
-    string hostel = 3;
-    bool can_add_pass = 4;
+  string email = 1;
+  string name = 2;
+  string hostel = 3;
+  bool can_add_pass = 4;
 }
 
 service AdminService {
-    rpc GetAdmin(GetAdminRequest) returns (Admin); 
+  rpc GetAdmin(GetAdminRequest) returns (Admin);
+  rpc GetAllPassesByHostel(GetAllPassesByHostelRequest) returns (GetAllPassesByHostelResponse);
 }
 
 message GetAdminRequest {
-    string email = 1;
+  string email = 1;
+}
+
+message GetAllPassesByHostelRequest {
+  string hostel = 1;
+  google.protobuf.Timestamp start_time = 2;
+  bool pass_is_open = 4;
+  Pass.PassType type = 5;
+  int32 page_size = 6;
+  google.protobuf.Timestamp page_token = 7; // Based on start_time
+}
+
+message GetAllPassesByHostelResponse {
+  message InfoIncludedPass {
+    Pass pass = 1;
+    string student_name = 2;
+    string student_room = 3;
+  }
+  repeated InfoIncludedPass passes = 1;
+  google.protobuf.Timestamp next_page_token = 2;
 }

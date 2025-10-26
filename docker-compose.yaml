@@ -33,7 +33,7 @@ services:
       POSTGRES_PASSWORD: veripass
       POSTGRES_DB: veripass
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
     container_name: pgdb
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "veripass"]

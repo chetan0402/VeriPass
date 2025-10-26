@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	"github.com/chetan0402/veripass/internal/ent/predicate"
+	"github.com/chetan0402/veripass/internal/ent/user"
 	"github.com/google/uuid"
 )
 
@@ -23,6 +24,7 @@ type PassQuery struct {
 	order      []pass.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Pass
+	withUser   *UserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -57,6 +59,28 @@ func (pq *PassQuery) Unique(unique bool) *PassQuery {
 func (pq *PassQuery) Order(o ...pass.OrderOption) *PassQuery {
 	pq.order = append(pq.order, o...)
 	return pq
+}
+
+// QueryUser chains the current query on the "user" edge.
+func (pq *PassQuery) QueryUser() *UserQuery {
+	query := (&UserClient{config: pq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(pass.Table, pass.FieldID, selector),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, pass.UserTable, pass.UserColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Pass entity from the query.
@@ -251,10 +275,22 @@ func (pq *PassQuery) Clone() *PassQuery {
 		order:      append([]pass.OrderOption{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Pass{}, pq.predicates...),
+		withUser:   pq.withUser.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
 	}
+}
+
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PassQuery) WithUser(opts ...func(*UserQuery)) *PassQuery {
+	query := (&UserClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withUser = query
+	return pq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -333,8 +369,11 @@ func (pq *PassQuery) prepareQuery(ctx context.Context) error {
 
 func (pq *PassQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pass, error) {
 	var (
-		nodes = []*Pass{}
-		_spec = pq.querySpec()
+		nodes       = []*Pass{}
+		_spec       = pq.querySpec()
+		loadedTypes = [1]bool{
+			pq.withUser != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Pass).scanValues(nil, columns)
@@ -342,6 +381,7 @@ func (pq *PassQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pass, e
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Pass{config: pq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -353,7 +393,43 @@ func (pq *PassQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pass, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := pq.withUser; query != nil {
+		if err := pq.loadUser(ctx, query, nodes, nil,
+			func(n *Pass, e *User) { n.Edges.User = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (pq *PassQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Pass, init func(*Pass), assign func(*Pass, *User)) error {
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*Pass)
+	for i := range nodes {
+		fk := nodes[i].UserID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(user.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (pq *PassQuery) sqlCount(ctx context.Context) (int, error) {
@@ -380,6 +456,9 @@ func (pq *PassQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != pass.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if pq.withUser != nil {
+			_spec.Node.AddColumnOnce(pass.FieldUserID)
 		}
 	}
 	if ps := pq.predicates; len(ps) > 0 {

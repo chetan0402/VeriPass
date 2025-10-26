@@ -4,6 +4,7 @@ package user
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -19,8 +20,17 @@ const (
 	FieldHostel = "hostel"
 	// FieldPhone holds the string denoting the phone field in the database.
 	FieldPhone = "phone"
+	// EdgePasses holds the string denoting the passes edge name in mutations.
+	EdgePasses = "passes"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// PassesTable is the table that holds the passes relation/edge.
+	PassesTable = "passes"
+	// PassesInverseTable is the table name for the Pass entity.
+	// It exists in this package in order to avoid circular dependency with the "pass" package.
+	PassesInverseTable = "passes"
+	// PassesColumn is the table column denoting the passes relation/edge.
+	PassesColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -68,4 +78,25 @@ func ByHostel(opts ...sql.OrderTermOption) OrderOption {
 // ByPhone orders the results by the phone field.
 func ByPhone(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPhone, opts...).ToFunc()
+}
+
+// ByPassesCount orders the results by passes count.
+func ByPassesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPassesStep(), opts...)
+	}
+}
+
+// ByPasses orders the results by passes terms.
+func ByPasses(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPassesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newPassesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PassesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PassesTable, PassesColumn),
+	)
 }

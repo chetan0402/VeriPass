@@ -1,9 +1,0 @@
-#!/bin/sh
-set -e
-
-just lint
-just fmt
-git diff --exit-code
-
-just gen
-git diff --exit-code
