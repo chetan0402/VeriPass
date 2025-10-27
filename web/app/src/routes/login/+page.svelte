@@ -5,14 +5,28 @@
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import LoginHelpDialog from '$lib/components/LoginHelpDialog.svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { getUserFromState } from '$lib/state/user_state';
 
 	let show_help_dialog: boolean = $state(false);
+
+	onMount(async () => {
+		try {
+			let user = await getUserFromState();
+			if (user) {
+				loginSuccess();
+			}
+		} catch {
+			//No active session present
+		}
+	});
 
 	function openGoogleLogin() {
 		alert('Not implemented yet');
 		localStorage.setItem('user_id', '12345');
 		loginSuccess();
 	}
+
 	function loginSuccess() {
 		goto('/home', { replaceState: true });
 	}

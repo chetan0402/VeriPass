@@ -23,7 +23,9 @@
 </script>
 
 <div class="absolute z-10 flex h-dvh w-dvw flex-col items-center justify-center bg-[#00000088]">
-	<div class="relative flex flex-col items-center justify-center rounded-lg bg-white p-4 shadow-lg">
+	<div
+		class="animate__animated animate__fadeIn relative flex flex-col items-center justify-center rounded-lg bg-white p-4 shadow-lg"
+	>
 		<div>
 			<Datepicker
 				class="shadow-none"

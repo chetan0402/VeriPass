@@ -39,6 +39,7 @@
 }
 
 :root {
+	--animate-duration: 300ms;
 	--app-primary: #2b2a60;
 	--app-secondary: #5555c2;
 	--app-tertiary: #dba3ff;
@@ -89,7 +90,7 @@
 }
 .select-style-filter {
 	height: 2rem;
-	width: 8rem;
+	width: 5.7rem;
 	border: 1px solid var(--color-primary-600);
 	background: var(--color-primary-100);
 	padding: 1px;

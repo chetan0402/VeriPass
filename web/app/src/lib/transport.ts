@@ -7,7 +7,7 @@ import { timestampNow } from '@bufbuild/protobuf/wkt';
 import {
 	type Admin,
 	AdminService,
-	type GetAllPassesByHostelResponse,
+	type GetAllPassesByHostelRequest,
 	type GetAllPassesByHostelResponse_InfoIncludedPass
 } from '$lib/gen/veripass/v1/admin_pb';
 
@@ -46,6 +46,43 @@ function getPassType(selected: ExitRequest_ExitType): Pass_PassType {
 		[ExitRequest_ExitType.UNSPECIFIED]: Pass_PassType.UNSPECIFIED
 	};
 	return map[selected] ?? ExitRequest_ExitType.UNSPECIFIED;
+}
+
+function generateMockPasesForHostel(
+	req: GetAllPassesByHostelRequest
+): GetAllPassesByHostelResponse_InfoIncludedPass[] {
+	const newMockPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] = [];
+	for (let i = 0; i < req.pageSize; i++) {
+		let endtime;
+		let mockStartTime = req.startTime;
+		if (timestampToMs(timestampNow()) - timestampToMs(req.pageToken) > 60 * 60 * 1000) {
+			mockStartTime = req.pageToken;
+		}
+		const idIdentifier = timestampToMs(mockStartTime) + (i + 1) * 60 * 1000;
+		const id = 'pass' + idIdentifier;
+		if (!req.passIsOpen) {
+			endtime = msToTimestamp(idIdentifier + Math.random() * 60 * 60 * 1000);
+		}
+		let passType = Math.floor(Math.random() * 3) + 1;
+		if (req.type !== Pass_PassType.UNSPECIFIED) {
+			passType = req.type;
+		}
+		const infoPass: GetAllPassesByHostelResponse_InfoIncludedPass = {
+			$typeName: 'veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass',
+			pass: {
+				id: id,
+				userId: '12345',
+				type: passType,
+				startTime: msToTimestamp(idIdentifier),
+				endTime: endtime,
+				$typeName: 'veripass.v1.Pass'
+			},
+			studentRoom: 'C' + Math.floor(Math.random() * 100),
+			studentName: 'Mock Student' + Math.floor(Math.random() * 100)
+		};
+		newMockPasses.push(infoPass);
+	}
+	return newMockPasses;
 }
 
 const mockRouter = createRouterTransport(({ rpc }) => {
@@ -141,32 +178,13 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(AdminService.method.getAllPassesByHostel, (req) => {
-		const pageSize = req.pageSize;
-		const pageTokenMs = timestampToMs(req.pageToken);
-		if (Object.values(mockPasses).length < 10) {
-			generateMockPasesForPage();
-		}
-		const sortedPasses = Object.values(mockPasses).sort(
-			(a, b) => timestampToMs(b.startTime) - timestampToMs(a.startTime)
-		);
-		const paginated = sortedPasses.filter((p) => timestampToMs(p.startTime) < pageTokenMs);
-		const passes = paginated.slice(0, pageSize);
-		const nextPageToken =
-			paginated.length > pageSize ? passes[passes.length - 1].startTime : msToTimestamp(0);
-		const infoIncludedPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] = [];
-		for (const pass of passes) {
-			infoIncludedPasses.push({
-				pass,
-				studentName: 'Alice Jhonson',
-				studentRoom: 'C103',
-				$typeName: 'veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass'
-			});
-		}
+		const infoIncludedPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] =
+			generateMockPasesForHostel(req);
 		console.log(infoIncludedPasses);
 		return {
 			passes: infoIncludedPasses,
-			nextPageToken: nextPageToken
-		} as GetAllPassesByHostelResponse;
+			nextPageToken: infoIncludedPasses[infoIncludedPasses.length - 1].pass?.startTime
+		};
 	});
 });
 
