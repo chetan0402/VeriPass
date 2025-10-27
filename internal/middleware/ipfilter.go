@@ -2,6 +2,7 @@ package veripass
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"strings"
 
@@ -27,7 +28,7 @@ func NewIpMiddleware() connect.UnaryInterceptorFunc {
 				return nil, connect.NewError(connect.CodeInternal, nil)
 			}
 			if !ipv4Net.Contains(ip) && !ipv6Net.Contains(ip) {
-				return nil, connect.NewError(connect.CodePermissionDenied, nil)
+				return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("IP not allowed: %v", net.IP(ip).String()))
 			}
 			return next(ctx, req)
 		}
