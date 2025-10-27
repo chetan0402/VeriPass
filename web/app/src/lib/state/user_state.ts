@@ -25,6 +25,12 @@ export async function getUserFromState(): Promise<User> {
 	}
 }
 
+export async function invalidateUserSession() {
+	//Reset all the session info
+	localStorage.removeItem('user_id');
+	return;
+}
+
 function getSavedUserID() {
 	//To retrieve the saved user id after login; below is only for testing
 	return localStorage.getItem('user_id');
