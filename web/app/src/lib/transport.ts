@@ -5,7 +5,7 @@ import { PassService, Pass_PassType, type Pass } from '$lib/gen/veripass/v1/pass
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 import { timestampNow } from '@bufbuild/protobuf/wkt';
 
-const MOCK = true;
+const MOCK = false;
 
 const mockPasses: {
 	[id: string]: Pass;

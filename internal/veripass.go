@@ -6,10 +6,12 @@ import (
 	"log"
 	"net/http"
 
+	"connectrpc.com/connect"
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/chetan0402/veripass/internal/ent"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	veripass "github.com/chetan0402/veripass/internal/middleware"
 	adminservice "github.com/chetan0402/veripass/internal/services/admin"
 	passservice "github.com/chetan0402/veripass/internal/services/pass"
 	userservice "github.com/chetan0402/veripass/internal/services/user"
@@ -32,6 +34,10 @@ func Run(databaseUrl string) {
 		log.Fatal(err)
 	}
 
+	interceptor := connect.WithInterceptors(
+		veripass.NewIpMiddleware(),
+	)
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("pong"))
@@ -41,7 +47,7 @@ func Run(databaseUrl string) {
 		}
 	})
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client)))
-	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client)))
+	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client), interceptor))
 	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client)))
 	log.Fatal(http.ListenAndServe("0.0.0.0:8000", h2c.NewHandler(mux, &http2.Server{})))
 }
