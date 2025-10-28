@@ -13,7 +13,13 @@ type Pass struct {
 
 func (Pass) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("id", uuid.UUID{}).Default(uuid.New),
+		field.UUID("id", uuid.UUID{}).Default(func() uuid.UUID {
+			id, err := uuid.NewV7()
+			if err != nil {
+				return uuid.Nil
+			}
+			return id
+		}),
 		field.String("user_id"),
 		field.Enum("type").Values("unspecified", "class", "market", "home", "event").Default("unspecified"),
 		field.Time("start_time"),
