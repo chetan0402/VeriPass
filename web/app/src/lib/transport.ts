@@ -1,6 +1,9 @@
 import { Code, ConnectError, createRouterTransport } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
-import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
+import {
+	ExitRequest_ExitType,
+	UserService
+} from './gen/veripass/v1/user_pb';
 import { PassService, Pass_PassType, type Pass } from '$lib/gen/veripass/v1/pass_pb';
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 import { timestampNow } from '@bufbuild/protobuf/wkt';
@@ -187,6 +190,17 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		return {
 			passes: infoIncludedPasses,
 			nextPageToken: infoIncludedPasses[infoIncludedPasses.length - 1].pass?.startTime
+		};
+	});
+
+	rpc(UserService.method.getPhoto, async () => {
+		const response = await fetch(
+			'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png'
+		);
+		const arrayBuffer = await response.arrayBuffer();
+		return {
+			photo: new Uint8Array(arrayBuffer),
+			$typeName: 'veripass.v1.GetPhotoResponse'
 		};
 	});
 });
