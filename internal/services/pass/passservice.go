@@ -46,7 +46,10 @@ func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[v
 		return nil, connect.NewError(connect.CodePermissionDenied, err)
 	}
 
-	passId := uuid.New()
+	passId, err := uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
 	timeNow := time.Now()
 
 	if err := s.client.Pass.Create().SetID(passId).SetUserID(userId).SetType(passType).SetStartTime(timeNow).Exec(ctx); err != nil {
