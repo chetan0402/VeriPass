@@ -30,7 +30,8 @@ function generateMockPasesForPage() {
 			type: Pass_PassType.CLASS,
 			startTime: msToTimestamp(idIdentifier - 60 * 60 * 1000),
 			endTime: endtime,
-			$typeName: 'veripass.v1.Pass'
+			$typeName: 'veripass.v1.Pass',
+			qrCode: 'https://www.google.com'
 		};
 		newMockPasses.push(mockPasses[id]);
 	}
@@ -75,7 +76,8 @@ function generateMockPasesForHostel(
 				type: passType,
 				startTime: msToTimestamp(idIdentifier),
 				endTime: endtime,
-				$typeName: 'veripass.v1.Pass'
+				$typeName: 'veripass.v1.Pass',
+				qrCode: 'https://www.google.com'
 			},
 			studentRoom: 'C' + Math.floor(Math.random() * 100),
 			studentName: 'Mock Student' + Math.floor(Math.random() * 100)
@@ -132,7 +134,8 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			userId: userId,
 			type: getPassType(req.type),
 			startTime: timestampNow(),
-			$typeName: 'veripass.v1.Pass'
+			$typeName: 'veripass.v1.Pass',
+			qrCode: 'https://www.google.com'
 		};
 
 		return {

@@ -3,14 +3,16 @@
 	import { type Pass, Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, pushState, replaceState } from '$app/navigation';
 	import { msToDurationString, timestampToMs } from '$lib/timestamp_utils';
 	import { timestampNow } from '@bufbuild/protobuf/wkt';
 	import PassActionDialog from '$lib/components/PassActionDialog.svelte';
 	import { fade } from 'svelte/transition';
 	import { Code, ConnectError, createClient } from '@connectrpc/connect';
 	import { onMount } from 'svelte';
-	import { transport } from '$lib';
+	import { PopupType, transport } from '$lib';
+	import Qrcode from '@castlenine/svelte-qrcode';
+	import { page } from '$app/state';
 
 	let { pass, user, passFetchStatus, refreshPass } = $props<{
 		pass: Pass | undefined;
@@ -20,6 +22,7 @@
 	}>();
 
 	let isClosed: boolean = $derived(pass ? pass.endTime != null : false);
+	let qrData: string = $derived(pass ? pass.qrCode : 'retry');
 	let currentTime = $state('loading...');
 	let show_closing_box = $state(false);
 	let duration: string = $state(getDurationFromPass(pass));
@@ -103,6 +106,13 @@
 			show_closing_box = false;
 		}
 	}
+
+	function viewQr() {
+		pushState('', { popupVisible: PopupType.MENU });
+	}
+	function closeQrView() {
+		replaceState('', { popupVisible: PopupType.NONE });
+	}
 </script>
 
 <div
@@ -116,11 +126,29 @@
 	<h1 class="mt-4 mb-3 text-3xl font-bold text-white">Exit Pass</h1>
 
 	{#if user}
-		<div class="from-primary-600 to-secondary-600 h-25 rounded-[12px] bg-gradient-to-r p-[1px]">
-			<img src="../placeholder.png" class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
+		<div class="from-primary-600 to-secondary-600 h-30 rounded-[12px] bg-gradient-to-r p-[1px]">
+			<div class="flex h-full flex-row gap-2 rounded-[12px] bg-white">
+				<img src="../placeholder.png" class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
+				<button onclick={viewQr} class="flex h-full w-30 items-center justify-center">
+					{#if pass}
+						<Qrcode
+							data={qrData}
+							shape="circle"
+							errorCorrectionLevel="H"
+							logoPath="../logo.png"
+							logoSize={50}
+							logoBackgroundColor="#00000000"
+							width={100}
+							height={100}
+						></Qrcode>
+					{:else}
+						<p>Loading QR</p>
+					{/if}
+				</button>
+			</div>
 		</div>
 		<h1 class="mt-4 text-2xl font-bold text-white">{user.name}</h1>
-		<p class="text-l mt-2 font-bold text-white">{user.id}</p>
+		<p class="text-l mt- font-bold text-white">{user.id}</p>
 		<BorderDiv
 			classNameParent="m-4"
 			roundParent="full"
@@ -226,3 +254,29 @@
 		</div>
 	{/if}
 </div>
+{#if page.state.popupVisible === PopupType.MENU}
+	<div
+		class="fixed inset-0 z-5 flex items-center justify-center bg-[#00000055] shadow-2xl shadow-gray-700 backdrop-blur-sm"
+		role="dialog"
+		tabindex="0"
+		onkeydown={closeQrView}
+		onclick={closeQrView}
+	>
+		<div class="animate__animated animate__fadeIn m-2 mt-16 rounded-xl bg-white p-4 shadow-lg">
+			{#if pass}
+				<Qrcode
+					data={qrData}
+					shape="circle"
+					errorCorrectionLevel="H"
+					logoPath="../logo.png"
+					logoSize={50}
+					logoBackgroundColor="#00000000"
+					width={300}
+					height={300}
+				></Qrcode>
+			{:else}
+				<p>Loading QR</p>
+			{/if}
+		</div>
+	</div>
+{/if}
