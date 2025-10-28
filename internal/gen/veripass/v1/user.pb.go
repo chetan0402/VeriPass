@@ -337,6 +337,94 @@ func (x *GetUserRequest) GetId() string {
 	return ""
 }
 
+type GetPhotoRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPhotoRequest) Reset() {
+	*x = GetPhotoRequest{}
+	mi := &file_veripass_v1_user_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPhotoRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPhotoRequest) ProtoMessage() {}
+
+func (x *GetPhotoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_user_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPhotoRequest.ProtoReflect.Descriptor instead.
+func (*GetPhotoRequest) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_user_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetPhotoRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetPhotoResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Photo         []byte                 `protobuf:"bytes,1,opt,name=photo,proto3" json:"photo,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPhotoResponse) Reset() {
+	*x = GetPhotoResponse{}
+	mi := &file_veripass_v1_user_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPhotoResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPhotoResponse) ProtoMessage() {}
+
+func (x *GetPhotoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_user_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPhotoResponse.ProtoReflect.Descriptor instead.
+func (*GetPhotoResponse) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_user_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetPhotoResponse) GetPhoto() []byte {
+	if x != nil {
+		return x.Photo
+	}
+	return nil
+}
+
 var File_veripass_v1_user_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_user_proto_rawDesc = "" +
@@ -362,10 +450,15 @@ const file_veripass_v1_user_proto_rawDesc = "" +
 	"\fExitResponse\x12\x17\n" +
 	"\apass_id\x18\x01 \x01(\tR\x06passId\" \n" +
 	"\x0eGetUserRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xc1\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"!\n" +
+	"\x0fGetPhotoRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"(\n" +
+	"\x10GetPhotoResponse\x12\x14\n" +
+	"\x05photo\x18\x01 \x01(\fR\x05photo2\x8a\x02\n" +
 	"\vUserService\x12:\n" +
 	"\x05Entry\x12\x19.veripass.v1.EntryRequest\x1a\x16.google.protobuf.Empty\x12;\n" +
-	"\x04Exit\x12\x18.veripass.v1.ExitRequest\x1a\x19.veripass.v1.ExitResponse\x129\n" +
+	"\x04Exit\x12\x18.veripass.v1.ExitRequest\x1a\x19.veripass.v1.ExitResponse\x12G\n" +
+	"\bGetPhoto\x12\x1c.veripass.v1.GetPhotoRequest\x1a\x1d.veripass.v1.GetPhotoResponse\x129\n" +
 	"\aGetUser\x12\x1b.veripass.v1.GetUserRequest\x1a\x11.veripass.v1.UserB\xad\x01\n" +
 	"\x0fcom.veripass.v1B\tUserProtoP\x01ZBgithub.com/chetan0402/veripass/internal/gen/veripass/v1;veripassv1\xa2\x02\x03VXX\xaa\x02\vVeripass.V1\xca\x02\vVeripass\\V1\xe2\x02\x17Veripass\\V1\\GPBMetadata\xea\x02\fVeripass::V1b\x06proto3"
 
@@ -382,7 +475,7 @@ func file_veripass_v1_user_proto_rawDescGZIP() []byte {
 }
 
 var file_veripass_v1_user_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_veripass_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_veripass_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_veripass_v1_user_proto_goTypes = []any{
 	(ExitRequest_ExitType)(0), // 0: veripass.v1.ExitRequest.ExitType
 	(*User)(nil),              // 1: veripass.v1.User
@@ -390,18 +483,22 @@ var file_veripass_v1_user_proto_goTypes = []any{
 	(*ExitRequest)(nil),       // 3: veripass.v1.ExitRequest
 	(*ExitResponse)(nil),      // 4: veripass.v1.ExitResponse
 	(*GetUserRequest)(nil),    // 5: veripass.v1.GetUserRequest
-	(*emptypb.Empty)(nil),     // 6: google.protobuf.Empty
+	(*GetPhotoRequest)(nil),   // 6: veripass.v1.GetPhotoRequest
+	(*GetPhotoResponse)(nil),  // 7: veripass.v1.GetPhotoResponse
+	(*emptypb.Empty)(nil),     // 8: google.protobuf.Empty
 }
 var file_veripass_v1_user_proto_depIdxs = []int32{
 	0, // 0: veripass.v1.ExitRequest.type:type_name -> veripass.v1.ExitRequest.ExitType
 	2, // 1: veripass.v1.UserService.Entry:input_type -> veripass.v1.EntryRequest
 	3, // 2: veripass.v1.UserService.Exit:input_type -> veripass.v1.ExitRequest
-	5, // 3: veripass.v1.UserService.GetUser:input_type -> veripass.v1.GetUserRequest
-	6, // 4: veripass.v1.UserService.Entry:output_type -> google.protobuf.Empty
-	4, // 5: veripass.v1.UserService.Exit:output_type -> veripass.v1.ExitResponse
-	1, // 6: veripass.v1.UserService.GetUser:output_type -> veripass.v1.User
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
+	6, // 3: veripass.v1.UserService.GetPhoto:input_type -> veripass.v1.GetPhotoRequest
+	5, // 4: veripass.v1.UserService.GetUser:input_type -> veripass.v1.GetUserRequest
+	8, // 5: veripass.v1.UserService.Entry:output_type -> google.protobuf.Empty
+	4, // 6: veripass.v1.UserService.Exit:output_type -> veripass.v1.ExitResponse
+	7, // 7: veripass.v1.UserService.GetPhoto:output_type -> veripass.v1.GetPhotoResponse
+	1, // 8: veripass.v1.UserService.GetUser:output_type -> veripass.v1.User
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -418,7 +515,7 @@ func file_veripass_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_veripass_v1_user_proto_rawDesc), len(file_veripass_v1_user_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

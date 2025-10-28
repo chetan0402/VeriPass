@@ -86,6 +86,10 @@ func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.Ex
 	}), nil
 }
 
+func (s *UserService) GetPhoto(context.Context, *connect.Request[veripassv1.GetPhotoRequest]) (*connect.Response[veripassv1.GetPhotoResponse], error) {
+	panic("unimplemented")
+}
+
 func (s *UserService) GetUser(ctx context.Context, r *connect.Request[veripassv1.GetUserRequest]) (*connect.Response[veripassv1.User], error) {
 	var (
 		id = r.Msg.Id
