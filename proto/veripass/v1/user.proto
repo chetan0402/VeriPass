@@ -15,6 +15,7 @@ message User {
 service UserService {
   rpc Entry(EntryRequest) returns (google.protobuf.Empty);
   rpc Exit(ExitRequest) returns (ExitResponse);
+  rpc GetPhoto(GetPhotoRequest) returns (GetPhotoResponse);
   rpc GetUser(GetUserRequest) returns (User);
 }
 
@@ -40,4 +41,12 @@ message ExitResponse {
 
 message GetUserRequest {
   string id = 1;
+}
+
+message GetPhotoRequest {
+  string id = 1;
+}
+
+message GetPhotoResponse {
+  bytes photo = 1;
 }

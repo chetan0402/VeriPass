@@ -38,6 +38,8 @@ const (
 	UserServiceEntryProcedure = "/veripass.v1.UserService/Entry"
 	// UserServiceExitProcedure is the fully-qualified name of the UserService's Exit RPC.
 	UserServiceExitProcedure = "/veripass.v1.UserService/Exit"
+	// UserServiceGetPhotoProcedure is the fully-qualified name of the UserService's GetPhoto RPC.
+	UserServiceGetPhotoProcedure = "/veripass.v1.UserService/GetPhoto"
 	// UserServiceGetUserProcedure is the fully-qualified name of the UserService's GetUser RPC.
 	UserServiceGetUserProcedure = "/veripass.v1.UserService/GetUser"
 )
@@ -46,6 +48,7 @@ const (
 type UserServiceClient interface {
 	Entry(context.Context, *connect.Request[v1.EntryRequest]) (*connect.Response[emptypb.Empty], error)
 	Exit(context.Context, *connect.Request[v1.ExitRequest]) (*connect.Response[v1.ExitResponse], error)
+	GetPhoto(context.Context, *connect.Request[v1.GetPhotoRequest]) (*connect.Response[v1.GetPhotoResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error)
 }
 
@@ -72,6 +75,12 @@ func NewUserServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(userServiceMethods.ByName("Exit")),
 			connect.WithClientOptions(opts...),
 		),
+		getPhoto: connect.NewClient[v1.GetPhotoRequest, v1.GetPhotoResponse](
+			httpClient,
+			baseURL+UserServiceGetPhotoProcedure,
+			connect.WithSchema(userServiceMethods.ByName("GetPhoto")),
+			connect.WithClientOptions(opts...),
+		),
 		getUser: connect.NewClient[v1.GetUserRequest, v1.User](
 			httpClient,
 			baseURL+UserServiceGetUserProcedure,
@@ -83,9 +92,10 @@ func NewUserServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // userServiceClient implements UserServiceClient.
 type userServiceClient struct {
-	entry   *connect.Client[v1.EntryRequest, emptypb.Empty]
-	exit    *connect.Client[v1.ExitRequest, v1.ExitResponse]
-	getUser *connect.Client[v1.GetUserRequest, v1.User]
+	entry    *connect.Client[v1.EntryRequest, emptypb.Empty]
+	exit     *connect.Client[v1.ExitRequest, v1.ExitResponse]
+	getPhoto *connect.Client[v1.GetPhotoRequest, v1.GetPhotoResponse]
+	getUser  *connect.Client[v1.GetUserRequest, v1.User]
 }
 
 // Entry calls veripass.v1.UserService.Entry.
@@ -98,6 +108,11 @@ func (c *userServiceClient) Exit(ctx context.Context, req *connect.Request[v1.Ex
 	return c.exit.CallUnary(ctx, req)
 }
 
+// GetPhoto calls veripass.v1.UserService.GetPhoto.
+func (c *userServiceClient) GetPhoto(ctx context.Context, req *connect.Request[v1.GetPhotoRequest]) (*connect.Response[v1.GetPhotoResponse], error) {
+	return c.getPhoto.CallUnary(ctx, req)
+}
+
 // GetUser calls veripass.v1.UserService.GetUser.
 func (c *userServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error) {
 	return c.getUser.CallUnary(ctx, req)
@@ -107,6 +122,7 @@ func (c *userServiceClient) GetUser(ctx context.Context, req *connect.Request[v1
 type UserServiceHandler interface {
 	Entry(context.Context, *connect.Request[v1.EntryRequest]) (*connect.Response[emptypb.Empty], error)
 	Exit(context.Context, *connect.Request[v1.ExitRequest]) (*connect.Response[v1.ExitResponse], error)
+	GetPhoto(context.Context, *connect.Request[v1.GetPhotoRequest]) (*connect.Response[v1.GetPhotoResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error)
 }
 
@@ -129,6 +145,12 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(userServiceMethods.ByName("Exit")),
 		connect.WithHandlerOptions(opts...),
 	)
+	userServiceGetPhotoHandler := connect.NewUnaryHandler(
+		UserServiceGetPhotoProcedure,
+		svc.GetPhoto,
+		connect.WithSchema(userServiceMethods.ByName("GetPhoto")),
+		connect.WithHandlerOptions(opts...),
+	)
 	userServiceGetUserHandler := connect.NewUnaryHandler(
 		UserServiceGetUserProcedure,
 		svc.GetUser,
@@ -141,6 +163,8 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 			userServiceEntryHandler.ServeHTTP(w, r)
 		case UserServiceExitProcedure:
 			userServiceExitHandler.ServeHTTP(w, r)
+		case UserServiceGetPhotoProcedure:
+			userServiceGetPhotoHandler.ServeHTTP(w, r)
 		case UserServiceGetUserProcedure:
 			userServiceGetUserHandler.ServeHTTP(w, r)
 		default:
@@ -158,6 +182,10 @@ func (UnimplementedUserServiceHandler) Entry(context.Context, *connect.Request[v
 
 func (UnimplementedUserServiceHandler) Exit(context.Context, *connect.Request[v1.ExitRequest]) (*connect.Response[v1.ExitResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.UserService.Exit is not implemented"))
+}
+
+func (UnimplementedUserServiceHandler) GetPhoto(context.Context, *connect.Request[v1.GetPhotoRequest]) (*connect.Response[v1.GetPhotoResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.UserService.GetPhoto is not implemented"))
 }
 
 func (UnimplementedUserServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error) {

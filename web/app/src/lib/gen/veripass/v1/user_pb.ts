@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file veripass/v1/user.proto.
  */
 export const file_veripass_v1_user: GenFile = /*@__PURE__*/
-  fileDesc("ChZ2ZXJpcGFzcy92MS91c2VyLnByb3RvEgt2ZXJpcGFzcy52MSJNCgRVc2VyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEcm9vbRgDIAEoCRIOCgZob3N0ZWwYBCABKAkSDQoFcGhvbmUYBSABKAkiHwoMRW50cnlSZXF1ZXN0Eg8KB3Bhc3NfaWQYASABKAkixQEKC0V4aXRSZXF1ZXN0EgoKAmlkGAEgASgJEi8KBHR5cGUYAiABKA4yIS52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdC5FeGl0VHlwZSJ5CghFeGl0VHlwZRIZChVFWElUX1RZUEVfVU5TUEVDSUZJRUQQABITCg9FWElUX1RZUEVfQ0xBU1MQARIUChBFWElUX1RZUEVfTUFSS0VUEAISEgoORVhJVF9UWVBFX0hPTUUQAxITCg9FWElUX1RZUEVfRVZFTlQQBCIfCgxFeGl0UmVzcG9uc2USDwoHcGFzc19pZBgBIAEoCSIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCTLBAQoLVXNlclNlcnZpY2USOgoFRW50cnkSGS52ZXJpcGFzcy52MS5FbnRyeVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSOwoERXhpdBIYLnZlcmlwYXNzLnYxLkV4aXRSZXF1ZXN0GhkudmVyaXBhc3MudjEuRXhpdFJlc3BvbnNlEjkKB0dldFVzZXISGy52ZXJpcGFzcy52MS5HZXRVc2VyUmVxdWVzdBoRLnZlcmlwYXNzLnYxLlVzZXJCrQEKD2NvbS52ZXJpcGFzcy52MUIJVXNlclByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z", [file_google_protobuf_empty]);
+  fileDesc("ChZ2ZXJpcGFzcy92MS91c2VyLnByb3RvEgt2ZXJpcGFzcy52MSJNCgRVc2VyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEcm9vbRgDIAEoCRIOCgZob3N0ZWwYBCABKAkSDQoFcGhvbmUYBSABKAkiHwoMRW50cnlSZXF1ZXN0Eg8KB3Bhc3NfaWQYASABKAkixQEKC0V4aXRSZXF1ZXN0EgoKAmlkGAEgASgJEi8KBHR5cGUYAiABKA4yIS52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdC5FeGl0VHlwZSJ5CghFeGl0VHlwZRIZChVFWElUX1RZUEVfVU5TUEVDSUZJRUQQABITCg9FWElUX1RZUEVfQ0xBU1MQARIUChBFWElUX1RZUEVfTUFSS0VUEAISEgoORVhJVF9UWVBFX0hPTUUQAxITCg9FWElUX1RZUEVfRVZFTlQQBCIfCgxFeGl0UmVzcG9uc2USDwoHcGFzc19pZBgBIAEoCSIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCSIdCg9HZXRQaG90b1JlcXVlc3QSCgoCaWQYASABKAkiIQoQR2V0UGhvdG9SZXNwb25zZRINCgVwaG90bxgBIAEoDDKKAgoLVXNlclNlcnZpY2USOgoFRW50cnkSGS52ZXJpcGFzcy52MS5FbnRyeVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSOwoERXhpdBIYLnZlcmlwYXNzLnYxLkV4aXRSZXF1ZXN0GhkudmVyaXBhc3MudjEuRXhpdFJlc3BvbnNlEkcKCEdldFBob3RvEhwudmVyaXBhc3MudjEuR2V0UGhvdG9SZXF1ZXN0Gh0udmVyaXBhc3MudjEuR2V0UGhvdG9SZXNwb25zZRI5CgdHZXRVc2VyEhsudmVyaXBhc3MudjEuR2V0VXNlclJlcXVlc3QaES52ZXJpcGFzcy52MS5Vc2VyQq0BCg9jb20udmVyaXBhc3MudjFCCVVzZXJQcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw", [file_google_protobuf_empty]);
 
 /**
  * @generated from message veripass.v1.User
@@ -161,6 +161,40 @@ export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
   messageDesc(file_veripass_v1_user, 4);
 
 /**
+ * @generated from message veripass.v1.GetPhotoRequest
+ */
+export type GetPhotoRequest = Message<"veripass.v1.GetPhotoRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message veripass.v1.GetPhotoRequest.
+ * Use `create(GetPhotoRequestSchema)` to create a new message.
+ */
+export const GetPhotoRequestSchema: GenMessage<GetPhotoRequest> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_user, 5);
+
+/**
+ * @generated from message veripass.v1.GetPhotoResponse
+ */
+export type GetPhotoResponse = Message<"veripass.v1.GetPhotoResponse"> & {
+  /**
+   * @generated from field: bytes photo = 1;
+   */
+  photo: Uint8Array;
+};
+
+/**
+ * Describes the message veripass.v1.GetPhotoResponse.
+ * Use `create(GetPhotoResponseSchema)` to create a new message.
+ */
+export const GetPhotoResponseSchema: GenMessage<GetPhotoResponse> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_user, 6);
+
+/**
  * @generated from service veripass.v1.UserService
  */
 export const UserService: GenService<{
@@ -179,6 +213,14 @@ export const UserService: GenService<{
     methodKind: "unary";
     input: typeof ExitRequestSchema;
     output: typeof ExitResponseSchema;
+  },
+  /**
+   * @generated from rpc veripass.v1.UserService.GetPhoto
+   */
+  getPhoto: {
+    methodKind: "unary";
+    input: typeof GetPhotoRequestSchema;
+    output: typeof GetPhotoResponseSchema;
   },
   /**
    * @generated from rpc veripass.v1.UserService.GetUser
