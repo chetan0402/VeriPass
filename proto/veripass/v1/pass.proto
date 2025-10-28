@@ -17,6 +17,7 @@ message Pass {
   PassType type = 3;
   google.protobuf.Timestamp start_time = 4;
   optional google.protobuf.Timestamp end_time = 5;
+  string qr_code = 6;
 }
 
 service PassService {

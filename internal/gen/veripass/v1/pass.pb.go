@@ -84,6 +84,7 @@ type Pass struct {
 	Type          Pass_PassType          `protobuf:"varint,3,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
 	StartTime     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
 	EndTime       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
+	QrCode        string                 `protobuf:"bytes,6,opt,name=qr_code,json=qrCode,proto3" json:"qr_code,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,6 +152,13 @@ func (x *Pass) GetEndTime() *timestamppb.Timestamp {
 		return x.EndTime
 	}
 	return nil
+}
+
+func (x *Pass) GetQrCode() string {
+	if x != nil {
+		return x.QrCode
+	}
+	return ""
 }
 
 type CreateManualPassRequest struct {
@@ -441,14 +449,15 @@ var File_veripass_v1_pass_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\n" +
-	"\x16veripass/v1/pass.proto\x12\vveripass.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xde\x02\n" +
+	"\x16veripass/v1/pass.proto\x12\vveripass.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf7\x02\n" +
 	"\x04Pass\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12.\n" +
 	"\x04type\x18\x03 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\x129\n" +
 	"\n" +
 	"start_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12:\n" +
-	"\bend_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\aendTime\x88\x01\x01\"y\n" +
+	"\bend_time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\aendTime\x88\x01\x01\x12\x17\n" +
+	"\aqr_code\x18\x06 \x01(\tR\x06qrCode\"y\n" +
 	"\bPassType\x12\x19\n" +
 	"\x15PASS_TYPE_UNSPECIFIED\x10\x00\x12\x13\n" +
 	"\x0fPASS_TYPE_CLASS\x10\x01\x12\x14\n" +
