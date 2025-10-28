@@ -62,7 +62,10 @@ func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.Ex
 		passType = pass.TypeEvent
 	}
 
-	var passId = uuid.New()
+	var passId, err = uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
 
 	// TODO - after OAuth is done, use tokens instead of user id.
 	if _, err := s.client.User.Get(ctx, id); err != nil {
