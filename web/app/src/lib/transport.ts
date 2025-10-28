@@ -1,9 +1,6 @@
 import { Code, ConnectError, createRouterTransport } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
-import {
-	ExitRequest_ExitType,
-	UserService
-} from './gen/veripass/v1/user_pb';
+import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { PassService, Pass_PassType, type Pass } from '$lib/gen/veripass/v1/pass_pb';
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 import { timestampNow } from '@bufbuild/protobuf/wkt';
