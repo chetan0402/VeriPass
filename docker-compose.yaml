@@ -1,23 +1,20 @@
 services:
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    container_name: backend
+    image: veripass/backend:latest
+    container_name: veripass-backend
     env_file:
       - ./cmd/veripass/.env
     depends_on:
       pgdb:
         condition: service_healthy
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    container_name: frontend
+    image: veripass/frontend:latest
+    container_name: veripass-frontend
     depends_on:
       - backend
   nginx:
     image: nginx:latest
+    container_name: veripass-nginx
     ports:
       - "5002:80"
     volumes:
@@ -34,7 +31,7 @@ services:
       POSTGRES_DB: veripass
     volumes:
       - pgdata:/var/lib/postgresql
-    container_name: pgdb
+    container_name: veripass-pgdb
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "veripass"]
       interval: 10s
