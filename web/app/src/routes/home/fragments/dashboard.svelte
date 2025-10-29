@@ -12,6 +12,8 @@
 	import { Code, ConnectError, createClient } from '@connectrpc/connect';
 	import { transport } from '$lib';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { getUserProfileFromState } from '$lib/state/user_state';
 
 	const { user } = $props<{ user: User }>();
 	const client = createClient(UserService, transport);
@@ -25,6 +27,18 @@
 	];
 
 	let show_generating_box = $state(false);
+	let userprofile = $state('./placeholder.png');
+
+	onMount(async () => {
+		try {
+			let url = await getUserProfileFromState();
+			if (url) {
+				userprofile = url;
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	});
 
 	function generatePass() {
 		if (selected === Pass_PassType.UNSPECIFIED) {
@@ -89,7 +103,7 @@
 	>
 		<div class="bg-[] flex flex-row rounded-[11px] bg-white p-5">
 			<div class="from-primary-600 to-secondary-600 h-28 rounded-[12px] bg-gradient-to-r p-[1px]">
-				<img src="placeholder.png" class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
+				<img src={userprofile} class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
 			</div>
 			<div class="ml-7">
 				<h1 class="text-primary text-xl font-bold">{user.name}</h1>

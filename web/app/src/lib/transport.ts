@@ -189,6 +189,17 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			nextPageToken: infoIncludedPasses[infoIncludedPasses.length - 1].pass?.startTime
 		};
 	});
+
+	rpc(UserService.method.getPhoto, async () => {
+		const response = await fetch(
+			'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png'
+		);
+		const arrayBuffer = await response.arrayBuffer();
+		return {
+			photo: new Uint8Array(arrayBuffer),
+			$typeName: 'veripass.v1.GetPhotoResponse'
+		};
+	});
 });
 
 export const transport = createConnectTransport({

@@ -13,6 +13,7 @@
 	import { PopupType, transport } from '$lib';
 	import Qrcode from '@castlenine/svelte-qrcode';
 	import { page } from '$app/state';
+	import { getUserProfileFromState } from '$lib/state/user_state';
 
 	let { pass, user, passFetchStatus, refreshPass } = $props<{
 		pass: Pass | undefined;
@@ -26,6 +27,8 @@
 	let currentTime = $state('loading...');
 	let show_closing_box = $state(false);
 	let duration: string = $state(getDurationFromPass(pass));
+
+	let userprofile = $state('./placeholder.png');
 
 	function getPassType(passItem: Pass) {
 		switch (passItem.type) {
@@ -64,6 +67,16 @@
 	}
 
 	onMount(() => {
+		getUserProfileFromState()
+			.then((url) => {
+				if (url) {
+					userprofile = url;
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
 		const interval = setInterval(updateTimeTicker, 1000);
 		return () => clearInterval(interval);
 	});
@@ -110,6 +123,7 @@
 	function viewQr() {
 		pushState('', { popupVisible: PopupType.MENU });
 	}
+
 	function closeQrView() {
 		replaceState('', { popupVisible: PopupType.NONE });
 	}
@@ -128,7 +142,7 @@
 	{#if user}
 		<div class="from-primary-600 to-secondary-600 h-30 rounded-[12px] bg-gradient-to-r p-[1px]">
 			<div class="flex h-full flex-row gap-2 rounded-[12px] bg-white">
-				<img src="../placeholder.png" class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
+				<img src={userprofile} class="bg-primary-200 h-full rounded-[11px]" alt="profile" />
 				<button onclick={viewQr} class="flex h-full w-30 items-center justify-center">
 					{#if pass}
 						<Qrcode

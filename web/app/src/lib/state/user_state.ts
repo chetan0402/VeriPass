@@ -6,6 +6,8 @@ import { NoUserSessionFound } from '$lib/errors';
 let user: User | undefined;
 const userClient = createClient(UserService, transport);
 
+let userprofile: string | undefined;
+
 export async function getUserFromState(): Promise<User> {
 	if (user) {
 		return user;
@@ -21,6 +23,28 @@ export async function getUserFromState(): Promise<User> {
 		return user;
 	} catch (e) {
 		console.error('Error fetching user from server', e);
+		throw e;
+	}
+}
+
+export async function getUserProfileFromState() {
+	if (userprofile) {
+		return userprofile;
+	}
+	const userId = getSavedUserID();
+	if (!userId) {
+		throw new NoUserSessionFound();
+	}
+	try {
+		const userProfileResponse = await userClient.getPhoto({ id: userId });
+		console.log(userProfileResponse);
+		if (userProfileResponse.photo) {
+			const blob = new Blob([userProfileResponse.photo]);
+			userprofile = URL.createObjectURL(blob);
+			return userprofile;
+		}
+	} catch (e) {
+		console.error('Error fetching user image from server', e);
 		throw e;
 	}
 }
