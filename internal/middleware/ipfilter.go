@@ -9,8 +9,8 @@ import (
 	"connectrpc.com/connect"
 )
 
-const ALLOWED_IPv4_RANGE = "192.168.1.1/24"
-const ALLOWED_IPv6_RANGE = "::1/128"
+const ALLOWED_IPv4_RANGE = "0.0.0.0/0"
+const ALLOWED_IPv6_RANGE = "::/0"
 
 func NewIpMiddleware() connect.UnaryInterceptorFunc {
 	_, ipv4Net, err := net.ParseCIDR(ALLOWED_IPv4_RANGE)

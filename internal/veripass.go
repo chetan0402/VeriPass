@@ -46,8 +46,8 @@ func Run(databaseUrl string) {
 			return
 		}
 	})
-	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client)))
+	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))
 	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client), interceptor))
-	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client)))
+	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client), interceptor))
 	log.Fatal(http.ListenAndServe("0.0.0.0:8000", h2c.NewHandler(mux, &http2.Server{})))
 }

@@ -26,8 +26,5 @@ start-test-database:
 stop-test-database:
     docker stop veripass-test-db || true
 
-test-backend:
-    just start-test-database
-    go test -v ./internal/... || exit_code=$?
-    just stop-test-database
-    exit $exit_code
+test-backend: start-test-database && stop-test-database
+    go test -v ./internal/...
