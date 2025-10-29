@@ -224,14 +224,19 @@ func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 		return nil, err
 	}
 
-	return &veripassv1.Pass{
+	protoPass := &veripassv1.Pass{
 		Id:        entPass.ID.String(),
 		UserId:    entPass.UserID,
 		Type:      passType,
 		StartTime: timestamppb.New(entPass.StartTime),
-		EndTime:   timestamppb.New(entPass.EndTime),
 		QrCode:    signedQrCode,
-	}, nil
+	}
+
+	if !entPass.EndTime.IsZero() {
+		protoPass.EndTime = timestamppb.New(entPass.EndTime)
+	}
+
+	return protoPass, nil
 }
 
 func ProtoPassTypeToEnt(passType veripassv1.Pass_PassType) pass.Type {
