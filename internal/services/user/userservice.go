@@ -62,7 +62,10 @@ func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.Ex
 		passType = pass.TypeEvent
 	}
 
-	var passId = uuid.New()
+	var passId, err = uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
 
 	// TODO - after OAuth is done, use tokens instead of user id.
 	if _, err := s.client.User.Get(ctx, id); err != nil {
@@ -84,6 +87,10 @@ func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.Ex
 	return connect.NewResponse(&veripassv1.ExitResponse{
 		PassId: passId.String(),
 	}), nil
+}
+
+func (s *UserService) GetPhoto(context.Context, *connect.Request[veripassv1.GetPhotoRequest]) (*connect.Response[veripassv1.GetPhotoResponse], error) {
+	panic("unimplemented")
 }
 
 func (s *UserService) GetUser(ctx context.Context, r *connect.Request[veripassv1.GetUserRequest]) (*connect.Response[veripassv1.User], error) {

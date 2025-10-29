@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Progressbar } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
-	import { getUserFromState } from '$lib/state/user_state';
+	import { getUserFromState, invalidateUserSession } from '$lib/state/user_state';
 	import type { User } from '$lib/gen/veripass/v1/user_pb';
 	import { NoUserSessionFound } from '$lib/errors';
 
@@ -44,8 +44,9 @@
 			if (error instanceof NoUserSessionFound) {
 				openLoginScreen();
 			} else {
-				console.error('Unexpected error:', error);
-				status_message = 'Something went wrong. Please try again.';
+				await invalidateUserSession();
+				status_message = 'Please Login again';
+				openLoginScreen();
 			}
 		}
 	});

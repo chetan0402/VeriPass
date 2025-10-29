@@ -4,6 +4,12 @@ import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { PassService, Pass_PassType, type Pass } from '$lib/gen/veripass/v1/pass_pb';
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 import { timestampNow } from '@bufbuild/protobuf/wkt';
+import {
+	type Admin,
+	AdminService,
+	type GetAllPassesByHostelRequest,
+	type GetAllPassesByHostelResponse_InfoIncludedPass
+} from '$lib/gen/veripass/v1/admin_pb';
 
 const MOCK = false;
 
@@ -24,7 +30,8 @@ function generateMockPasesForPage() {
 			type: Pass_PassType.CLASS,
 			startTime: msToTimestamp(idIdentifier - 60 * 60 * 1000),
 			endTime: endtime,
-			$typeName: 'veripass.v1.Pass'
+			$typeName: 'veripass.v1.Pass',
+			qrCode: 'https://www.google.com'
 		};
 		newMockPasses.push(mockPasses[id]);
 	}
@@ -42,15 +49,67 @@ function getPassType(selected: ExitRequest_ExitType): Pass_PassType {
 	return map[selected] ?? ExitRequest_ExitType.UNSPECIFIED;
 }
 
+function generateMockPasesForHostel(
+	req: GetAllPassesByHostelRequest
+): GetAllPassesByHostelResponse_InfoIncludedPass[] {
+	const newMockPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] = [];
+	for (let i = 0; i < req.pageSize; i++) {
+		let endtime;
+		let mockStartTime = req.startTime;
+		if (timestampToMs(timestampNow()) - timestampToMs(req.pageToken) > 60 * 60 * 1000) {
+			mockStartTime = req.pageToken;
+		}
+		const idIdentifier = timestampToMs(mockStartTime) + (i + 1) * 60 * 1000;
+		const id = 'pass' + idIdentifier;
+		if (!req.passIsOpen) {
+			endtime = msToTimestamp(idIdentifier + Math.random() * 60 * 60 * 1000);
+		}
+		let passType = Math.floor(Math.random() * 3) + 1;
+		if (req.type !== Pass_PassType.UNSPECIFIED) {
+			passType = req.type;
+		}
+		const infoPass: GetAllPassesByHostelResponse_InfoIncludedPass = {
+			$typeName: 'veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass',
+			pass: {
+				id: id,
+				userId: '12345',
+				type: passType,
+				startTime: msToTimestamp(idIdentifier),
+				endTime: endtime,
+				$typeName: 'veripass.v1.Pass',
+				qrCode: 'https://www.google.com'
+			},
+			studentRoom: 'C' + Math.floor(Math.random() * 100),
+			studentName: 'Mock Student' + Math.floor(Math.random() * 100)
+		};
+		newMockPasses.push(infoPass);
+	}
+	return newMockPasses;
+}
+
 const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(UserService.method.getUser, (req) => {
+		if (req.id === '12345') {
+			return {
+				id: req.id,
+				name: 'Mock User',
+				hostel: 'Mock Hostel',
+				room: 'Mock Room',
+				phone: '1234567890'
+			};
+		} else {
+			throw new ConnectError('User not found', Code.NotFound);
+		}
+	});
+
+	rpc(AdminService.method.getAdmin, (req) => {
 		return {
-			id: req.id,
-			name: 'Mock User',
+			email: req.email,
+			name: 'Mock Admin',
 			hostel: 'Mock Hostel',
-			room: 'Mock Room',
-			phone: '1234567890'
-		};
+			canAddPass: true,
+			$typeName: 'veripass.v1.Admin'
+		} satisfies Admin;
 	});
 
 	rpc(PassService.method.getLatestPassByUser, (req) => {
@@ -75,7 +134,8 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			userId: userId,
 			type: getPassType(req.type),
 			startTime: timestampNow(),
-			$typeName: 'veripass.v1.Pass'
+			$typeName: 'veripass.v1.Pass',
+			qrCode: 'https://www.google.com'
 		};
 
 		return {
@@ -117,6 +177,27 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		return {
 			passes,
 			nextPageToken
+		};
+	});
+
+	rpc(AdminService.method.getAllPassesByHostel, (req) => {
+		const infoIncludedPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] =
+			generateMockPasesForHostel(req);
+		console.log(infoIncludedPasses);
+		return {
+			passes: infoIncludedPasses,
+			nextPageToken: infoIncludedPasses[infoIncludedPasses.length - 1].pass?.startTime
+		};
+	});
+
+	rpc(UserService.method.getPhoto, async () => {
+		const response = await fetch(
+			'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png'
+		);
+		const arrayBuffer = await response.arrayBuffer();
+		return {
+			photo: new Uint8Array(arrayBuffer),
+			$typeName: 'veripass.v1.GetPhotoResponse'
 		};
 	});
 });

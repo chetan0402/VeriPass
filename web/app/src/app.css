@@ -39,6 +39,7 @@
 }
 
 :root {
+	--animate-duration: 300ms;
 	--app-primary: #2b2a60;
 	--app-secondary: #5555c2;
 	--app-tertiary: #dba3ff;
@@ -85,6 +86,44 @@
 	select {
 		background-color: var(--color-primary-100);
 		border-radius: 16px;
+	}
+}
+.select-style-filter {
+	height: 2rem;
+	width: 5.7rem;
+	border: 1px solid var(--color-primary-600);
+	background: var(--color-primary-100);
+	padding: 1px;
+	color: #3f3fa2;
+	border-radius: 6px;
+	select {
+		height: 100%;
+		background-color: var(--color-primary-100);
+		border: none;
+		outline: none;
+		box-shadow: none;
+		border-radius: 5px;
+		padding: 0.2rem 0.5rem;
+		color: #3f3fa2;
+		font-weight: bold;
+		font-size: 0.8rem;
+		appearance: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+	}
+	button {
+		height: 100%;
+		width: 100%;
+		text-align: left;
+		padding-left: 0.2rem;
+		border-radius: 5px;
+		padding-top: 0.2rem;
+		padding-bottom: 0.2rem;
+		color: #3f3fa2;
+		font-weight: bold;
+		font-size: 0.67rem;
+		text-wrap: nowrap;
+		background-color: var(--color-primary-100);
 	}
 }
 .rotating-bg {

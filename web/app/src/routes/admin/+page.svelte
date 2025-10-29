@@ -1,8 +1,26 @@
 <script lang="ts">
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { getAdminFromState } from '$lib/state/admin_state';
+	import type { Admin } from '$lib/gen/veripass/v1/admin_pb';
+
+	let admin = $state<Admin>();
+	onMount(async () => {
+		try {
+			admin = await getAdminFromState();
+			if (admin.name) {
+				goto('../admin/home', { replaceState: true });
+			}
+		} catch {
+			//No active session found
+		}
+	});
 
 	function openGoogleLogin() {
 		alert('Google login not implemented yet');
+		localStorage.setItem('admin_email', 'mock@veripass.app');
+		goto('../admin/home', { replaceState: true });
 	}
 </script>
 
@@ -14,7 +32,7 @@
 			<img src="logo.png" class="h-25 w-25" alt="logo" />
 			<p class="text-primary text-4xl font-bold">VeriPass</p>
 		</div>
-		<p class="text-secondary-600 text-5xl font-bold">
+		<p class="text-secondary-600 text-center text-5xl font-bold">
 			<span class="text-primary-500">Admin</span> Login
 		</p>
 		<p class="black mt-7 text-4xl font-medium text-black">Welcome</p>

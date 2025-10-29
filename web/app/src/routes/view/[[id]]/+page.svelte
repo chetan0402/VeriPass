@@ -33,7 +33,7 @@
 			if (error instanceof NoUserSessionFound) {
 				await goto('../login', { replaceState: true });
 			} else {
-				console.error('Unexpected error');
+				await goto('../', { replaceState: true });
 			}
 		}
 	});

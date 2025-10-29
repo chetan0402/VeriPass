@@ -20,3 +20,7 @@ export function msToDurationString(ms: number): string {
 	if (days > 0) return `${days} day${days > 1 ? 's' : ''} ${hours} hr${hours !== 1 ? 's' : ''}`;
 	return `${hours} hr${hours !== 1 ? 's' : ''} ${minutes} min${minutes !== 1 ? 's' : ''}`;
 }
+export function get12OClockDate(date: Date): Date {
+	date.setHours(0, 0, 0, 0);
+	return date;
+}
