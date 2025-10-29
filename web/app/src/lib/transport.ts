@@ -11,7 +11,7 @@ import {
 	type GetAllPassesByHostelResponse_InfoIncludedPass
 } from '$lib/gen/veripass/v1/admin_pb';
 
-const MOCK = true;
+const MOCK = false;
 
 const mockPasses: {
 	[id: string]: Pass;
