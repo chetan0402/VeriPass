@@ -2,7 +2,10 @@ package passservice
 
 import (
 	"context"
+	"crypto/x509"
+	"encoding/pem"
 	"errors"
+	"os"
 	"time"
 
 	"connectrpc.com/connect"
@@ -12,6 +15,7 @@ import (
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -82,7 +86,12 @@ func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Reques
 		return nil, err
 	}
 
-	return connect.NewResponse(ToProto(entPass)), nil
+	protoPass, err := ToProto(entPass)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(protoPass), nil
 }
 
 func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1.GetPassRequest]) (*connect.Response[veripassv1.Pass], error) {
@@ -103,7 +112,12 @@ func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1
 		return nil, err
 	}
 
-	return connect.NewResponse(ToProto(pass)), nil
+	protoPass, err := ToProto(pass)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(protoPass), nil
 }
 
 func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[veripassv1.ListPassesByUserRequest]) (*connect.Response[veripassv1.ListPassesByUserResponse], error) {
@@ -161,13 +175,17 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 		if index == int(pageSize) {
 			break
 		}
-		response.Passes = append(response.Passes, ToProto(pass))
+		protoPass, err := ToProto(pass)
+		if err != nil {
+			return nil, err
+		}
+		response.Passes = append(response.Passes, protoPass)
 	}
 
 	return connect.NewResponse(response), nil
 }
 
-func ToProto(entPass *ent.Pass) *veripassv1.Pass {
+func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 	passType := veripassv1.Pass_PASS_TYPE_UNSPECIFIED
 
 	switch entPass.Type {
@@ -180,13 +198,40 @@ func ToProto(entPass *ent.Pass) *veripassv1.Pass {
 	case pass.TypeEvent:
 		passType = veripassv1.Pass_PASS_TYPE_EVENT
 	}
+
+	privateKey, ok := os.LookupEnv("PASS_JWT_PRIVATE_KEY")
+	if !ok {
+		return nil, errors.New("PASS_JWT_PRIVATE_KEY not set")
+	}
+
+	block, _ := pem.Decode([]byte(privateKey))
+	if block == nil {
+		return nil, errors.New("failed to parse PEM block containing the private key")
+	}
+
+	privateKeyParsed, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	qrCode := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
+		"id":      entPass.ID.String(),
+		"user_id": entPass.UserID,
+	})
+
+	signedQrCode, err := qrCode.SignedString(privateKeyParsed)
+	if err != nil {
+		return nil, err
+	}
+
 	return &veripassv1.Pass{
 		Id:        entPass.ID.String(),
 		UserId:    entPass.UserID,
 		Type:      passType,
 		StartTime: timestamppb.New(entPass.StartTime),
 		EndTime:   timestamppb.New(entPass.EndTime),
-	}
+		QrCode:    signedQrCode,
+	}, nil
 }
 
 func ProtoPassTypeToEnt(passType veripassv1.Pass_PassType) pass.Type {

@@ -2,9 +2,14 @@ package veripass_test
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
 	"database/sql"
+	"encoding/pem"
 	"math"
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
@@ -15,14 +20,18 @@ import (
 	"github.com/chetan0402/veripass/internal/ent"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	"github.com/golang-jwt/jwt/v5"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
+var publicKey *rsa.PublicKey
+
 // TODO - test passClient create manual after create admin entity
 func TestMain(t *testing.T) {
+	setupJWTKeys(t)
 	timeout := time.After(30 * time.Second)
 	host := "http://localhost:8000"
 	dbUrl := "postgres://veripass:veripass@localhost:5432/veripass"
@@ -228,6 +237,25 @@ func TestMain(t *testing.T) {
 	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg)
 }
 
+func setupJWTKeys(t *testing.T) {
+	t.Helper()
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	attest(t, err)
+
+	publicKey = &privateKey.PublicKey
+
+	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
+	pemBlock := &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: privateKeyBytes,
+	}
+
+	pemKey := pem.EncodeToMemory(pemBlock)
+
+	err = os.Setenv("PASS_JWT_PRIVATE_KEY", string(pemKey))
+	attest(t, err)
+}
+
 func attest(t *testing.T, err error) {
 	if err != nil {
 		t.Helper()
@@ -237,11 +265,27 @@ func attest(t *testing.T, err error) {
 
 func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1.Pass) {
 	t.Helper()
+	verifyPass(t, got)
 	if got.Id != expected.Id ||
 		got.UserId != expected.UserId ||
 		got.Type != expected.Type ||
 		math.Abs(float64(got.StartTime.Seconds-expected.StartTime.Seconds)) > 1 ||
 		(expected.EndTime != nil && math.Abs(float64(got.EndTime.Seconds-expected.EndTime.Seconds)) > 1) {
 		t.Fatalf("Expected %v, got %v", expected, got)
+	}
+}
+
+func verifyPass(t *testing.T, pass *veripassv1.Pass) {
+	t.Helper()
+
+	token, err := jwt.Parse(pass.QrCode, func(token *jwt.Token) (any, error) {
+		return publicKey, nil
+	}, jwt.WithValidMethods([]string{jwt.SigningMethodRS256.Alg()}))
+	if err != nil {
+		t.Fatal("Failed to parse JWT:", err)
+	}
+
+	if _, ok := token.Claims.(jwt.MapClaims); !ok {
+		t.Fatal("Failed to get claims from JWT")
 	}
 }

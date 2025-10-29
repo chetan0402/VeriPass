@@ -5,6 +5,7 @@ go 1.24.3
 require (
 	connectrpc.com/connect v1.18.1
 	entgo.io/ent v0.14.4
+	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.5
 	golang.org/x/net v0.23.0
