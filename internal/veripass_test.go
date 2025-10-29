@@ -2,9 +2,14 @@ package veripass_test
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
 	"database/sql"
+	"encoding/pem"
 	"math"
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
@@ -23,6 +28,7 @@ import (
 
 // TODO - test passClient create manual after create admin entity
 func TestMain(t *testing.T) {
+	setupJWTKeys(t)
 	timeout := time.After(30 * time.Second)
 	host := "http://localhost:8000"
 	dbUrl := "postgres://veripass:veripass@localhost:5432/veripass"
@@ -226,6 +232,23 @@ func TestMain(t *testing.T) {
 		t.Fatalf("Expected student room %v, got %v", mockUser.Room, hostelPassList2.Msg.Passes[0].StudentRoom)
 	}
 	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg)
+}
+
+func setupJWTKeys(t *testing.T) {
+	t.Helper()
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	attest(t, err)
+
+	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
+	pemBlock := &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: privateKeyBytes,
+	}
+
+	pemKey := pem.EncodeToMemory(pemBlock)
+
+	err = os.Setenv("PASS_JWT_PRIVATE_KEY", string(pemKey))
+	attest(t, err)
 }
 
 func attest(t *testing.T, err error) {
