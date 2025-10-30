@@ -28,3 +28,6 @@ stop-test-database:
 
 test-backend: start-test-database && stop-test-database
     go test -v ./internal/...
+
+build:
+    docker buildx bake --load

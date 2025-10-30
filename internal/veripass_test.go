@@ -2,14 +2,14 @@ package veripass_test
 
 import (
 	"context"
+	"crypto/ed25519"
 	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
 	"database/sql"
-	"encoding/pem"
+	"encoding/base64"
 	"math"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -20,14 +20,13 @@ import (
 	"github.com/chetan0402/veripass/internal/ent"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
-	"github.com/golang-jwt/jwt/v5"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
-var publicKey *rsa.PublicKey
+var PUBLIC_KEY ed25519.PublicKey
 
 // TODO - test passClient create manual after create admin entity
 func TestMain(t *testing.T) {
@@ -239,21 +238,12 @@ func TestMain(t *testing.T) {
 
 func setupJWTKeys(t *testing.T) {
 	t.Helper()
-	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
 	attest(t, err)
 
-	publicKey = &privateKey.PublicKey
+	PUBLIC_KEY = publicKey
 
-	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
-	pemBlock := &pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: privateKeyBytes,
-	}
-
-	pemKey := pem.EncodeToMemory(pemBlock)
-
-	err = os.Setenv("PASS_JWT_PRIVATE_KEY", string(pemKey))
-	attest(t, err)
+	attest(t, os.Setenv("PASS_PRIVATE_KEY", base64.StdEncoding.EncodeToString(privateKey)))
 }
 
 func attest(t *testing.T, err error) {
@@ -278,14 +268,34 @@ func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1
 func verifyPass(t *testing.T, pass *veripassv1.Pass) {
 	t.Helper()
 
-	token, err := jwt.Parse(pass.QrCode, func(token *jwt.Token) (any, error) {
-		return publicKey, nil
-	}, jwt.WithValidMethods([]string{jwt.SigningMethodRS256.Alg()}))
-	if err != nil {
-		t.Fatal("Failed to parse JWT:", err)
+	encodedSignedQrCode := pass.QrCode
+
+	signedQrCodeBytes, err := base64.StdEncoding.DecodeString(encodedSignedQrCode)
+	attest(t, err)
+
+	signedQrCode := string(signedQrCodeBytes)
+
+	pass_id, useridAndSignature, ok := strings.Cut(signedQrCode, "|")
+	if !ok {
+		t.Fatal("Invalid signed QR code format")
 	}
 
-	if _, ok := token.Claims.(jwt.MapClaims); !ok {
-		t.Fatal("Failed to get claims from JWT")
+	userid, signature, ok := strings.Cut(useridAndSignature, "|")
+	if !ok {
+		t.Fatal("Invalid signed QR code format")
+	}
+
+	message := pass_id + "|" + userid
+
+	if !ed25519.Verify(PUBLIC_KEY, []byte(message), []byte(signature)) {
+		t.Fatal("Invalid signature")
+	}
+
+	if pass_id != pass.Id {
+		t.Fatalf("Expected pass ID %v, got %v", pass.Id, pass_id)
+	}
+
+	if userid != pass.UserId {
+		t.Fatalf("Expected user ID %v, got %v", pass.UserId, userid)
 	}
 }

@@ -15,12 +15,17 @@
 	import { page } from '$app/state';
 	import { getUserProfileFromState } from '$lib/state/user_state';
 
-	let { pass, user, passFetchStatus, refreshPass } = $props<{
+	let {
+		pass,
+		user,
+		passFetchStatus,
+		refreshPass
+	}: {
 		pass: Pass | undefined;
 		user: User | undefined;
 		passFetchStatus: string;
 		refreshPass: () => void;
-	}>();
+	} = $props();
 
 	let isClosed: boolean = $derived(pass ? pass.endTime != null : false);
 	let qrData: string = $derived(pass ? pass.qrCode : 'retry');
@@ -148,7 +153,6 @@
 						<Qrcode
 							data={qrData}
 							shape="circle"
-							errorCorrectionLevel="H"
 							logoPath="../logo.png"
 							logoSize={50}
 							logoBackgroundColor="#00000000"
@@ -281,7 +285,6 @@
 				<Qrcode
 					data={qrData}
 					shape="circle"
-					errorCorrectionLevel="H"
 					logoPath="../logo.png"
 					logoSize={50}
 					logoBackgroundColor="#00000000"

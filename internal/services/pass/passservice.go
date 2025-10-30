@@ -2,8 +2,8 @@ package passservice
 
 import (
 	"context"
-	"crypto/x509"
-	"encoding/pem"
+	"crypto/ed25519"
+	"encoding/base64"
 	"errors"
 	"os"
 	"time"
@@ -15,7 +15,6 @@ import (
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -199,30 +198,21 @@ func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 		passType = veripassv1.Pass_PASS_TYPE_EVENT
 	}
 
-	privateKey, ok := os.LookupEnv("PASS_JWT_PRIVATE_KEY")
+	privateKey, ok := os.LookupEnv("PASS_PRIVATE_KEY")
 	if !ok {
-		return nil, errors.New("PASS_JWT_PRIVATE_KEY not set")
+		return nil, errors.New("PASS_PRIVATE_KEY not set")
 	}
 
-	block, _ := pem.Decode([]byte(privateKey))
-	if block == nil {
-		return nil, errors.New("failed to parse PEM block containing the private key")
-	}
-
-	privateKeyParsed, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	parsedPrivateKey, err := base64.StdEncoding.DecodeString(privateKey)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("invalid PASS_PRIVATE_KEY")
 	}
 
-	qrCode := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
-		"id":      entPass.ID.String(),
-		"user_id": entPass.UserID,
-	})
+	qrCode := entPass.ID.String() + "|" + entPass.UserID
 
-	signedQrCode, err := qrCode.SignedString(privateKeyParsed)
-	if err != nil {
-		return nil, err
-	}
+	signature := ed25519.Sign(ed25519.PrivateKey(parsedPrivateKey), []byte(qrCode))
+
+	signedQrCode := base64.StdEncoding.EncodeToString(append([]byte(qrCode+"|"), signature...))
 
 	protoPass := &veripassv1.Pass{
 		Id:        entPass.ID.String(),
