@@ -2,14 +2,14 @@ package veripass_test
 
 import (
 	"context"
+	"crypto/ed25519"
 	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
 	"database/sql"
-	"encoding/pem"
+	"encoding/base64"
 	"math"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -26,7 +26,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
-var publicKey *rsa.PublicKey
+var PUBLIC_KEY ed25519.PublicKey
 
 // TODO - test passClient create manual after create admin entity
 func TestMain(t *testing.T) {
@@ -238,21 +238,12 @@ func TestMain(t *testing.T) {
 
 func setupJWTKeys(t *testing.T) {
 	t.Helper()
-	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
 	attest(t, err)
 
-	publicKey = &privateKey.PublicKey
+	PUBLIC_KEY = publicKey
 
-	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
-	pemBlock := &pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: privateKeyBytes,
-	}
-
-	pemKey := pem.EncodeToMemory(pemBlock)
-
-	err = os.Setenv("PASS_JWT_PRIVATE_KEY", string(pemKey))
-	attest(t, err)
+	attest(t, os.Setenv("PASS_PRIVATE_KEY", base64.StdEncoding.EncodeToString(privateKey)))
 }
 
 func attest(t *testing.T, err error) {
@@ -264,11 +255,47 @@ func attest(t *testing.T, err error) {
 
 func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1.Pass) {
 	t.Helper()
+	verifyPass(t, got)
 	if got.Id != expected.Id ||
 		got.UserId != expected.UserId ||
 		got.Type != expected.Type ||
 		math.Abs(float64(got.StartTime.Seconds-expected.StartTime.Seconds)) > 1 ||
 		(expected.EndTime != nil && math.Abs(float64(got.EndTime.Seconds-expected.EndTime.Seconds)) > 1) {
 		t.Fatalf("Expected %v, got %v", expected, got)
+	}
+}
+
+func verifyPass(t *testing.T, pass *veripassv1.Pass) {
+	t.Helper()
+
+	encodedSignedQrCode := pass.QrCode
+
+	signedQrCodeBytes, err := base64.StdEncoding.DecodeString(encodedSignedQrCode)
+	attest(t, err)
+
+	signedQrCode := string(signedQrCodeBytes)
+
+	pass_id, useridAndSignature, ok := strings.Cut(signedQrCode, "|")
+	if !ok {
+		t.Fatal("Invalid signed QR code format")
+	}
+
+	userid, signature, ok := strings.Cut(useridAndSignature, "|")
+	if !ok {
+		t.Fatal("Invalid signed QR code format")
+	}
+
+	message := pass_id + "|" + userid
+
+	if !ed25519.Verify(PUBLIC_KEY, []byte(message), []byte(signature)) {
+		t.Fatal("Invalid signature")
+	}
+
+	if pass_id != pass.Id {
+		t.Fatalf("Expected pass ID %v, got %v", pass.Id, pass_id)
+	}
+
+	if userid != pass.UserId {
+		t.Fatalf("Expected user ID %v, got %v", pass.UserId, userid)
 	}
 }
