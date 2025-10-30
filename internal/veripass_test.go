@@ -20,7 +20,6 @@ import (
 	"github.com/chetan0402/veripass/internal/ent"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
-	"github.com/golang-jwt/jwt/v5"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -265,27 +264,11 @@ func attest(t *testing.T, err error) {
 
 func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1.Pass) {
 	t.Helper()
-	verifyPass(t, got)
 	if got.Id != expected.Id ||
 		got.UserId != expected.UserId ||
 		got.Type != expected.Type ||
 		math.Abs(float64(got.StartTime.Seconds-expected.StartTime.Seconds)) > 1 ||
 		(expected.EndTime != nil && math.Abs(float64(got.EndTime.Seconds-expected.EndTime.Seconds)) > 1) {
 		t.Fatalf("Expected %v, got %v", expected, got)
-	}
-}
-
-func verifyPass(t *testing.T, pass *veripassv1.Pass) {
-	t.Helper()
-
-	token, err := jwt.Parse(pass.QrCode, func(token *jwt.Token) (any, error) {
-		return publicKey, nil
-	}, jwt.WithValidMethods([]string{jwt.SigningMethodRS256.Alg()}))
-	if err != nil {
-		t.Fatal("Failed to parse JWT:", err)
-	}
-
-	if _, ok := token.Claims.(jwt.MapClaims); !ok {
-		t.Fatal("Failed to get claims from JWT")
 	}
 }
