@@ -11,7 +11,7 @@ import {
 	type GetAllPassesByHostelResponse_InfoIncludedPass
 } from '$lib/gen/veripass/v1/admin_pb';
 
-const MOCK = false;
+const MOCK = true;
 
 const mockPasses: {
 	[id: string]: Pass;
@@ -141,6 +141,22 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		return {
 			passId: id
 		};
+	});
+	rpc(PassService.method.createManualPass, (req) => {
+		const userId = String(req.userId);
+		const idIdentifier = userId + timestampToMs(timestampNow());
+		const id = 'pass' + idIdentifier;
+
+		mockPasses[id] = {
+			id: id,
+			userId: userId,
+			type: req.type,
+			startTime: timestampNow(),
+			$typeName: 'veripass.v1.Pass',
+			qrCode: 'https://www.google.com'
+		};
+
+		return mockPasses[id];
 	});
 
 	rpc(UserService.method.entry, (req) => {
