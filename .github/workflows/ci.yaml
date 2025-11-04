@@ -43,8 +43,6 @@ jobs:
     
     - name: Setup golangci
       uses: golangci/golangci-lint-action@v8
-      with:
-        version: v2.1
     
     - name: Setup just
       uses: extractions/setup-just@v3
