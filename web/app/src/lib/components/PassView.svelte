@@ -154,7 +154,7 @@
 							data={qrData}
 							shape="circle"
 							logoPath="../logo.png"
-							logoSize={50}
+							logoSize={30}
 							logoBackgroundColor="#00000000"
 							width={100}
 							height={100}
@@ -284,9 +284,9 @@
 			{#if pass}
 				<Qrcode
 					data={qrData}
-					shape="circle"
 					logoPath="../logo.png"
-					logoSize={50}
+					logoSize={30}
+					shape="circle"
 					logoBackgroundColor="#00000000"
 					width={300}
 					height={300}

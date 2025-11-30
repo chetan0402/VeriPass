@@ -11,6 +11,7 @@
 	import { fade } from 'svelte/transition';
 	import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
+	import { CloseOutline } from 'flowbite-svelte-icons';
 
 	let show_generating_box = $state(false);
 	let admin = $state<Admin>();
@@ -74,10 +75,11 @@
 	}
 </script>
 
-<div class="light-grad flex h-dvh flex-col items-center justify-center">
+<div class="light-grad-universal flex h-dvh flex-col items-center justify-center">
+	<CloseOutline onclick={gotoDashboard} class="accent-primary-700 absolute top-5 right-5 h-8 w-8" />
 	{#if !pass}
 		<h1 class="mb-6 text-center text-2xl font-semibold text-gray-800">Create Manual Pass</h1>
-		<form class="w-full space-y-6 px-5" onsubmit={openGeneratingDialog}>
+		<form class="w-full max-w-xl space-y-6 px-5" onsubmit={openGeneratingDialog}>
 			<div class="flex flex-col gap-1">
 				<label for="userId" class="text-sm font-medium text-gray-700">User ID</label>
 				<input
