@@ -10,8 +10,12 @@ import {
 	type GetAllPassesByHostelRequest,
 	type GetAllPassesByHostelResponse_InfoIncludedPass
 } from '$lib/gen/veripass/v1/admin_pb';
+import * as ed from '@noble/ed25519';
+import { sha512 } from '@noble/hashes/sha2.js';
 
+ed.hashes.sha512 = sha512;
 const MOCK = true;
+const PRIVATE_KEY_BASE64_MOCK = 'NutSQvbs6urikYKmMdYFZPrKmO35cdV3sJzOX20Hl0M=';
 
 const mockPasses: {
 	[id: string]: Pass;
@@ -31,11 +35,32 @@ function generateMockPasesForPage() {
 			startTime: msToTimestamp(idIdentifier - 60 * 60 * 1000),
 			endTime: endtime,
 			$typeName: 'veripass.v1.Pass',
-			qrCode: 'https://www.google.com'
+			qrCode: createQrCode(id, '12345')
 		};
 		newMockPasses.push(mockPasses[id]);
 	}
 	return newMockPasses;
+}
+
+function createQrCode(passId: string, userId: string): string {
+	try {
+		const priv = Uint8Array.from(atob(PRIVATE_KEY_BASE64_MOCK), (c) => c.charCodeAt(0));
+		let qrCode = `${passId}|${userId}`;
+		const msg = new TextEncoder().encode(qrCode);
+		const signature = ed.sign(msg, priv);
+		qrCode = qrCode + `|`;
+		const qrBytes = new TextEncoder().encode(qrCode);
+		const combined = new Uint8Array(qrBytes.length + signature.length);
+		combined.set(qrBytes);
+		combined.set(signature, qrBytes.length);
+
+		let bin = '';
+		for (let i = 0; i < combined.length; i++) bin += String.fromCharCode(combined[i]);
+		return btoa(bin);
+	} catch (e) {
+		console.log(e);
+		return btoa('invalid');
+	}
 }
 
 function getPassType(selected: ExitRequest_ExitType): Pass_PassType {
@@ -68,17 +93,20 @@ function generateMockPasesForHostel(
 		if (req.type !== Pass_PassType.UNSPECIFIED) {
 			passType = req.type;
 		}
+		const passN: Pass = {
+			id: id,
+			userId: '12345',
+			type: passType,
+			startTime: msToTimestamp(idIdentifier),
+			endTime: endtime,
+			$typeName: 'veripass.v1.Pass',
+			qrCode: createQrCode(id, '12345')
+		};
+		mockPasses[id] = passN;
+
 		const infoPass: GetAllPassesByHostelResponse_InfoIncludedPass = {
 			$typeName: 'veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass',
-			pass: {
-				id: id,
-				userId: '12345',
-				type: passType,
-				startTime: msToTimestamp(idIdentifier),
-				endTime: endtime,
-				$typeName: 'veripass.v1.Pass',
-				qrCode: 'https://www.google.com'
-			},
+			pass: passN,
 			studentRoom: 'C' + Math.floor(Math.random() * 100),
 			studentName: 'Mock Student' + Math.floor(Math.random() * 100)
 		};
@@ -89,17 +117,13 @@ function generateMockPasesForHostel(
 
 const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(UserService.method.getUser, (req) => {
-		if (req.id === '12345') {
-			return {
-				id: req.id,
-				name: 'Mock User',
-				hostel: 'Mock Hostel',
-				room: 'Mock Room',
-				phone: '1234567890'
-			};
-		} else {
-			throw new ConnectError('User not found', Code.NotFound);
-		}
+		return {
+			id: req.id,
+			name: 'Mock User',
+			hostel: 'Mock Hostel',
+			room: 'Mock Room',
+			phone: '1234567890'
+		};
 	});
 
 	rpc(AdminService.method.getAdmin, (req) => {
@@ -135,7 +159,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			type: getPassType(req.type),
 			startTime: timestampNow(),
 			$typeName: 'veripass.v1.Pass',
-			qrCode: 'https://www.google.com'
+			qrCode: createQrCode(id, '12345')
 		};
 
 		return {
@@ -153,7 +177,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			type: req.type,
 			startTime: timestampNow(),
 			$typeName: 'veripass.v1.Pass',
-			qrCode: 'https://www.google.com'
+			qrCode: createQrCode(id, '12345')
 		};
 
 		return mockPasses[id];
