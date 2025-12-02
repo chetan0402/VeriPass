@@ -14,8 +14,11 @@ import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha2.js';
 
 ed.hashes.sha512 = sha512;
+
 const MOCK = true;
+
 const PRIVATE_KEY_BASE64_MOCK = 'NutSQvbs6urikYKmMdYFZPrKmO35cdV3sJzOX20Hl0M=';
+const PUBLIC_KEY_MOCK_BASE64 = '1Sqoo9LuiT4Eofy/iDuKifGfyaQv49Il0V2qzczoRrA=';
 
 const mockPasses: {
 	[id: string]: Pass;
@@ -238,6 +241,13 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		return {
 			photo: new Uint8Array(arrayBuffer),
 			$typeName: 'veripass.v1.GetPhotoResponse'
+		};
+	});
+
+	rpc(AdminService.method.getPublicKey, () => {
+		return {
+			$typeName: 'veripass.v1.GetPublicKeyResponse',
+			publicKey: Uint8Array.from(atob(PUBLIC_KEY_MOCK_BASE64), (c) => c.charCodeAt(0))
 		};
 	});
 });

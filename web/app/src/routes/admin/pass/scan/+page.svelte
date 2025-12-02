@@ -5,11 +5,11 @@
 	import { onMount } from 'svelte';
 	import * as ed from '@noble/ed25519';
 	import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
-	import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
 	import { createClient } from '@connectrpc/connect';
 	import { transport } from '$lib';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
+	import { AdminService } from '$lib/gen/veripass/v1/admin_pb';
 
 	let pass = $state<Pass>();
 	let user = $state<User>();
@@ -18,9 +18,6 @@
 	const SUCCESS = 2;
 	const FAIL = 3;
 	const LOADING = 4;
-
-	//For testing only with mock router
-	const PUBLIC_KEY_BASE64 = $state('1Sqoo9LuiT4Eofy/iDuKifGfyaQv49Il0V2qzczoRrA=');
 
 	let scanState = $state(LOADING);
 	let status = $state('Starting Camera');
@@ -31,7 +28,7 @@
 
 	function _onPermissionError() {
 		alert('Permission rejected');
-		location.reload();
+		gotoDashboard();
 	}
 
 	function base64ToBytes(b64: string): Uint8Array {
@@ -48,15 +45,18 @@
 			user = await userClient.getUser({
 				id: userId
 			});
-			status = 'Pass verified successfully';
+			status = 'Pass Details';
 		} catch {
-			status = 'Pass not found for this qr code';
+			status = 'Fake QR code detected!, Report to authorities';
 		}
 	}
 
 	async function verifyPass(code: string) {
 		scanState = VERIFYING;
 		try {
+			const adminClient = createClient(AdminService, transport);
+			const pub_key_response = await adminClient.getPublicKey({});
+
 			const decoded = base64ToBytes(code);
 			let firstPipe = decoded.indexOf('|'.charCodeAt(0));
 			if (firstPipe < 0) throw new Error('Invalid QR code');
@@ -66,7 +66,8 @@
 			const userIdBytes = decoded.slice(firstPipe + 1, secondPipe);
 			const signatureBytes = decoded.slice(secondPipe + 1);
 			const msg = new Uint8Array(decoded.slice(0, secondPipe)); // passId|userId
-			const pubKey = Uint8Array.from(atob(PUBLIC_KEY_BASE64), (c) => c.charCodeAt(0));
+			const pubKey = pub_key_response.publicKey;
+
 			const valid = ed.verify(signatureBytes, msg, pubKey);
 
 			const passId = new TextDecoder().decode(passIdBytes);
@@ -77,12 +78,12 @@
 				await fetchPass(passId, userId);
 			} else {
 				scanState = FAIL;
-				status = 'Failed to verify the pass qr code';
+				status = 'Fake QR code detected!, Report to authorities';
 			}
 		} catch (err) {
 			console.log(err);
 			scanState = FAIL;
-			status = 'Failed to verify the pass qr code';
+			status = 'Fake QR code detected!, Report to authorities';
 		}
 	}
 
@@ -118,26 +119,16 @@
 				onUpdateStatus: (update) => (status = update)
 			}}
 		/>
-		<p class="text-primary-800 bg-primary-200 mt-3 rounded-2xl p-5 text-xl font-bold">{status}</p>
+		<p class="text-primary-800 bg-primary-200 m-3 rounded-2xl p-5 text-xl font-bold">{status}</p>
 	{/if}
 	{#if scanState === SUCCESS}
 		<div>
-			<p class="mt-3 rounded-2xl bg-green-200 p-5 text-xl font-bold text-green-800">{status}</p>
+			<p class="bg-primary-200 text-primary-800 m-3 rounded-2xl p-5 text-xl font-bold">{status}</p>
 			{#if pass && user}
 				<div class="m-10 flex flex-col items-center">
 					<div
 						class="flex w-full flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-6 text-left shadow-inner"
 					>
-						<div class="h-45 w-45">
-							<DotLottieSvelte
-								src="../../success.lottie"
-								loop={false}
-								backgroundColor="#00000000"
-								autoplay={true}
-							/>
-						</div>
-
-						<h1 class="mb-4 text-xl font-semibold text-gray-800">Pass Verified Successfully!</h1>
 						<h3 class="mb-4 border-b border-gray-300 pb-2 text-lg font-medium text-gray-700">
 							Pass Details
 						</h3>
@@ -185,7 +176,7 @@
 			class="flex flex-col items-center justify-center gap-4 rounded-2xl bg-red-100 p-4 text-red-700"
 		>
 			<CloseCircleSolid class="h-20 w-20 shrink-0" />
-			<p class="text-center font-bold">Verification Failed <br /> QR code Not Valid</p>
+			<p class="m-5 text-center font-bold">Fake QR code detected! <br /> Report to authorities</p>
 		</div>
 	{/if}
 </div>
