@@ -7,6 +7,7 @@ lint:
     pnpm -r lint
 
 fmt:
+    buf format -w
     golangci-lint fmt ./internal/... ./cmd/...
     pnpm -r format
 

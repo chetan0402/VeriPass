@@ -379,7 +379,7 @@ var File_veripass_v1_admin_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\n" +
-	"\x17veripass/v1/admin.proto\x12\vveripass.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16veripass/v1/pass.proto\x1a\x1bgoogle/protobuf/empty.proto\"k\n" +
+	"\x17veripass/v1/admin.proto\x12\vveripass.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16veripass/v1/pass.proto\"k\n" +
 	"\x05Admin\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
