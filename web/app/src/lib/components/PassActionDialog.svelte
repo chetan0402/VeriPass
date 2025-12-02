@@ -48,7 +48,7 @@
 	class="relative m-10 flex w-[clamp(100px,80vw,600px)] flex-col items-center rounded-2xl border-3 border-[#5555C2] bg-white p-5"
 >
 	<div class="animated animate__fadeIn mb-8">
-		<DotLottieSvelte src="../pass_action.lottie" loop autoplay />
+		<DotLottieSvelte src="../../pass_action.lottie" loop autoplay />
 	</div>
 	<div class="flex flex-row items-center justify-center">
 		<h1 class="text-secondary mb-4 text-2xl font-bold">{title}</h1>

@@ -44,6 +44,9 @@
 		"@connectrpc/connect": "^2.0.2",
 		"@connectrpc/connect-web": "^2.0.2",
 		"@lottiefiles/dotlottie-svelte": "^0.6.1",
-		"animate.css": "^4.1.1"
+		"@noble/ed25519": "^3.0.0",
+		"@noble/hashes": "^2.0.1",
+		"animate.css": "^4.1.1",
+		"jsqr": "^1.4.0"
 	}
 }

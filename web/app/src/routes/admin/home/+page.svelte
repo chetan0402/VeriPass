@@ -7,6 +7,7 @@
 	import { goto, pushState, replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import { PopupType } from '$lib';
+
 	let listVisible: boolean = $state<boolean>(false);
 	let status: string = $state<string>('Loading Admin Details...');
 
@@ -28,6 +29,7 @@
 		}
 		pushState('', { popupVisible: PopupType.NONE });
 	});
+
 	async function logout() {
 		await invalidateAdminSession();
 		window.location.href = '../admin';
@@ -35,6 +37,18 @@
 
 	function closeMenu() {
 		replaceState('', { popupVisible: PopupType.NONE });
+	}
+
+	function openCreatePass() {
+		if (admin?.canAddPass) {
+			goto('../admin/pass/create');
+		} else {
+			alert('You are not allowed to add a new pass! Contact CCF');
+		}
+	}
+
+	function openScanPass() {
+		goto('../admin/pass/scan');
 	}
 </script>
 
@@ -83,6 +97,20 @@
 			{status}
 		</div>
 	{/if}
+</div>
+
+<div
+	class=" border-b-primary-500 bg-primary-200 absolute right-5 bottom-5 flex h-14 gap-2 rounded-full border-1 px-4 md:top-5 md:bottom-auto"
+>
+	<button onclick={openCreatePass} class="text-primary-600 flex h-full flex-row items-center">
+		<img class="h-[20px] w-[20px]" src="../add.svg" alt="create" />
+		<p class="ml-2 text-sm">Create</p>
+	</button>
+	<div class="bg-primary-500 mx-2 h-full w-[2px] rounded-full"></div>
+	<button onclick={openScanPass} class="text-primary-600 flex flex-row items-center">
+		<img class="h-[20px] w-[20px]" src="../scan.svg" alt="create" />
+		<p class="ml-2 text-sm">Scan</p>
+	</button>
 </div>
 {#if page.state.popupVisible === PopupType.MENU}
 	<div
