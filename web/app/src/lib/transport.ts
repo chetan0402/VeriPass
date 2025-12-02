@@ -17,8 +17,7 @@ ed.hashes.sha512 = sha512;
 
 const MOCK = true;
 
-const PRIVATE_KEY_BASE64_MOCK = 'NutSQvbs6urikYKmMdYFZPrKmO35cdV3sJzOX20Hl0M=';
-const PUBLIC_KEY_MOCK_BASE64 = '1Sqoo9LuiT4Eofy/iDuKifGfyaQv49Il0V2qzczoRrA=';
+const { secretKey, publicKey } = ed.keygen();
 
 const mockPasses: {
 	[id: string]: Pass;
@@ -47,10 +46,9 @@ function generateMockPasesForPage() {
 
 function createQrCode(passId: string, userId: string): string {
 	try {
-		const priv = Uint8Array.from(atob(PRIVATE_KEY_BASE64_MOCK), (c) => c.charCodeAt(0));
 		let qrCode = `${passId}|${userId}`;
 		const msg = new TextEncoder().encode(qrCode);
-		const signature = ed.sign(msg, priv);
+		const signature = ed.sign(msg, secretKey);
 		qrCode = qrCode + `|`;
 		const qrBytes = new TextEncoder().encode(qrCode);
 		const combined = new Uint8Array(qrBytes.length + signature.length);
@@ -246,8 +244,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 
 	rpc(AdminService.method.getPublicKey, () => {
 		return {
-			$typeName: 'veripass.v1.GetPublicKeyResponse',
-			publicKey: Uint8Array.from(atob(PUBLIC_KEY_MOCK_BASE64), (c) => c.charCodeAt(0))
+			publicKey: publicKey
 		};
 	});
 });
