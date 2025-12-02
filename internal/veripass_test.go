@@ -3,12 +3,10 @@ package veripass_test
 import (
 	"context"
 	"crypto/ed25519"
-	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
 	"math"
 	"net/http"
-	"os"
 	"strings"
 	"testing"
 	"time"
@@ -21,16 +19,14 @@ import (
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
-var PUBLIC_KEY ed25519.PublicKey
-
 // TODO - test passClient create manual after create admin entity
 func TestMain(t *testing.T) {
-	setupJWTKeys(t)
 	timeout := time.After(30 * time.Second)
 	host := "http://localhost:8000"
 	dbUrl := "postgres://veripass:veripass@localhost:5432/veripass"
@@ -105,6 +101,9 @@ func TestMain(t *testing.T) {
 		}
 	}
 
+	publicKey, err := adminClient.GetPublicKey(ctx, connect.NewRequest(&emptypb.Empty{}))
+	attest(t, err)
+
 	user, err := userClient.GetUser(ctx, connect.NewRequest(&veripassv1.GetUserRequest{
 		Id: mockUser.Id,
 	}))
@@ -143,21 +142,21 @@ func TestMain(t *testing.T) {
 	}))
 	attest(t, err)
 
-	failIfNotEqualPass(t, pass.Msg, &mockPass1)
+	failIfNotEqualPass(t, pass.Msg, &mockPass1, publicKey.Msg.PublicKey)
 
 	pass2, err := passClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
 		Id: mockPass2.Id,
 	}))
 	attest(t, err)
 
-	failIfNotEqualPass(t, pass2.Msg, &mockPass2)
+	failIfNotEqualPass(t, pass2.Msg, &mockPass2, publicKey.Msg.PublicKey)
 
 	latestPass, err := passClient.GetLatestPassByUser(ctx, connect.NewRequest(&veripassv1.GetLatestPassByUserRequest{
 		UserId: mockUser.Id,
 	}))
 	attest(t, err)
 
-	failIfNotEqualPass(t, latestPass.Msg, &mockPass2)
+	failIfNotEqualPass(t, latestPass.Msg, &mockPass2, publicKey.Msg.PublicKey)
 
 	pageToken := timestamppb.Now()
 
@@ -171,7 +170,7 @@ func TestMain(t *testing.T) {
 	if passList1.Msg.NextPageToken.Seconds != pass.Msg.StartTime.Seconds {
 		t.Fatalf("Expected %v, got %v", pass.Msg.StartTime, passList1.Msg.NextPageToken)
 	}
-	failIfNotEqualPass(t, passList1.Msg.Passes[0], pass2.Msg)
+	failIfNotEqualPass(t, passList1.Msg.Passes[0], pass2.Msg, publicKey.Msg.PublicKey)
 	pageToken = passList1.Msg.NextPageToken
 
 	passList2, err := passClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
@@ -184,7 +183,7 @@ func TestMain(t *testing.T) {
 	if passList2.Msg.NextPageToken != nil {
 		t.Fatal("Expected nil next page token")
 	}
-	failIfNotEqualPass(t, passList2.Msg.Passes[0], pass.Msg)
+	failIfNotEqualPass(t, passList2.Msg.Passes[0], pass.Msg, publicKey.Msg.PublicKey)
 
 	admin, err := adminClient.GetAdmin(ctx, connect.NewRequest(&veripassv1.GetAdminRequest{
 		Email: mockAdmin.Email,
@@ -213,7 +212,7 @@ func TestMain(t *testing.T) {
 	if hostelPassList1.Msg.Passes[0].StudentRoom != mockUser.Room {
 		t.Fatalf("Expected student room %v, got %v", mockUser.Room, hostelPassList1.Msg.Passes[0].StudentRoom)
 	}
-	failIfNotEqualPass(t, hostelPassList1.Msg.Passes[0].Pass, pass2.Msg)
+	failIfNotEqualPass(t, hostelPassList1.Msg.Passes[0].Pass, pass2.Msg, publicKey.Msg.PublicKey)
 
 	hostelPassList2, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
 		Hostel:     "H mock",
@@ -233,17 +232,7 @@ func TestMain(t *testing.T) {
 	if hostelPassList2.Msg.Passes[0].StudentRoom != mockUser.Room {
 		t.Fatalf("Expected student room %v, got %v", mockUser.Room, hostelPassList2.Msg.Passes[0].StudentRoom)
 	}
-	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg)
-}
-
-func setupJWTKeys(t *testing.T) {
-	t.Helper()
-	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
-	attest(t, err)
-
-	PUBLIC_KEY = publicKey
-
-	attest(t, os.Setenv("PASS_PRIVATE_KEY", base64.StdEncoding.EncodeToString(privateKey)))
+	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg, publicKey.Msg.PublicKey)
 }
 
 func attest(t *testing.T, err error) {
@@ -253,9 +242,9 @@ func attest(t *testing.T, err error) {
 	}
 }
 
-func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1.Pass) {
+func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1.Pass, publicKey ed25519.PublicKey) {
 	t.Helper()
-	verifyPass(t, got)
+	verifyPass(t, got, publicKey)
 	if got.Id != expected.Id ||
 		got.UserId != expected.UserId ||
 		got.Type != expected.Type ||
@@ -265,7 +254,7 @@ func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1
 	}
 }
 
-func verifyPass(t *testing.T, pass *veripassv1.Pass) {
+func verifyPass(t *testing.T, pass *veripassv1.Pass, publicKey ed25519.PublicKey) {
 	t.Helper()
 
 	encodedSignedQrCode := pass.QrCode
@@ -287,7 +276,7 @@ func verifyPass(t *testing.T, pass *veripassv1.Pass) {
 
 	message := pass_id + "|" + userid
 
-	if !ed25519.Verify(PUBLIC_KEY, []byte(message), []byte(signature)) {
+	if !ed25519.Verify(publicKey, []byte(message), []byte(signature)) {
 		t.Fatal("Invalid signature")
 	}
 

@@ -9,6 +9,7 @@ import (
 	context "context"
 	errors "errors"
 	v1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
 )
@@ -38,12 +39,16 @@ const (
 	// AdminServiceGetAllPassesByHostelProcedure is the fully-qualified name of the AdminService's
 	// GetAllPassesByHostel RPC.
 	AdminServiceGetAllPassesByHostelProcedure = "/veripass.v1.AdminService/GetAllPassesByHostel"
+	// AdminServiceGetPublicKeyProcedure is the fully-qualified name of the AdminService's GetPublicKey
+	// RPC.
+	AdminServiceGetPublicKeyProcedure = "/veripass.v1.AdminService/GetPublicKey"
 )
 
 // AdminServiceClient is a client for the veripass.v1.AdminService service.
 type AdminServiceClient interface {
 	GetAdmin(context.Context, *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error)
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
+	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
 }
 
 // NewAdminServiceClient constructs a client for the veripass.v1.AdminService service. By default,
@@ -69,6 +74,12 @@ func NewAdminServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(adminServiceMethods.ByName("GetAllPassesByHostel")),
 			connect.WithClientOptions(opts...),
 		),
+		getPublicKey: connect.NewClient[emptypb.Empty, v1.GetPublicKeyResponse](
+			httpClient,
+			baseURL+AdminServiceGetPublicKeyProcedure,
+			connect.WithSchema(adminServiceMethods.ByName("GetPublicKey")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -76,6 +87,7 @@ func NewAdminServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 type adminServiceClient struct {
 	getAdmin             *connect.Client[v1.GetAdminRequest, v1.Admin]
 	getAllPassesByHostel *connect.Client[v1.GetAllPassesByHostelRequest, v1.GetAllPassesByHostelResponse]
+	getPublicKey         *connect.Client[emptypb.Empty, v1.GetPublicKeyResponse]
 }
 
 // GetAdmin calls veripass.v1.AdminService.GetAdmin.
@@ -88,10 +100,16 @@ func (c *adminServiceClient) GetAllPassesByHostel(ctx context.Context, req *conn
 	return c.getAllPassesByHostel.CallUnary(ctx, req)
 }
 
+// GetPublicKey calls veripass.v1.AdminService.GetPublicKey.
+func (c *adminServiceClient) GetPublicKey(ctx context.Context, req *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error) {
+	return c.getPublicKey.CallUnary(ctx, req)
+}
+
 // AdminServiceHandler is an implementation of the veripass.v1.AdminService service.
 type AdminServiceHandler interface {
 	GetAdmin(context.Context, *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error)
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
+	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
 }
 
 // NewAdminServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -113,12 +131,20 @@ func NewAdminServiceHandler(svc AdminServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(adminServiceMethods.ByName("GetAllPassesByHostel")),
 		connect.WithHandlerOptions(opts...),
 	)
+	adminServiceGetPublicKeyHandler := connect.NewUnaryHandler(
+		AdminServiceGetPublicKeyProcedure,
+		svc.GetPublicKey,
+		connect.WithSchema(adminServiceMethods.ByName("GetPublicKey")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/veripass.v1.AdminService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case AdminServiceGetAdminProcedure:
 			adminServiceGetAdminHandler.ServeHTTP(w, r)
 		case AdminServiceGetAllPassesByHostelProcedure:
 			adminServiceGetAllPassesByHostelHandler.ServeHTTP(w, r)
+		case AdminServiceGetPublicKeyProcedure:
+			adminServiceGetPublicKeyHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -134,4 +160,8 @@ func (UnimplementedAdminServiceHandler) GetAdmin(context.Context, *connect.Reque
 
 func (UnimplementedAdminServiceHandler) GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.AdminService.GetAllPassesByHostel is not implemented"))
+}
+
+func (UnimplementedAdminServiceHandler) GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.AdminService.GetPublicKey is not implemented"))
 }

@@ -9,6 +9,6 @@
   },
   "devDependencies": {
     "@bufbuild/buf": "^1.54.0",
-    "@bufbuild/protoc-gen-es": "^2.4.0"
+    "@bufbuild/protoc-gen-es": "^2.10.1"
   }
 }
