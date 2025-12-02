@@ -12,7 +12,7 @@ fmt:
     pnpm -r format
 
 gen:
-    just go-proto
+    just gen-proto
     just gen-ent
     go mod tidy
     just fmt
