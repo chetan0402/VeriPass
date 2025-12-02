@@ -7,14 +7,18 @@ lint:
     pnpm -r lint
 
 fmt:
+    buf format -w
     golangci-lint fmt ./internal/... ./cmd/...
     pnpm -r format
 
 gen:
-    buf generate
+    just gen-proto
     just gen-ent
     go mod tidy
     just fmt
+
+gen-proto:
+    buf generate
 
 gen-ent:
     go run -mod=mod entgo.io/ent/cmd/ent generate ./internal/ent/schema
