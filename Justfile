@@ -11,10 +11,13 @@ fmt:
     pnpm -r format
 
 gen:
-    buf generate
+    just go-proto
     just gen-ent
     go mod tidy
     just fmt
+
+gen-proto:
+    buf generate
 
 gen-ent:
     go run -mod=mod entgo.io/ent/cmd/ent generate ./internal/ent/schema

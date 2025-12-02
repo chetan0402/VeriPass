@@ -2,6 +2,8 @@ package veripass
 
 import (
 	"context"
+	"crypto/ed25519"
+	"crypto/rand"
 	"database/sql"
 	"log"
 	"net/http"
@@ -22,6 +24,11 @@ import (
 )
 
 func Run(databaseUrl string) {
+	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	db, err := sql.Open("pgx", databaseUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +54,7 @@ func Run(databaseUrl string) {
 		}
 	})
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))
-	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client), interceptor))
-	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client), interceptor))
+	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client, privateKey), interceptor))
+	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client, publicKey), interceptor))
 	log.Fatal(http.ListenAndServe("0.0.0.0:8000", h2c.NewHandler(mux, &http2.Server{})))
 }

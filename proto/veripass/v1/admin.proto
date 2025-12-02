@@ -4,6 +4,7 @@ package veripass.v1;
 
 import "google/protobuf/timestamp.proto";
 import "veripass/v1/pass.proto";
+import "google/protobuf/empty.proto";
 
 message Admin {
   string email = 1;
@@ -15,6 +16,7 @@ message Admin {
 service AdminService {
   rpc GetAdmin(GetAdminRequest) returns (Admin);
   rpc GetAllPassesByHostel(GetAllPassesByHostelRequest) returns (GetAllPassesByHostelResponse);
+  rpc GetPublicKey(google.protobuf.Empty) returns (GetPublicKeyResponse);
 }
 
 message GetAdminRequest {
@@ -38,4 +40,8 @@ message GetAllPassesByHostelResponse {
   }
   repeated InfoIncludedPass passes = 1;
   google.protobuf.Timestamp next_page_token = 2;
+}
+
+message GetPublicKeyResponse {
+  bytes public_key = 1;
 }

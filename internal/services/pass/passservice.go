@@ -5,7 +5,6 @@ import (
 	"crypto/ed25519"
 	"encoding/base64"
 	"errors"
-	"os"
 	"time"
 
 	"connectrpc.com/connect"
@@ -24,8 +23,10 @@ type PassService struct {
 }
 
 var _ veripassv1connect.PassServiceHandler = (*PassService)(nil)
+var passPrivateKey ed25519.PrivateKey
 
-func New(client *ent.Client) *PassService {
+func New(client *ent.Client, privateKey ed25519.PrivateKey) *PassService {
+	passPrivateKey = privateKey
 	return &PassService{
 		client: client,
 	}
@@ -198,19 +199,9 @@ func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 		passType = veripassv1.Pass_PASS_TYPE_EVENT
 	}
 
-	privateKey, ok := os.LookupEnv("PASS_PRIVATE_KEY")
-	if !ok {
-		return nil, errors.New("PASS_PRIVATE_KEY not set")
-	}
-
-	parsedPrivateKey, err := base64.StdEncoding.DecodeString(privateKey)
-	if err != nil {
-		return nil, errors.New("invalid PASS_PRIVATE_KEY")
-	}
-
 	qrCode := entPass.ID.String() + "|" + entPass.UserID
 
-	signature := ed25519.Sign(ed25519.PrivateKey(parsedPrivateKey), []byte(qrCode))
+	signature := ed25519.Sign(passPrivateKey, []byte(qrCode))
 
 	signedQrCode := base64.StdEncoding.EncodeToString(append([]byte(qrCode+"|"), signature...))
 
