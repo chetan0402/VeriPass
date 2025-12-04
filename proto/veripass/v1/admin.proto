@@ -17,6 +17,7 @@ service AdminService {
   rpc GetAdmin(GetAdminRequest) returns (Admin);
   rpc GetAllPassesByHostel(GetAllPassesByHostelRequest) returns (GetAllPassesByHostelResponse);
   rpc GetPublicKey(google.protobuf.Empty) returns (GetPublicKeyResponse);
+  rpc GetOutCountByHostel(GetOutCountByHostelRequest) returns (GetOutCountByHostelResponse);
 }
 
 message GetAdminRequest {
@@ -45,4 +46,15 @@ message GetAllPassesByHostelResponse {
 
 message GetPublicKeyResponse {
   bytes public_key = 1;
+}
+
+message GetOutCountByHostelRequest {
+  string hostel = 1;
+  google.protobuf.Timestamp start_time = 2;
+  google.protobuf.Timestamp end_time = 3;
+  Pass.PassType type = 4;
+}
+
+message GetOutCountByHostelResponse {
+  int64 out = 1;
 }

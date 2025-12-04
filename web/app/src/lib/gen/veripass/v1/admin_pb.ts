@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file veripass/v1/admin.proto.
  */
 export const file_veripass_v1_admin: GenFile = /*@__PURE__*/
-  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCSKkAgobR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIsCghlbmRfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASGQoMcGFzc19pc19vcGVuGAQgASgISACIAQESKAoEdHlwZRgFIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUSEQoJcGFnZV9zaXplGAYgASgFEi4KCnBhZ2VfdG9rZW4YByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQg8KDV9wYXNzX2lzX29wZW4igAIKHEdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2USSgoGcGFzc2VzGAEgAygLMjoudmVyaXBhc3MudjEuR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXNwb25zZS5JbmZvSW5jbHVkZWRQYXNzEjMKD25leHRfcGFnZV90b2tlbhgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaXwoQSW5mb0luY2x1ZGVkUGFzcxIfCgRwYXNzGAEgASgLMhEudmVyaXBhc3MudjEuUGFzcxIUCgxzdHVkZW50X25hbWUYAiABKAkSFAoMc3R1ZGVudF9yb29tGAMgASgJIioKFEdldFB1YmxpY0tleVJlc3BvbnNlEhIKCnB1YmxpY19rZXkYASABKAwyhAIKDEFkbWluU2VydmljZRI8CghHZXRBZG1pbhIcLnZlcmlwYXNzLnYxLkdldEFkbWluUmVxdWVzdBoSLnZlcmlwYXNzLnYxLkFkbWluEmsKFEdldEFsbFBhc3Nlc0J5SG9zdGVsEigudmVyaXBhc3MudjEuR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXF1ZXN0GikudmVyaXBhc3MudjEuR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXNwb25zZRJJCgxHZXRQdWJsaWNLZXkSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaIS52ZXJpcGFzcy52MS5HZXRQdWJsaWNLZXlSZXNwb25zZUKuAQoPY29tLnZlcmlwYXNzLnYxQgpBZG1pblByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z", [file_google_protobuf_empty, file_google_protobuf_timestamp, file_veripass_v1_pass]);
+  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCSKkAgobR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIsCghlbmRfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASGQoMcGFzc19pc19vcGVuGAQgASgISACIAQESKAoEdHlwZRgFIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUSEQoJcGFnZV9zaXplGAYgASgFEi4KCnBhZ2VfdG9rZW4YByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQg8KDV9wYXNzX2lzX29wZW4igAIKHEdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2USSgoGcGFzc2VzGAEgAygLMjoudmVyaXBhc3MudjEuR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXNwb25zZS5JbmZvSW5jbHVkZWRQYXNzEjMKD25leHRfcGFnZV90b2tlbhgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaXwoQSW5mb0luY2x1ZGVkUGFzcxIfCgRwYXNzGAEgASgLMhEudmVyaXBhc3MudjEuUGFzcxIUCgxzdHVkZW50X25hbWUYAiABKAkSFAoMc3R1ZGVudF9yb29tGAMgASgJIioKFEdldFB1YmxpY0tleVJlc3BvbnNlEhIKCnB1YmxpY19rZXkYASABKAwitAEKGkdldE91dENvdW50QnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIsCghlbmRfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASKAoEdHlwZRgEIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUiKgobR2V0T3V0Q291bnRCeUhvc3RlbFJlc3BvbnNlEgsKA291dBgBIAEoAzLuAgoMQWRtaW5TZXJ2aWNlEjwKCEdldEFkbWluEhwudmVyaXBhc3MudjEuR2V0QWRtaW5SZXF1ZXN0GhIudmVyaXBhc3MudjEuQWRtaW4SawoUR2V0QWxsUGFzc2VzQnlIb3N0ZWwSKC52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlcXVlc3QaKS52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlc3BvbnNlEkkKDEdldFB1YmxpY0tleRIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRohLnZlcmlwYXNzLnYxLkdldFB1YmxpY0tleVJlc3BvbnNlEmgKE0dldE91dENvdW50QnlIb3N0ZWwSJy52ZXJpcGFzcy52MS5HZXRPdXRDb3VudEJ5SG9zdGVsUmVxdWVzdBooLnZlcmlwYXNzLnYxLkdldE91dENvdW50QnlIb3N0ZWxSZXNwb25zZUKuAQoPY29tLnZlcmlwYXNzLnYxQgpBZG1pblByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z", [file_google_protobuf_empty, file_google_protobuf_timestamp, file_veripass_v1_pass]);
 
 /**
  * @generated from message veripass.v1.Admin
@@ -181,6 +181,55 @@ export const GetPublicKeyResponseSchema: GenMessage<GetPublicKeyResponse> = /*@_
   messageDesc(file_veripass_v1_admin, 4);
 
 /**
+ * @generated from message veripass.v1.GetOutCountByHostelRequest
+ */
+export type GetOutCountByHostelRequest = Message<"veripass.v1.GetOutCountByHostelRequest"> & {
+  /**
+   * @generated from field: string hostel = 1;
+   */
+  hostel: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp start_time = 2;
+   */
+  startTime?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp end_time = 3;
+   */
+  endTime?: Timestamp;
+
+  /**
+   * @generated from field: veripass.v1.Pass.PassType type = 4;
+   */
+  type: Pass_PassType;
+};
+
+/**
+ * Describes the message veripass.v1.GetOutCountByHostelRequest.
+ * Use `create(GetOutCountByHostelRequestSchema)` to create a new message.
+ */
+export const GetOutCountByHostelRequestSchema: GenMessage<GetOutCountByHostelRequest> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_admin, 5);
+
+/**
+ * @generated from message veripass.v1.GetOutCountByHostelResponse
+ */
+export type GetOutCountByHostelResponse = Message<"veripass.v1.GetOutCountByHostelResponse"> & {
+  /**
+   * @generated from field: int64 out = 1;
+   */
+  out: bigint;
+};
+
+/**
+ * Describes the message veripass.v1.GetOutCountByHostelResponse.
+ * Use `create(GetOutCountByHostelResponseSchema)` to create a new message.
+ */
+export const GetOutCountByHostelResponseSchema: GenMessage<GetOutCountByHostelResponse> = /*@__PURE__*/
+  messageDesc(file_veripass_v1_admin, 6);
+
+/**
  * @generated from service veripass.v1.AdminService
  */
 export const AdminService: GenService<{
@@ -207,6 +256,14 @@ export const AdminService: GenService<{
     methodKind: "unary";
     input: typeof EmptySchema;
     output: typeof GetPublicKeyResponseSchema;
+  },
+  /**
+   * @generated from rpc veripass.v1.AdminService.GetOutCountByHostel
+   */
+  getOutCountByHostel: {
+    methodKind: "unary";
+    input: typeof GetOutCountByHostelRequestSchema;
+    output: typeof GetOutCountByHostelResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_veripass_v1_admin, 0);
