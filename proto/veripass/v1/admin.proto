@@ -26,7 +26,7 @@ message GetAdminRequest {
 message GetAllPassesByHostelRequest {
   string hostel = 1;
   google.protobuf.Timestamp start_time = 2;
-  bool pass_is_open = 4;
+  optional bool pass_is_open = 4;
   Pass.PassType type = 5;
   int32 page_size = 6;
   google.protobuf.Timestamp page_token = 7; // Based on start_time

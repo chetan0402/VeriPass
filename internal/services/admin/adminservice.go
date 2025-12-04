@@ -57,8 +57,12 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 		pass.StartTimeLTE(page_token.AsTime()),
 	)
 
-	if pass_is_open {
-		query = query.Where(pass.EndTimeIsNil())
+	if pass_is_open != nil {
+		if *pass_is_open {
+			query = query.Where(pass.EndTimeIsNil())
+		} else {
+			query = query.Where(pass.EndTimeNotNil())
+		}
 	}
 
 	if pass_type != veripassv1.Pass_PASS_TYPE_UNSPECIFIED {

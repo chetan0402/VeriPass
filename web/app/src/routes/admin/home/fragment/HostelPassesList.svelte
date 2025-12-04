@@ -50,10 +50,14 @@
 
 	async function fetchPassesFromServer() {
 		try {
+			let passIsOpen: boolean | undefined = undefined;
+			if (selectedStatus === PassStatus.Open) passIsOpen = true;
+			if (selectedStatus === PassStatus.Closed) passIsOpen = false;
+
 			let response = await client.getAllPassesByHostel({
 				hostel: admin.hostel,
 				startTime: timestampFromDate(selectedDate),
-				passIsOpen: selectedStatus !== PassStatus.Closed,
+				passIsOpen: passIsOpen,
 				type: selectedPurpose,
 				pageSize: 10,
 				pageToken: nextPageToken
