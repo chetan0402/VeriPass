@@ -171,6 +171,9 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		};
 	});
 	rpc(PassService.method.createManualPass, (req) => {
+		if (req.userId !== '12345') {
+			throw new ConnectError('user not found', Code.NotFound);
+		}
 		const userId = String(req.userId);
 		const idIdentifier = userId + timestampToMs(timestampNow());
 		const id = 'pass' + idIdentifier;

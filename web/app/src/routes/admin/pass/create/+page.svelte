@@ -4,7 +4,7 @@
 	import { getAdminFromState } from '$lib/state/admin_state';
 	import { goto } from '$app/navigation';
 	import { transport } from '$lib';
-	import { createClient } from '@connectrpc/connect';
+	import { Code, ConnectError, createClient } from '@connectrpc/connect';
 	import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
 	import { Select } from 'flowbite-svelte';
 	import PassActionDialog from '$lib/components/PassActionDialog.svelte';
@@ -42,9 +42,11 @@
 
 	async function generatePassByServer() {
 		if (userId.length == 0) {
+			alert('Invalid user id!');
 			return;
 		}
 		if (!admin) {
+			alert('error no admin session found, Please login again');
 			await goto('../../admin');
 			return;
 		}
@@ -55,9 +57,24 @@
 				type: selected
 			});
 			show_generating_box = false;
-		} catch {
+		} catch (e) {
 			show_generating_box = false;
-			alert('Error creating manual pass');
+			console.log(e);
+			if (e instanceof ConnectError) {
+				switch (e.code) {
+					case Code.NotFound:
+						alert(`User with id ${userId} not found!`);
+						break;
+					case Code.PermissionDenied:
+						alert(`Permission denied: You are not allowed to create manual passes`);
+						break;
+					default:
+						alert(`Error: ${e.message}`);
+						break;
+				}
+			} else {
+				alert('error creating manual pass!');
+			}
 		}
 	}
 
