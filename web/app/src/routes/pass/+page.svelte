@@ -37,11 +37,11 @@
 			await refreshPass();
 		} catch (error) {
 			if (error instanceof NoUserSessionFound) {
-                alert("No active session found! Please login again")
+				alert('No active session found! Please login again');
 				await goto('../login', { replaceState: true });
 			} else {
-				alert("Error loading user details");
-                await goto('../', { replaceState: true });
+				alert('Error loading user details');
+				await goto('../', { replaceState: true });
 				console.error('Unexpected error:', error);
 			}
 		}

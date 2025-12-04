@@ -26,7 +26,6 @@
 			alert('error no admin session found, Please login again');
 			await logout();
 			await goto('../admin', { replaceState: true });
-
 		}
 		pushState('', { popupVisible: PopupType.NONE });
 	});
