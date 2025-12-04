@@ -139,7 +139,7 @@ type GetAllPassesByHostelRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Hostel        string                 `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
 	StartTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	PassIsOpen    bool                   `protobuf:"varint,4,opt,name=pass_is_open,json=passIsOpen,proto3" json:"pass_is_open,omitempty"`
+	PassIsOpen    *bool                  `protobuf:"varint,4,opt,name=pass_is_open,json=passIsOpen,proto3,oneof" json:"pass_is_open,omitempty"`
 	Type          Pass_PassType          `protobuf:"varint,5,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
 	PageSize      int32                  `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	PageToken     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"` // Based on start_time
@@ -192,8 +192,8 @@ func (x *GetAllPassesByHostelRequest) GetStartTime() *timestamppb.Timestamp {
 }
 
 func (x *GetAllPassesByHostelRequest) GetPassIsOpen() bool {
-	if x != nil {
-		return x.PassIsOpen
+	if x != nil && x.PassIsOpen != nil {
+		return *x.PassIsOpen
 	}
 	return false
 }
@@ -387,17 +387,18 @@ const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\fcan_add_pass\x18\x04 \x01(\bR\n" +
 	"canAddPass\"'\n" +
 	"\x0fGetAdminRequest\x12\x14\n" +
-	"\x05email\x18\x01 \x01(\tR\x05email\"\x9a\x02\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"\xb0\x02\n" +
 	"\x1bGetAllPassesByHostelRequest\x12\x16\n" +
 	"\x06hostel\x18\x01 \x01(\tR\x06hostel\x129\n" +
 	"\n" +
-	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12 \n" +
-	"\fpass_is_open\x18\x04 \x01(\bR\n" +
-	"passIsOpen\x12.\n" +
+	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12%\n" +
+	"\fpass_is_open\x18\x04 \x01(\bH\x00R\n" +
+	"passIsOpen\x88\x01\x01\x12.\n" +
 	"\x04type\x18\x05 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\x12\x1b\n" +
 	"\tpage_size\x18\x06 \x01(\x05R\bpageSize\x129\n" +
 	"\n" +
-	"page_token\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tpageToken\"\xb7\x02\n" +
+	"page_token\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tpageTokenB\x0f\n" +
+	"\r_pass_is_open\"\xb7\x02\n" +
 	"\x1cGetAllPassesByHostelResponse\x12R\n" +
 	"\x06passes\x18\x01 \x03(\v2:.veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPassR\x06passes\x12B\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\rnextPageToken\x1a\x7f\n" +
@@ -466,6 +467,7 @@ func file_veripass_v1_admin_proto_init() {
 		return
 	}
 	file_veripass_v1_pass_proto_init()
+	file_veripass_v1_admin_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
