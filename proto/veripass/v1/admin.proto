@@ -48,13 +48,13 @@ message GetPublicKeyResponse {
   bytes public_key = 1;
 }
 
-message GetOutCountByHostelRequest{
+message GetOutCountByHostelRequest {
   string hostel = 1;
   google.protobuf.Timestamp start_time = 2;
   google.protobuf.Timestamp end_time = 3;
   Pass.PassType type = 4;
 }
 
-message GetOutCountByHostelResponse{
+message GetOutCountByHostelResponse {
   int64 out = 1;
 }
