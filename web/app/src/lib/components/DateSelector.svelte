@@ -1,24 +1,51 @@
 <script lang="ts">
 	import { Datepicker } from 'flowbite-svelte';
 	import { CloseOutline } from 'flowbite-svelte-icons';
+	import { Toggle } from 'flowbite-svelte';
 
-	const availableFrom = new Date(0); // 10 days ago
-	const availableTo = new Date(Date.now()); // 10 days from now
+	const availableFrom = new Date(0);
+	const availableTo = new Date(Date.now());
 
-	let { selectedDate, toClose, toProceed } = $props<{
-		selectedDate: Date;
+	let {
+		intervalMode = $bindable(),
+		selectedStartDate,
+		selectedEndDate,
+		toClose,
+		toProceed
+	} = $props<{
+		intervalMode: boolean;
+		selectedStartDate: Date;
+		selectedEndDate: Date;
 		toClose: () => void;
-		toProceed: (date: Date) => void;
+		toProceed: (startDate: Date, endDate: Date) => void;
 	}>();
 
 	function stopAndClose() {
 		console.log('Closing');
 		toClose();
-		toClose();
 	}
 
 	function doAction() {
-		toProceed(selectedDate);
+		if (!intervalMode) {
+			selectedEndDate = getMaximumTimeFor(selectedStartDate);
+		} else {
+			selectedEndDate = getMaximumTimeFor(selectedEndDate);
+		}
+		toProceed(selectedStartDate, selectedEndDate);
+	}
+
+	function getMaximumTimeFor(date: Date) {
+		const d = new Date(date);
+		const now = new Date();
+		const isToday =
+			d.getFullYear() === now.getFullYear() &&
+			d.getMonth() === now.getMonth() &&
+			d.getDate() === now.getDate();
+		if (isToday) {
+			return now;
+		}
+		d.setHours(23, 59, 59, 999);
+		return d;
 	}
 </script>
 
@@ -27,17 +54,33 @@
 		class="animate__animated animate__fadeIn relative flex flex-col items-center justify-center rounded-lg bg-white p-4 shadow-lg"
 	>
 		<div>
-			<Datepicker
-				class="shadow-none"
-				inline
-				bind:value={selectedDate}
-				{availableFrom}
-				{availableTo}
-				color="purple"
-				title="Select date to start"
-				monthBtnSelected="bg-blue-200"
-			/>
+			{#if intervalMode}
+				<Datepicker
+					inline
+					bind:value={selectedStartDate}
+					range
+					bind:rangeFrom={selectedStartDate}
+					bind:rangeTo={selectedEndDate}
+					{availableFrom}
+					color="blue"
+					{availableTo}
+					title="Select date to start"
+				/>
+			{:else}
+				<Datepicker
+					inline
+					bind:value={selectedStartDate}
+					{availableFrom}
+					{availableTo}
+					color="purple"
+					title="Select range of date"
+				/>
+			{/if}
 		</div>
+		<div class="mt-5">
+			<Toggle size="default" color="purple" bind:checked={intervalMode}>Range Mode</Toggle>
+		</div>
+
 		<div class="mt-5 flex w-full flex-row">
 			<button
 				onclick={doAction}

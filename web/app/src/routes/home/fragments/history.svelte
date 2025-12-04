@@ -7,7 +7,7 @@
 	import { createClient } from '@connectrpc/connect';
 	import { type Pass, PassService } from '$lib/gen/veripass/v1/pass_pb';
 	import type { User } from '$lib/gen/veripass/v1/user_pb';
-	import { timestampToMs } from '$lib/timestamp_utils';
+	import { timestampToMs } from '$lib/time_utils';
 	import { goto } from '$app/navigation';
 
 	let loadMoreElem: HTMLDivElement;

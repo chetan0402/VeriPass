@@ -2,8 +2,8 @@ import { Code, ConnectError, createRouterTransport } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
-import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
-import { timestampNow } from '@bufbuild/protobuf/wkt';
+import { msToTimestamp, timestampToDate, timestampToMs } from '$lib/time_utils';
+import { type Timestamp, timestampNow } from '@bufbuild/protobuf/wkt';
 import {
 	type Admin,
 	AdminService,
@@ -230,7 +230,14 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(AdminService.method.getAllPassesByHostel, (req) => {
 		const infoIncludedPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] =
 			generateMockPasesForHostel(req);
-		console.log(infoIncludedPasses);
+		console.log(
+			'loading from ' +
+				timestampToDate(req.startTime as Timestamp) +
+				' to ' +
+				timestampToDate(req.endTime as Timestamp) +
+				' with next page ' +
+				timestampToDate(req.pageToken as Timestamp)
+		);
 		return {
 			passes: infoIncludedPasses,
 			nextPageToken: infoIncludedPasses[infoIncludedPasses.length - 1].pass?.startTime
