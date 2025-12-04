@@ -197,13 +197,13 @@ func TestMain(t *testing.T) {
 	hostelPassList1, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
 		Hostel:     "H mock",
 		StartTime:  timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
-		PassIsOpen: false,
+		PassIsOpen: nil,
 		Type:       veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
 		PageSize:   1,
 		PageToken:  timestamppb.Now(),
 	}))
 	attest(t, err)
-	if hostelPassList1.Msg.NextPageToken.Seconds != pass.Msg.StartTime.Seconds {
+	if (hostelPassList1.Msg.NextPageToken == nil) || hostelPassList1.Msg.NextPageToken.Seconds != pass.Msg.StartTime.Seconds {
 		t.Fatalf("Expected %v, got %v", pass.Msg.StartTime, hostelPassList1.Msg.NextPageToken)
 	}
 	if hostelPassList1.Msg.Passes[0].StudentName != mockUser.Name {
@@ -217,7 +217,7 @@ func TestMain(t *testing.T) {
 	hostelPassList2, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
 		Hostel:     "H mock",
 		StartTime:  timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
-		PassIsOpen: false,
+		PassIsOpen: nil,
 		Type:       veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
 		PageSize:   1,
 		PageToken:  hostelPassList1.Msg.NextPageToken,
