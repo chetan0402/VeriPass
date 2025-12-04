@@ -323,6 +323,118 @@ func (x *GetPublicKeyResponse) GetPublicKey() []byte {
 	return nil
 }
 
+type GetOutCountByHostelRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Hostel        string                 `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	StartTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	EndTime       *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
+	Type          Pass_PassType          `protobuf:"varint,4,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetOutCountByHostelRequest) Reset() {
+	*x = GetOutCountByHostelRequest{}
+	mi := &file_veripass_v1_admin_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetOutCountByHostelRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOutCountByHostelRequest) ProtoMessage() {}
+
+func (x *GetOutCountByHostelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_admin_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOutCountByHostelRequest.ProtoReflect.Descriptor instead.
+func (*GetOutCountByHostelRequest) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_admin_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetOutCountByHostelRequest) GetHostel() string {
+	if x != nil {
+		return x.Hostel
+	}
+	return ""
+}
+
+func (x *GetOutCountByHostelRequest) GetStartTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartTime
+	}
+	return nil
+}
+
+func (x *GetOutCountByHostelRequest) GetEndTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.EndTime
+	}
+	return nil
+}
+
+func (x *GetOutCountByHostelRequest) GetType() Pass_PassType {
+	if x != nil {
+		return x.Type
+	}
+	return Pass_PASS_TYPE_UNSPECIFIED
+}
+
+type GetOutCountByHostelResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Out           int64                  `protobuf:"varint,1,opt,name=out,proto3" json:"out,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetOutCountByHostelResponse) Reset() {
+	*x = GetOutCountByHostelResponse{}
+	mi := &file_veripass_v1_admin_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetOutCountByHostelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOutCountByHostelResponse) ProtoMessage() {}
+
+func (x *GetOutCountByHostelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_veripass_v1_admin_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOutCountByHostelResponse.ProtoReflect.Descriptor instead.
+func (*GetOutCountByHostelResponse) Descriptor() ([]byte, []int) {
+	return file_veripass_v1_admin_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetOutCountByHostelResponse) GetOut() int64 {
+	if x != nil {
+		return x.Out
+	}
+	return 0
+}
+
 type GetAllPassesByHostelResponse_InfoIncludedPass struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Pass          *Pass                  `protobuf:"bytes,1,opt,name=pass,proto3" json:"pass,omitempty"`
@@ -334,7 +446,7 @@ type GetAllPassesByHostelResponse_InfoIncludedPass struct {
 
 func (x *GetAllPassesByHostelResponse_InfoIncludedPass) Reset() {
 	*x = GetAllPassesByHostelResponse_InfoIncludedPass{}
-	mi := &file_veripass_v1_admin_proto_msgTypes[5]
+	mi := &file_veripass_v1_admin_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -346,7 +458,7 @@ func (x *GetAllPassesByHostelResponse_InfoIncludedPass) String() string {
 func (*GetAllPassesByHostelResponse_InfoIncludedPass) ProtoMessage() {}
 
 func (x *GetAllPassesByHostelResponse_InfoIncludedPass) ProtoReflect() protoreflect.Message {
-	mi := &file_veripass_v1_admin_proto_msgTypes[5]
+	mi := &file_veripass_v1_admin_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -417,11 +529,20 @@ const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\fstudent_room\x18\x03 \x01(\tR\vstudentRoom\"5\n" +
 	"\x14GetPublicKeyResponse\x12\x1d\n" +
 	"\n" +
-	"public_key\x18\x01 \x01(\fR\tpublicKey2\x84\x02\n" +
+	"public_key\x18\x01 \x01(\fR\tpublicKey\"\xd6\x01\n" +
+	"\x1aGetOutCountByHostelRequest\x12\x16\n" +
+	"\x06hostel\x18\x01 \x01(\tR\x06hostel\x129\n" +
+	"\n" +
+	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x125\n" +
+	"\bend_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\aendTime\x12.\n" +
+	"\x04type\x18\x04 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\"/\n" +
+	"\x1bGetOutCountByHostelResponse\x12\x10\n" +
+	"\x03out\x18\x01 \x01(\x03R\x03out2\xee\x02\n" +
 	"\fAdminService\x12<\n" +
 	"\bGetAdmin\x12\x1c.veripass.v1.GetAdminRequest\x1a\x12.veripass.v1.Admin\x12k\n" +
 	"\x14GetAllPassesByHostel\x12(.veripass.v1.GetAllPassesByHostelRequest\x1a).veripass.v1.GetAllPassesByHostelResponse\x12I\n" +
-	"\fGetPublicKey\x12\x16.google.protobuf.Empty\x1a!.veripass.v1.GetPublicKeyResponseB\xae\x01\n" +
+	"\fGetPublicKey\x12\x16.google.protobuf.Empty\x1a!.veripass.v1.GetPublicKeyResponse\x12h\n" +
+	"\x13GetOutCountByHostel\x12'.veripass.v1.GetOutCountByHostelRequest\x1a(.veripass.v1.GetOutCountByHostelResponseB\xae\x01\n" +
 	"\x0fcom.veripass.v1B\n" +
 	"AdminProtoP\x01ZBgithub.com/chetan0402/veripass/internal/gen/veripass/v1;veripassv1\xa2\x02\x03VXX\xaa\x02\vVeripass.V1\xca\x02\vVeripass\\V1\xe2\x02\x17Veripass\\V1\\GPBMetadata\xea\x02\fVeripass::V1b\x06proto3"
 
@@ -437,38 +558,45 @@ func file_veripass_v1_admin_proto_rawDescGZIP() []byte {
 	return file_veripass_v1_admin_proto_rawDescData
 }
 
-var file_veripass_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_veripass_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_veripass_v1_admin_proto_goTypes = []any{
 	(*Admin)(nil),                                         // 0: veripass.v1.Admin
 	(*GetAdminRequest)(nil),                               // 1: veripass.v1.GetAdminRequest
 	(*GetAllPassesByHostelRequest)(nil),                   // 2: veripass.v1.GetAllPassesByHostelRequest
 	(*GetAllPassesByHostelResponse)(nil),                  // 3: veripass.v1.GetAllPassesByHostelResponse
 	(*GetPublicKeyResponse)(nil),                          // 4: veripass.v1.GetPublicKeyResponse
-	(*GetAllPassesByHostelResponse_InfoIncludedPass)(nil), // 5: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
-	(*timestamppb.Timestamp)(nil),                         // 6: google.protobuf.Timestamp
-	(Pass_PassType)(0),                                    // 7: veripass.v1.Pass.PassType
-	(*Pass)(nil),                                          // 8: veripass.v1.Pass
-	(*emptypb.Empty)(nil),                                 // 9: google.protobuf.Empty
+	(*GetOutCountByHostelRequest)(nil),                    // 5: veripass.v1.GetOutCountByHostelRequest
+	(*GetOutCountByHostelResponse)(nil),                   // 6: veripass.v1.GetOutCountByHostelResponse
+	(*GetAllPassesByHostelResponse_InfoIncludedPass)(nil), // 7: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
+	(*timestamppb.Timestamp)(nil),                         // 8: google.protobuf.Timestamp
+	(Pass_PassType)(0),                                    // 9: veripass.v1.Pass.PassType
+	(*Pass)(nil),                                          // 10: veripass.v1.Pass
+	(*emptypb.Empty)(nil),                                 // 11: google.protobuf.Empty
 }
 var file_veripass_v1_admin_proto_depIdxs = []int32{
-	6,  // 0: veripass.v1.GetAllPassesByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
-	6,  // 1: veripass.v1.GetAllPassesByHostelRequest.end_time:type_name -> google.protobuf.Timestamp
-	7,  // 2: veripass.v1.GetAllPassesByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
-	6,  // 3: veripass.v1.GetAllPassesByHostelRequest.page_token:type_name -> google.protobuf.Timestamp
-	5,  // 4: veripass.v1.GetAllPassesByHostelResponse.passes:type_name -> veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
-	6,  // 5: veripass.v1.GetAllPassesByHostelResponse.next_page_token:type_name -> google.protobuf.Timestamp
-	8,  // 6: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass.pass:type_name -> veripass.v1.Pass
-	1,  // 7: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
-	2,  // 8: veripass.v1.AdminService.GetAllPassesByHostel:input_type -> veripass.v1.GetAllPassesByHostelRequest
-	9,  // 9: veripass.v1.AdminService.GetPublicKey:input_type -> google.protobuf.Empty
-	0,  // 10: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
-	3,  // 11: veripass.v1.AdminService.GetAllPassesByHostel:output_type -> veripass.v1.GetAllPassesByHostelResponse
-	4,  // 12: veripass.v1.AdminService.GetPublicKey:output_type -> veripass.v1.GetPublicKeyResponse
-	10, // [10:13] is the sub-list for method output_type
-	7,  // [7:10] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	8,  // 0: veripass.v1.GetAllPassesByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
+	8,  // 1: veripass.v1.GetAllPassesByHostelRequest.end_time:type_name -> google.protobuf.Timestamp
+	9,  // 2: veripass.v1.GetAllPassesByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
+	8,  // 3: veripass.v1.GetAllPassesByHostelRequest.page_token:type_name -> google.protobuf.Timestamp
+	7,  // 4: veripass.v1.GetAllPassesByHostelResponse.passes:type_name -> veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
+	8,  // 5: veripass.v1.GetAllPassesByHostelResponse.next_page_token:type_name -> google.protobuf.Timestamp
+	8,  // 6: veripass.v1.GetOutCountByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
+	8,  // 7: veripass.v1.GetOutCountByHostelRequest.end_time:type_name -> google.protobuf.Timestamp
+	9,  // 8: veripass.v1.GetOutCountByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
+	10, // 9: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass.pass:type_name -> veripass.v1.Pass
+	1,  // 10: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
+	2,  // 11: veripass.v1.AdminService.GetAllPassesByHostel:input_type -> veripass.v1.GetAllPassesByHostelRequest
+	11, // 12: veripass.v1.AdminService.GetPublicKey:input_type -> google.protobuf.Empty
+	5,  // 13: veripass.v1.AdminService.GetOutCountByHostel:input_type -> veripass.v1.GetOutCountByHostelRequest
+	0,  // 14: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
+	3,  // 15: veripass.v1.AdminService.GetAllPassesByHostel:output_type -> veripass.v1.GetAllPassesByHostelResponse
+	4,  // 16: veripass.v1.AdminService.GetPublicKey:output_type -> veripass.v1.GetPublicKeyResponse
+	6,  // 17: veripass.v1.AdminService.GetOutCountByHostel:output_type -> veripass.v1.GetOutCountByHostelResponse
+	14, // [14:18] is the sub-list for method output_type
+	10, // [10:14] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_veripass_v1_admin_proto_init() }
@@ -484,7 +612,7 @@ func file_veripass_v1_admin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_veripass_v1_admin_proto_rawDesc), len(file_veripass_v1_admin_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
