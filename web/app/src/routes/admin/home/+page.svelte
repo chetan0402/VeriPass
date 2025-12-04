@@ -23,16 +23,15 @@
 		} catch (error) {
 			console.log(error);
 			status = `Error ${error}`;
+			alert('error no admin session found, Please login again');
 			await logout();
 			await goto('../admin', { replaceState: true });
-			alert('error no admin session found, Please login again');
 		}
 		pushState('', { popupVisible: PopupType.NONE });
 	});
 
 	async function logout() {
 		await invalidateAdminSession();
-		window.location.href = '../admin';
 	}
 
 	function closeMenu() {

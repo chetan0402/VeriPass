@@ -37,7 +37,6 @@ export async function getUserProfileFromState() {
 	}
 	try {
 		const userProfileResponse = await userClient.getPhoto({ id: userId });
-		console.log(userProfileResponse);
 		if (userProfileResponse.photo) {
 			const blob = new Blob([userProfileResponse.photo]);
 			userprofile = URL.createObjectURL(blob);

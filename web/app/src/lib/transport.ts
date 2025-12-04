@@ -1,7 +1,7 @@
 import { Code, ConnectError, createRouterTransport } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
-import { PassService, Pass_PassType, type Pass } from '$lib/gen/veripass/v1/pass_pb';
+import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
 import { msToTimestamp, timestampToMs } from '$lib/timestamp_utils';
 import { timestampNow } from '@bufbuild/protobuf/wkt';
 import {
@@ -118,6 +118,9 @@ function generateMockPasesForHostel(
 
 const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(UserService.method.getUser, (req) => {
+		if (req.id !== '12345') {
+			throw new ConnectError('user not found', Code.NotFound);
+		}
 		return {
 			id: req.id,
 			name: 'Mock User',
@@ -160,7 +163,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			type: getPassType(req.type),
 			startTime: timestampNow(),
 			$typeName: 'veripass.v1.Pass',
-			qrCode: createQrCode(id, '12345')
+			qrCode: createQrCode(id, userId)
 		};
 
 		return {
@@ -168,6 +171,9 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		};
 	});
 	rpc(PassService.method.createManualPass, (req) => {
+		if (req.userId !== '12345') {
+			throw new ConnectError('user not found', Code.NotFound);
+		}
 		const userId = String(req.userId);
 		const idIdentifier = userId + timestampToMs(timestampNow());
 		const id = 'pass' + idIdentifier;
@@ -178,7 +184,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			type: req.type,
 			startTime: timestampNow(),
 			$typeName: 'veripass.v1.Pass',
-			qrCode: createQrCode(id, '12345')
+			qrCode: createQrCode(id, userId)
 		};
 
 		return mockPasses[id];
