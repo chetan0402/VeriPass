@@ -42,6 +42,7 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 	var (
 		_            = r.Msg.Hostel
 		start_time   = r.Msg.StartTime.AsTime()
+		end_time     = r.Msg.EndTime.AsTime()
 		pass_is_open = r.Msg.PassIsOpen
 		pass_type    = r.Msg.Type
 		page_size    = int(r.Msg.PageSize)
@@ -54,6 +55,7 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 
 	query = query.Where(
 		pass.StartTimeGTE(start_time),
+		pass.StartTimeLTE(end_time),
 		pass.StartTimeLTE(page_token.AsTime()),
 	)
 
