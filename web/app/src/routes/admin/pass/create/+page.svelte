@@ -100,7 +100,7 @@
 			<div class="flex flex-col gap-1">
 				<label for="userId" class="text-sm font-medium text-gray-700">User ID</label>
 				<input
-					type="number"
+					type="text"
 					id="userId"
 					bind:value={userId}
 					placeholder="Enter Scholar Number"
