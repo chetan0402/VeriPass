@@ -139,6 +139,7 @@ type GetAllPassesByHostelRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Hostel        string                 `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
 	StartTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	EndTime       *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
 	PassIsOpen    *bool                  `protobuf:"varint,4,opt,name=pass_is_open,json=passIsOpen,proto3,oneof" json:"pass_is_open,omitempty"`
 	Type          Pass_PassType          `protobuf:"varint,5,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
 	PageSize      int32                  `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
@@ -187,6 +188,13 @@ func (x *GetAllPassesByHostelRequest) GetHostel() string {
 func (x *GetAllPassesByHostelRequest) GetStartTime() *timestamppb.Timestamp {
 	if x != nil {
 		return x.StartTime
+	}
+	return nil
+}
+
+func (x *GetAllPassesByHostelRequest) GetEndTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.EndTime
 	}
 	return nil
 }
@@ -387,11 +395,12 @@ const file_veripass_v1_admin_proto_rawDesc = "" +
 	"\fcan_add_pass\x18\x04 \x01(\bR\n" +
 	"canAddPass\"'\n" +
 	"\x0fGetAdminRequest\x12\x14\n" +
-	"\x05email\x18\x01 \x01(\tR\x05email\"\xb0\x02\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"\xe7\x02\n" +
 	"\x1bGetAllPassesByHostelRequest\x12\x16\n" +
 	"\x06hostel\x18\x01 \x01(\tR\x06hostel\x129\n" +
 	"\n" +
-	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x12%\n" +
+	"start_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x125\n" +
+	"\bend_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\aendTime\x12%\n" +
 	"\fpass_is_open\x18\x04 \x01(\bH\x00R\n" +
 	"passIsOpen\x88\x01\x01\x12.\n" +
 	"\x04type\x18\x05 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\x12\x1b\n" +
@@ -442,23 +451,24 @@ var file_veripass_v1_admin_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),                                 // 9: google.protobuf.Empty
 }
 var file_veripass_v1_admin_proto_depIdxs = []int32{
-	6, // 0: veripass.v1.GetAllPassesByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
-	7, // 1: veripass.v1.GetAllPassesByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
-	6, // 2: veripass.v1.GetAllPassesByHostelRequest.page_token:type_name -> google.protobuf.Timestamp
-	5, // 3: veripass.v1.GetAllPassesByHostelResponse.passes:type_name -> veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
-	6, // 4: veripass.v1.GetAllPassesByHostelResponse.next_page_token:type_name -> google.protobuf.Timestamp
-	8, // 5: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass.pass:type_name -> veripass.v1.Pass
-	1, // 6: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
-	2, // 7: veripass.v1.AdminService.GetAllPassesByHostel:input_type -> veripass.v1.GetAllPassesByHostelRequest
-	9, // 8: veripass.v1.AdminService.GetPublicKey:input_type -> google.protobuf.Empty
-	0, // 9: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
-	3, // 10: veripass.v1.AdminService.GetAllPassesByHostel:output_type -> veripass.v1.GetAllPassesByHostelResponse
-	4, // 11: veripass.v1.AdminService.GetPublicKey:output_type -> veripass.v1.GetPublicKeyResponse
-	9, // [9:12] is the sub-list for method output_type
-	6, // [6:9] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	6,  // 0: veripass.v1.GetAllPassesByHostelRequest.start_time:type_name -> google.protobuf.Timestamp
+	6,  // 1: veripass.v1.GetAllPassesByHostelRequest.end_time:type_name -> google.protobuf.Timestamp
+	7,  // 2: veripass.v1.GetAllPassesByHostelRequest.type:type_name -> veripass.v1.Pass.PassType
+	6,  // 3: veripass.v1.GetAllPassesByHostelRequest.page_token:type_name -> google.protobuf.Timestamp
+	5,  // 4: veripass.v1.GetAllPassesByHostelResponse.passes:type_name -> veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
+	6,  // 5: veripass.v1.GetAllPassesByHostelResponse.next_page_token:type_name -> google.protobuf.Timestamp
+	8,  // 6: veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass.pass:type_name -> veripass.v1.Pass
+	1,  // 7: veripass.v1.AdminService.GetAdmin:input_type -> veripass.v1.GetAdminRequest
+	2,  // 8: veripass.v1.AdminService.GetAllPassesByHostel:input_type -> veripass.v1.GetAllPassesByHostelRequest
+	9,  // 9: veripass.v1.AdminService.GetPublicKey:input_type -> google.protobuf.Empty
+	0,  // 10: veripass.v1.AdminService.GetAdmin:output_type -> veripass.v1.Admin
+	3,  // 11: veripass.v1.AdminService.GetAllPassesByHostel:output_type -> veripass.v1.GetAllPassesByHostelResponse
+	4,  // 12: veripass.v1.AdminService.GetPublicKey:output_type -> veripass.v1.GetPublicKeyResponse
+	10, // [10:13] is the sub-list for method output_type
+	7,  // [7:10] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_veripass_v1_admin_proto_init() }
