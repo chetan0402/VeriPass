@@ -32,10 +32,10 @@
 			admin = await getAdminFromState();
 			if (!admin?.canAddPass) {
 				alert('You are not allowed to add a new pass! Contact CCF');
-				await goto('/admin');
+				await goto('../../admin');
 			}
 		} catch {
-			await goto('../admin', { replaceState: true });
+			await goto('../../admin', { replaceState: true });
 			alert('error no admin session found, Please login again');
 		}
 	});
