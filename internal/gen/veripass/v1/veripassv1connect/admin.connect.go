@@ -42,6 +42,9 @@ const (
 	// AdminServiceGetPublicKeyProcedure is the fully-qualified name of the AdminService's GetPublicKey
 	// RPC.
 	AdminServiceGetPublicKeyProcedure = "/veripass.v1.AdminService/GetPublicKey"
+	// AdminServiceGetOutCountByHostelProcedure is the fully-qualified name of the AdminService's
+	// GetOutCountByHostel RPC.
+	AdminServiceGetOutCountByHostelProcedure = "/veripass.v1.AdminService/GetOutCountByHostel"
 )
 
 // AdminServiceClient is a client for the veripass.v1.AdminService service.
@@ -49,6 +52,7 @@ type AdminServiceClient interface {
 	GetAdmin(context.Context, *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error)
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
 	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
+	GetOutCountByHostel(context.Context, *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error)
 }
 
 // NewAdminServiceClient constructs a client for the veripass.v1.AdminService service. By default,
@@ -80,6 +84,12 @@ func NewAdminServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(adminServiceMethods.ByName("GetPublicKey")),
 			connect.WithClientOptions(opts...),
 		),
+		getOutCountByHostel: connect.NewClient[v1.GetOutCountByHostelRequest, v1.GetOutCountByHostelResponse](
+			httpClient,
+			baseURL+AdminServiceGetOutCountByHostelProcedure,
+			connect.WithSchema(adminServiceMethods.ByName("GetOutCountByHostel")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -88,6 +98,7 @@ type adminServiceClient struct {
 	getAdmin             *connect.Client[v1.GetAdminRequest, v1.Admin]
 	getAllPassesByHostel *connect.Client[v1.GetAllPassesByHostelRequest, v1.GetAllPassesByHostelResponse]
 	getPublicKey         *connect.Client[emptypb.Empty, v1.GetPublicKeyResponse]
+	getOutCountByHostel  *connect.Client[v1.GetOutCountByHostelRequest, v1.GetOutCountByHostelResponse]
 }
 
 // GetAdmin calls veripass.v1.AdminService.GetAdmin.
@@ -105,11 +116,17 @@ func (c *adminServiceClient) GetPublicKey(ctx context.Context, req *connect.Requ
 	return c.getPublicKey.CallUnary(ctx, req)
 }
 
+// GetOutCountByHostel calls veripass.v1.AdminService.GetOutCountByHostel.
+func (c *adminServiceClient) GetOutCountByHostel(ctx context.Context, req *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error) {
+	return c.getOutCountByHostel.CallUnary(ctx, req)
+}
+
 // AdminServiceHandler is an implementation of the veripass.v1.AdminService service.
 type AdminServiceHandler interface {
 	GetAdmin(context.Context, *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error)
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
 	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
+	GetOutCountByHostel(context.Context, *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error)
 }
 
 // NewAdminServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -137,6 +154,12 @@ func NewAdminServiceHandler(svc AdminServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(adminServiceMethods.ByName("GetPublicKey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	adminServiceGetOutCountByHostelHandler := connect.NewUnaryHandler(
+		AdminServiceGetOutCountByHostelProcedure,
+		svc.GetOutCountByHostel,
+		connect.WithSchema(adminServiceMethods.ByName("GetOutCountByHostel")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/veripass.v1.AdminService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case AdminServiceGetAdminProcedure:
@@ -145,6 +168,8 @@ func NewAdminServiceHandler(svc AdminServiceHandler, opts ...connect.HandlerOpti
 			adminServiceGetAllPassesByHostelHandler.ServeHTTP(w, r)
 		case AdminServiceGetPublicKeyProcedure:
 			adminServiceGetPublicKeyHandler.ServeHTTP(w, r)
+		case AdminServiceGetOutCountByHostelProcedure:
+			adminServiceGetOutCountByHostelHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -164,4 +189,8 @@ func (UnimplementedAdminServiceHandler) GetAllPassesByHostel(context.Context, *c
 
 func (UnimplementedAdminServiceHandler) GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.AdminService.GetPublicKey is not implemented"))
+}
+
+func (UnimplementedAdminServiceHandler) GetOutCountByHostel(context.Context, *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.AdminService.GetOutCountByHostel is not implemented"))
 }

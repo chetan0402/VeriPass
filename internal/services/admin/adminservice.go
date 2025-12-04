@@ -123,6 +123,37 @@ func (s *AdminService) GetAdmin(ctx context.Context, r *connect.Request[veripass
 	return connect.NewResponse(toProto(admin)), nil
 }
 
+// GetInOutCountByHostel implements veripassv1connect.AdminServiceHandler.
+func (s *AdminService) GetOutCountByHostel(ctx context.Context, req *connect.Request[veripassv1.GetOutCountByHostelRequest]) (*connect.Response[veripassv1.GetOutCountByHostelResponse], error) {
+	var (
+		_         = req.Msg.Hostel
+		startTime = req.Msg.StartTime.AsTime()
+		endTime   = req.Msg.EndTime.AsTime()
+		passType  = req.Msg.Type
+	)
+
+	query := s.client.Pass.Query().Where(
+		pass.StartTimeGTE(startTime),
+		pass.StartTimeLTE(endTime),
+		pass.EndTimeIsNil(),
+	)
+
+	if passType != veripassv1.Pass_PASS_TYPE_UNSPECIFIED {
+		query = query.Where(
+			pass.TypeEQ(passservice.ProtoPassTypeToEnt(passType)),
+		)
+	}
+
+	out, err := query.Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&veripassv1.GetOutCountByHostelResponse{
+		Out: int64(out),
+	}), nil
+}
+
 func toProto(admin *ent.Admin) *veripassv1.Admin {
 	return &veripassv1.Admin{
 		Email:      admin.Email,

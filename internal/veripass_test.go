@@ -235,6 +235,17 @@ func TestMain(t *testing.T) {
 		t.Fatalf("Expected student room %v, got %v", mockUser.Room, hostelPassList2.Msg.Passes[0].StudentRoom)
 	}
 	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg, publicKey.Msg.PublicKey)
+
+	outCount, err := adminClient.GetOutCountByHostel(ctx, connect.NewRequest(&veripassv1.GetOutCountByHostelRequest{
+		Hostel:    "H mock",
+		StartTime: timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
+		EndTime:   timestamppb.Now(),
+		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
+	}))
+	attest(t, err)
+	if outCount.Msg.Out != 1 {
+		t.Fatalf("Expected 1 out count, got:%v", outCount.Msg.Out)
+	}
 }
 
 func attest(t *testing.T, err error) {
