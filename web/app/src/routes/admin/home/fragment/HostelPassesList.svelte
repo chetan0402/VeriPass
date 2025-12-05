@@ -8,7 +8,7 @@
 	import { type Timestamp, timestampFromDate, timestampNow } from '@bufbuild/protobuf/wkt';
 	import { createClient } from '@connectrpc/connect';
 	import { PopupType, transport } from '$lib';
-	import { get12OClockDate, timestampToMs } from '$lib/timestamp_utils';
+	import { get12oClockDate, timestampToMs } from '$lib/time_utils';
 	import { onMount } from 'svelte';
 	import AdminPassListItem from '$lib/components/AdminPassListItem.svelte';
 	import DateSelector from '$lib/components/DateSelector.svelte';
@@ -19,7 +19,8 @@
 
 	let { admin } = $props<{ admin: Admin }>();
 
-	let selectedDate = $state(get12OClockDate(new Date(Date.now())));
+	let selectedStartDate = $state(get12oClockDate(new Date(Date.now())));
+	let selectedEndDate = $state(new Date(Date.now()));
 
 	let selectedStatus = $state(PassStatus.All);
 
@@ -32,6 +33,8 @@
 	let loading: boolean = false;
 
 	let observing: boolean = $state(false);
+
+	let intervalMode: boolean = $state(false);
 
 	let passes: GetAllPassesByHostelResponse_InfoIncludedPass[] = $state([]);
 
@@ -56,7 +59,8 @@
 
 			let response = await client.getAllPassesByHostel({
 				hostel: admin.hostel,
-				startTime: timestampFromDate(selectedDate),
+				startTime: timestampFromDate(selectedStartDate),
+				endTime: timestampFromDate(selectedEndDate),
 				passIsOpen: passIsOpen,
 				type: selectedPurpose,
 				pageSize: 10,
@@ -110,16 +114,32 @@
 			<p class="text-xs font-semibold text-gray-800">Date</p>
 			<div class="select-style-filter">
 				<button
-					class="text-gray-800"
+					class="p-2 text-gray-800"
 					onclick={() => {
 						replaceState('', { popupVisible: PopupType.DATEPICKER });
 					}}
-					>{selectedDate.toLocaleDateString('en-GB', {
-						day: '2-digit',
-						month: 'short',
-						year: 'numeric'
-					})}</button
 				>
+					{#if intervalMode}
+						<p>
+							{selectedStartDate.toLocaleDateString('en-GB', {
+								day: '2-digit',
+								month: 'short',
+								year: 'numeric'
+							}) +
+								'-' +
+								selectedEndDate.toLocaleDateString('en-GB', {
+									day: '2-digit',
+									month: 'short',
+									year: 'numeric'
+								})}
+						</p>
+					{:else}
+						{selectedStartDate.toLocaleDateString('en-GB', {
+							day: '2-digit',
+							month: 'short',
+							year: 'numeric'
+						})}{/if}
+				</button>
 			</div>
 		</div>
 
@@ -177,12 +197,15 @@
 </div>
 {#if page.state.popupVisible === PopupType.DATEPICKER}
 	<DateSelector
-		{selectedDate}
+		bind:intervalMode
+		{selectedStartDate}
+		{selectedEndDate}
 		toClose={() => {
 			replaceState('', { popupVisible: PopupType.NONE });
 		}}
-		toProceed={(date: Date) => {
-			selectedDate = date;
+		toProceed={(startDate: Date, endDate: Date) => {
+			selectedStartDate = startDate;
+			selectedEndDate = endDate;
 			replaceState('', { popupVisible: PopupType.NONE });
 			onFiltersChanged();
 		}}

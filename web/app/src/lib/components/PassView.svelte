@@ -4,7 +4,7 @@
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
 	import { goto, pushState, replaceState } from '$app/navigation';
-	import { msToDurationString, timestampToMs } from '$lib/timestamp_utils';
+	import { msToDurationString, timestampToMs } from '$lib/time_utils';
 	import { timestampNow } from '@bufbuild/protobuf/wkt';
 	import PassActionDialog from '$lib/components/PassActionDialog.svelte';
 	import { fade } from 'svelte/transition';

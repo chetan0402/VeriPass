@@ -1,54 +1,35 @@
 <script lang="ts">
 	import { type Pass } from '$lib/gen/veripass/v1/pass_pb';
 	import type { Timestamp } from '@bufbuild/protobuf/wkt';
+	import {
+		formatDateString,
+		formatTimeStringLocal,
+		getFormattedTimeSuffixLocal,
+		timestampToDate
+	} from '$lib/time_utils';
 
 	const { pass } = $props<{ pass: Pass }>();
 
 	let dateFormattedStart: string = $derived(getFormattedDate(pass.startTime));
 	let dateFormattedEnd: string = $derived(getFormattedDate(pass.endTime));
 	let endTime: string = $derived(getFormattedTime(pass.endTime));
-	let endTimeSuffix: string = $derived(getFormattedTimeSuffix(pass.endTime));
+	let endTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass.endTime));
 	let startTime: string = $derived(getFormattedTime(pass.startTime));
-	let startTimeSuffix: string = $derived(getFormattedTimeSuffix(pass.startTime));
-
-	function timestampToDate(startTime: Timestamp) {
-		const startMillis = Number(startTime.seconds) * 1000 + Math.floor(startTime.nanos / 1e6);
-		return new Date(startMillis);
-	}
-
-	function getFormattedTimeSuffix(timeStamp: Timestamp) {
-		if (timeStamp) {
-			const startDate = timestampToDate(timeStamp);
-			return startDate.getHours() < 12 ? 'AM' : 'PM';
-		}
-		return '';
-	}
+	let startTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass.startTime));
 
 	function getFormattedTime(timeStamp: Timestamp) {
 		if (timeStamp) {
 			const date = timestampToDate(timeStamp);
-			return formatTimeString(date);
+			return formatTimeStringLocal(date);
 		}
 		return '----';
 	}
-
 	function getFormattedDate(timeStamp: Timestamp) {
-		if (!timeStamp) return 'Not Closed';
-		const date = timestampToDate(timeStamp);
-		return date.toLocaleDateString('en-In', {
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric'
-		});
-	}
-
-	function formatTimeString(date: Date): string {
-		let hours = date.getHours();
-		let minutes = date.getMinutes();
-		let hour12 = hours % 12 || 12;
-		let minuteStr = minutes.toString().padStart(2, '0');
-		let hoursStr = hour12.toString().padStart(2, '0');
-		return `${hoursStr}:${minuteStr}`;
+		if (timeStamp) {
+			const date = timestampToDate(timeStamp);
+			return formatDateString(date);
+		}
+		return '----';
 	}
 </script>
 
