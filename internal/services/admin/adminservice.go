@@ -85,7 +85,7 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 	}
 
 	for index, pass := range passes {
-		if index == int(page_size) {
+		if index == page_size {
 			break
 		}
 		user, err := pass.QueryUser().Only(ctx)

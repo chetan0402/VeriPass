@@ -1,0 +1,13 @@
+version: "2"
+linters:
+  enable:
+    - revive
+    - contextcheck
+    - nilerr
+    - unconvert
+  
+  settings:
+    revive:
+      rules:
+      - name: package-comments
+        disabled: true
