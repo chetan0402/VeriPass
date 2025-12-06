@@ -38,6 +38,14 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+  dex:
+    image: dexidp/dex:latest
+    container_name: veripass-dex
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./dex-config.yaml:/etc/dex/config.yaml
+    command: ["dex","serve","/etc/dex/config.yaml"]
 
 volumes:
   pgdata:
