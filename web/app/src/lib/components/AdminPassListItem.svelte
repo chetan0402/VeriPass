@@ -73,7 +73,7 @@
 >
 	<div
 		class="flex w-full flex-row items-center py-4 pr-2 pl-3 md:px-5 md:py-4"
-		style="background-color: {passClosed ? '#fafffa' : '#fffafa'}"
+		style="background-color: {passClosed ? '#f0fff0' : '#fff3f3'}"
 	>
 		<div class="flex h-full w-[50%] flex-1 flex-col justify-center md:flex-row md:items-center">
 			<h1 class="flex-1 pr-2 text-[0.8rem] font-semibold md:text-sm">{sName}</h1>

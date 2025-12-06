@@ -20,6 +20,7 @@
 	let { admin } = $props<{ admin: Admin }>();
 
 	let selectedStartDate = $state(get12oClockDate(new Date(Date.now())));
+
 	let selectedEndDate = $state(new Date(Date.now()));
 
 	let selectedStatus = $state(PassStatus.All);
@@ -29,6 +30,8 @@
 	let loadMoreElem: HTMLDivElement;
 
 	let nextPageToken: Timestamp | undefined = timestampNow();
+
+	let outCount = $state<number | undefined>();
 
 	let loading: boolean = false;
 
@@ -83,12 +86,30 @@
 	onMount(async () => {
 		//initial pass loading with default filters
 		await fetchPassesFromServer();
+		await fetchOutCount();
 	});
+
+	async function fetchOutCount() {
+		try {
+			let response = await client.getOutCountByHostel({
+				hostel: admin.hostel,
+				startTime: timestampFromDate(selectedStartDate),
+				endTime: timestampFromDate(selectedEndDate),
+				type: selectedPurpose,
+				$typeName: 'veripass.v1.GetOutCountByHostelRequest'
+			});
+			outCount = parseInt(response.out.toString());
+		} catch (error) {
+			outCount = undefined;
+			console.log(error);
+		}
+	}
 
 	function onFiltersChanged() {
 		passes = [];
 		nextPageToken = timestampNow();
 		fetchPassesFromServer();
+		fetchOutCount();
 	}
 
 	function observeMorePasses() {
@@ -164,6 +185,22 @@
 			/>
 		</div>
 	</div>
+	{#if outCount !== undefined}
+		<div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+			{#if outCount > 0}
+				<p class="mx-2 font-bold text-purple-500">
+					{outCount}<span class="text-primary-600 text-xs">
+						{outCount > 1 ? ' entries are' : ' entry is'}
+						not closed</span
+					>
+				</p>
+			{:else}
+				<p class="text-primary-800 mx-2 text-xs font-bold">
+					All entries are closed in this {intervalMode ? 'date range' : 'on this date'}
+				</p>
+			{/if}
+		</div>
+	{/if}
 	<div
 		class="flex w-full flex-1 flex-col items-center overflow-x-hidden rounded-2xl border-1 border-[#D9D9F2] bg-white"
 	>
