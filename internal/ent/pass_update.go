@@ -57,20 +57,6 @@ func (pu *PassUpdate) SetNillableType(pa *pass.Type) *PassUpdate {
 	return pu
 }
 
-// SetStartTime sets the "start_time" field.
-func (pu *PassUpdate) SetStartTime(t time.Time) *PassUpdate {
-	pu.mutation.SetStartTime(t)
-	return pu
-}
-
-// SetNillableStartTime sets the "start_time" field if the given value is not nil.
-func (pu *PassUpdate) SetNillableStartTime(t *time.Time) *PassUpdate {
-	if t != nil {
-		pu.SetStartTime(*t)
-	}
-	return pu
-}
-
 // SetEndTime sets the "end_time" field.
 func (pu *PassUpdate) SetEndTime(t time.Time) *PassUpdate {
 	pu.mutation.SetEndTime(t)
@@ -162,9 +148,6 @@ func (pu *PassUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.GetType(); ok {
 		_spec.SetField(pass.FieldType, field.TypeEnum, value)
 	}
-	if value, ok := pu.mutation.StartTime(); ok {
-		_spec.SetField(pass.FieldStartTime, field.TypeTime, value)
-	}
 	if value, ok := pu.mutation.EndTime(); ok {
 		_spec.SetField(pass.FieldEndTime, field.TypeTime, value)
 	}
@@ -244,20 +227,6 @@ func (puo *PassUpdateOne) SetType(pa pass.Type) *PassUpdateOne {
 func (puo *PassUpdateOne) SetNillableType(pa *pass.Type) *PassUpdateOne {
 	if pa != nil {
 		puo.SetType(*pa)
-	}
-	return puo
-}
-
-// SetStartTime sets the "start_time" field.
-func (puo *PassUpdateOne) SetStartTime(t time.Time) *PassUpdateOne {
-	puo.mutation.SetStartTime(t)
-	return puo
-}
-
-// SetNillableStartTime sets the "start_time" field if the given value is not nil.
-func (puo *PassUpdateOne) SetNillableStartTime(t *time.Time) *PassUpdateOne {
-	if t != nil {
-		puo.SetStartTime(*t)
 	}
 	return puo
 }
@@ -382,9 +351,6 @@ func (puo *PassUpdateOne) sqlSave(ctx context.Context) (_node *Pass, err error) 
 	}
 	if value, ok := puo.mutation.GetType(); ok {
 		_spec.SetField(pass.FieldType, field.TypeEnum, value)
-	}
-	if value, ok := puo.mutation.StartTime(); ok {
-		_spec.SetField(pass.FieldStartTime, field.TypeTime, value)
 	}
 	if value, ok := puo.mutation.EndTime(); ok {
 		_spec.SetField(pass.FieldEndTime, field.TypeTime, value)

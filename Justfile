@@ -10,6 +10,7 @@ fmt:
     buf format -w
     golangci-lint fmt ./internal/... ./cmd/...
     pnpm -r format
+    go mod tidy
 
 gen:
     just gen-proto

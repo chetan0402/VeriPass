@@ -196,7 +196,7 @@ func TestMain(t *testing.T) {
 
 	hostelPassList1, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
 		Hostel:     "H mock",
-		StartTime:  timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
+		StartTime:  timestamppb.New(time.Unix(0, 0)),
 		EndTime:    timestamppb.Now(),
 		PassIsOpen: nil,
 		Type:       veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
@@ -217,7 +217,7 @@ func TestMain(t *testing.T) {
 
 	hostelPassList2, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
 		Hostel:     "H mock",
-		StartTime:  timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
+		StartTime:  timestamppb.New(time.Unix(0, 0)),
 		EndTime:    timestamppb.Now(),
 		PassIsOpen: nil,
 		Type:       veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
@@ -238,7 +238,7 @@ func TestMain(t *testing.T) {
 
 	outCount, err := adminClient.GetOutCountByHostel(ctx, connect.NewRequest(&veripassv1.GetOutCountByHostelRequest{
 		Hostel:    "H mock",
-		StartTime: timestamppb.New(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)),
+		StartTime: timestamppb.New(time.Unix(0, 0)),
 		EndTime:   timestamppb.Now(),
 		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
 	}))

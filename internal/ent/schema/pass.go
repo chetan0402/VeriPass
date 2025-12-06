@@ -22,7 +22,6 @@ func (Pass) Fields() []ent.Field {
 		}),
 		field.String("user_id"),
 		field.Enum("type").Values("unspecified", "class", "market", "home", "event").Default("unspecified"),
-		field.Time("start_time"),
 		field.Time("end_time").Optional(),
 	}
 }
