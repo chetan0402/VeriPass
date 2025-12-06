@@ -260,6 +260,14 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			publicKey: publicKey
 		};
 	});
+	rpc(AdminService.method.getOutCountByHostel, (req) => {
+		const start = req.startTime?.seconds;
+		const end = req.endTime?.seconds;
+		const outCount = start && end ? end - start : 0;
+		return {
+			out: BigInt(outCount) / BigInt(100)
+		};
+	});
 });
 
 export const transport = createConnectTransport({
