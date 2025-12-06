@@ -14,6 +14,7 @@ import (
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	veripass "github.com/chetan0402/veripass/internal/services"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -54,9 +55,9 @@ func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[v
 	if err != nil {
 		return nil, err
 	}
-	timeNow := time.Now()
+	timeNow := time.Unix(passId.Time().UnixTime())
 
-	if err := s.client.Pass.Create().SetID(passId).SetUserID(userId).SetType(passType).SetStartTime(timeNow).Exec(ctx); err != nil {
+	if err := s.client.Pass.Create().SetID(passId).SetUserID(userId).SetType(passType).Exec(ctx); err != nil {
 		return nil, err
 	}
 
@@ -76,7 +77,7 @@ func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Reques
 	entPass, err := s.client.Pass.Query().Where(
 		pass.UserID(userId),
 	).Order(
-		pass.ByStartTime(sql.OrderDesc()),
+		pass.ByID(sql.OrderDesc()),
 	).First(ctx)
 
 	if err != nil {
@@ -135,7 +136,7 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 	}
 
 	query := s.client.Pass.Query().
-		Order(pass.ByStartTime(sql.OrderDesc())).
+		Order(pass.ByID(sql.OrderDesc())).
 		Where(
 			pass.UserID(userId),
 		).Limit(int(pageSize) + 1)
@@ -148,18 +149,18 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 
 	if startTime != nil {
 		query = query.Where(
-			pass.StartTimeGTE(startTime.AsTime()),
+			pass.IDGTE(veripass.ToUUIDv7Nil(startTime.AsTime())),
 		)
 	}
 
 	if endTime != nil {
 		query = query.Where(
-			pass.StartTimeLTE(endTime.AsTime()),
+			pass.IDLTE(veripass.ToUUIDv7Max(endTime.AsTime())),
 		)
 	}
 
 	passes, err := query.Where(
-		pass.StartTimeLTE(pageToken.AsTime()),
+		pass.IDLTE(veripass.ToUUIDv7Max(pageToken.AsTime())),
 	).All(ctx)
 	if err != nil {
 		return nil, err
@@ -168,7 +169,7 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 	response := &veripassv1.ListPassesByUserResponse{}
 
 	if len(passes) == int(pageSize)+1 {
-		response.NextPageToken = timestamppb.New(passes[len(passes)-1].StartTime)
+		response.NextPageToken = timestamppb.New(time.Unix(passes[len(passes)-1].ID.Time().UnixTime()))
 	}
 
 	for index, pass := range passes {
@@ -209,7 +210,7 @@ func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 		Id:        entPass.ID.String(),
 		UserId:    entPass.UserID,
 		Type:      passType,
-		StartTime: timestamppb.New(entPass.StartTime),
+		StartTime: timestamppb.New(time.Unix(entPass.ID.Time().UnixTime())),
 		QrCode:    signedQrCode,
 	}
 

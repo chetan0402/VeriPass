@@ -26,7 +26,6 @@ var (
 	PassesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"unspecified", "class", "market", "home", "event"}, Default: "unspecified"},
-		{Name: "start_time", Type: field.TypeTime},
 		{Name: "end_time", Type: field.TypeTime, Nullable: true},
 		{Name: "user_id", Type: field.TypeString},
 	}
@@ -38,7 +37,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "passes_users_passes",
-				Columns:    []*schema.Column{PassesColumns[4]},
+				Columns:    []*schema.Column{PassesColumns[3]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

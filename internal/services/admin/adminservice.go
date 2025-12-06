@@ -3,6 +3,7 @@ package adminservice
 import (
 	"context"
 	"crypto/ed25519"
+	"time"
 
 	"connectrpc.com/connect"
 	"entgo.io/ent/dialect/sql"
@@ -11,6 +12,7 @@ import (
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	veripass "github.com/chetan0402/veripass/internal/services"
 	passservice "github.com/chetan0402/veripass/internal/services/pass"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -50,13 +52,13 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 	)
 
 	query := s.client.Pass.Query().Order(
-		pass.ByStartTime(sql.OrderDesc()),
+		pass.ByID(sql.OrderDesc()),
 	).Limit(page_size + 1)
 
 	query = query.Where(
-		pass.StartTimeGTE(start_time),
-		pass.StartTimeLTE(end_time),
-		pass.StartTimeLTE(page_token.AsTime()),
+		pass.IDGTE(veripass.ToUUIDv7Nil(start_time)),
+		pass.IDLTE(veripass.ToUUIDv7Max(end_time)),
+		pass.IDLTE(veripass.ToUUIDv7Max(page_token.AsTime())),
 	)
 
 	if pass_is_open != nil {
@@ -81,7 +83,7 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 	response := &veripassv1.GetAllPassesByHostelResponse{}
 
 	if len(passes) > page_size {
-		response.NextPageToken = timestamppb.New(passes[len(passes)-1].StartTime)
+		response.NextPageToken = timestamppb.New(time.Unix(passes[len(passes)-1].ID.Time().UnixTime()))
 	}
 
 	for index, pass := range passes {
@@ -133,8 +135,8 @@ func (s *AdminService) GetOutCountByHostel(ctx context.Context, req *connect.Req
 	)
 
 	query := s.client.Pass.Query().Where(
-		pass.StartTimeGTE(startTime),
-		pass.StartTimeLTE(endTime),
+		pass.IDGTE(veripass.ToUUIDv7Nil(startTime)),
+		pass.IDLTE(veripass.ToUUIDv7Max(endTime)),
 		pass.EndTimeIsNil(),
 	)
 

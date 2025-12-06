@@ -19,8 +19,6 @@ const (
 	FieldUserID = "user_id"
 	// FieldType holds the string denoting the type field in the database.
 	FieldType = "type"
-	// FieldStartTime holds the string denoting the start_time field in the database.
-	FieldStartTime = "start_time"
 	// FieldEndTime holds the string denoting the end_time field in the database.
 	FieldEndTime = "end_time"
 	// EdgeUser holds the string denoting the user edge name in mutations.
@@ -41,7 +39,6 @@ var Columns = []string{
 	FieldID,
 	FieldUserID,
 	FieldType,
-	FieldStartTime,
 	FieldEndTime,
 }
 
@@ -105,11 +102,6 @@ func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 // ByType orders the results by the type field.
 func ByType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldType, opts...).ToFunc()
-}
-
-// ByStartTime orders the results by the start_time field.
-func ByStartTime(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStartTime, opts...).ToFunc()
 }
 
 // ByEndTime orders the results by the end_time field.

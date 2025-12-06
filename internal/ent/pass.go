@@ -23,8 +23,6 @@ type Pass struct {
 	UserID string `json:"user_id,omitempty"`
 	// Type holds the value of the "type" field.
 	Type pass.Type `json:"type,omitempty"`
-	// StartTime holds the value of the "start_time" field.
-	StartTime time.Time `json:"start_time,omitempty"`
 	// EndTime holds the value of the "end_time" field.
 	EndTime time.Time `json:"end_time,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -60,7 +58,7 @@ func (*Pass) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case pass.FieldUserID, pass.FieldType:
 			values[i] = new(sql.NullString)
-		case pass.FieldStartTime, pass.FieldEndTime:
+		case pass.FieldEndTime:
 			values[i] = new(sql.NullTime)
 		case pass.FieldID:
 			values[i] = new(uuid.UUID)
@@ -96,12 +94,6 @@ func (pa *Pass) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
 				pa.Type = pass.Type(value.String)
-			}
-		case pass.FieldStartTime:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field start_time", values[i])
-			} else if value.Valid {
-				pa.StartTime = value.Time
 			}
 		case pass.FieldEndTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -155,9 +147,6 @@ func (pa *Pass) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("type=")
 	builder.WriteString(fmt.Sprintf("%v", pa.Type))
-	builder.WriteString(", ")
-	builder.WriteString("start_time=")
-	builder.WriteString(pa.StartTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("end_time=")
 	builder.WriteString(pa.EndTime.Format(time.ANSIC))

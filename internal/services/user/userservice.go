@@ -79,7 +79,6 @@ func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.Ex
 		SetID(passId).
 		SetUserID(id).
 		SetType(passType).
-		SetStartTime(time.Now()).
 		Exec(ctx); err != nil {
 		return nil, err
 	}

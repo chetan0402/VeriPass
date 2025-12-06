@@ -42,12 +42,6 @@ func (pc *PassCreate) SetNillableType(pa *pass.Type) *PassCreate {
 	return pc
 }
 
-// SetStartTime sets the "start_time" field.
-func (pc *PassCreate) SetStartTime(t time.Time) *PassCreate {
-	pc.mutation.SetStartTime(t)
-	return pc
-}
-
 // SetEndTime sets the "end_time" field.
 func (pc *PassCreate) SetEndTime(t time.Time) *PassCreate {
 	pc.mutation.SetEndTime(t)
@@ -139,9 +133,6 @@ func (pc *PassCreate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Pass.type": %w`, err)}
 		}
 	}
-	if _, ok := pc.mutation.StartTime(); !ok {
-		return &ValidationError{Name: "start_time", err: errors.New(`ent: missing required field "Pass.start_time"`)}
-	}
 	if len(pc.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Pass.user"`)}
 	}
@@ -183,10 +174,6 @@ func (pc *PassCreate) createSpec() (*Pass, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.GetType(); ok {
 		_spec.SetField(pass.FieldType, field.TypeEnum, value)
 		_node.Type = value
-	}
-	if value, ok := pc.mutation.StartTime(); ok {
-		_spec.SetField(pass.FieldStartTime, field.TypeTime, value)
-		_node.StartTime = value
 	}
 	if value, ok := pc.mutation.EndTime(); ok {
 		_spec.SetField(pass.FieldEndTime, field.TypeTime, value)

@@ -533,7 +533,6 @@ type PassMutation struct {
 	typ           string
 	id            *uuid.UUID
 	_type         *pass.Type
-	start_time    *time.Time
 	end_time      *time.Time
 	clearedFields map[string]struct{}
 	user          *string
@@ -719,42 +718,6 @@ func (m *PassMutation) ResetType() {
 	m._type = nil
 }
 
-// SetStartTime sets the "start_time" field.
-func (m *PassMutation) SetStartTime(t time.Time) {
-	m.start_time = &t
-}
-
-// StartTime returns the value of the "start_time" field in the mutation.
-func (m *PassMutation) StartTime() (r time.Time, exists bool) {
-	v := m.start_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStartTime returns the old "start_time" field's value of the Pass entity.
-// If the Pass object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PassMutation) OldStartTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartTime: %w", err)
-	}
-	return oldValue.StartTime, nil
-}
-
-// ResetStartTime resets all changes to the "start_time" field.
-func (m *PassMutation) ResetStartTime() {
-	m.start_time = nil
-}
-
 // SetEndTime sets the "end_time" field.
 func (m *PassMutation) SetEndTime(t time.Time) {
 	m.end_time = &t
@@ -865,15 +828,12 @@ func (m *PassMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PassMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 3)
 	if m.user != nil {
 		fields = append(fields, pass.FieldUserID)
 	}
 	if m._type != nil {
 		fields = append(fields, pass.FieldType)
-	}
-	if m.start_time != nil {
-		fields = append(fields, pass.FieldStartTime)
 	}
 	if m.end_time != nil {
 		fields = append(fields, pass.FieldEndTime)
@@ -890,8 +850,6 @@ func (m *PassMutation) Field(name string) (ent.Value, bool) {
 		return m.UserID()
 	case pass.FieldType:
 		return m.GetType()
-	case pass.FieldStartTime:
-		return m.StartTime()
 	case pass.FieldEndTime:
 		return m.EndTime()
 	}
@@ -907,8 +865,6 @@ func (m *PassMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldUserID(ctx)
 	case pass.FieldType:
 		return m.OldType(ctx)
-	case pass.FieldStartTime:
-		return m.OldStartTime(ctx)
 	case pass.FieldEndTime:
 		return m.OldEndTime(ctx)
 	}
@@ -933,13 +889,6 @@ func (m *PassMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetType(v)
-		return nil
-	case pass.FieldStartTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStartTime(v)
 		return nil
 	case pass.FieldEndTime:
 		v, ok := value.(time.Time)
@@ -1011,9 +960,6 @@ func (m *PassMutation) ResetField(name string) error {
 		return nil
 	case pass.FieldType:
 		m.ResetType()
-		return nil
-	case pass.FieldStartTime:
-		m.ResetStartTime()
 		return nil
 	case pass.FieldEndTime:
 		m.ResetEndTime()
