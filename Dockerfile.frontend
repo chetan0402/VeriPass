@@ -1,14 +1,14 @@
 FROM node:lts-alpine AS base
 WORKDIR /app
-RUN npm install -g pnpm
+RUN --mount=type=cache,target=/tmp/node-compile-cache npm install -g pnpm
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY web/app/package.json web/app/
 
 FROM base AS builder
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/.pnpm-store pnpm install --frozen-lockfile
 RUN pnpm -r install --frozen-lockfile
 COPY web/app/ web/app/
-RUN pnpm -C web/app run build
+RUN --mount=type=cache,target=tmp/node-compile-cache pnpm -C web/app run build
 
 FROM base AS runner
 RUN pnpm install --frozen-lockfile --prod
