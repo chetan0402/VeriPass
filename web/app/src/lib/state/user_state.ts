@@ -51,6 +51,7 @@ export async function getUserProfileFromState() {
 export async function invalidateUserSession() {
 	//Reset all the session info
 	localStorage.removeItem('user_id');
+	user = undefined;
 	return;
 }
 

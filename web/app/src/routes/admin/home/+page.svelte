@@ -25,13 +25,13 @@
 			status = `Error ${error}`;
 			alert('error no admin session found, Please login again');
 			await logout();
-			await goto('../admin', { replaceState: true });
 		}
 		pushState('', { popupVisible: PopupType.NONE });
 	});
 
 	async function logout() {
 		await invalidateAdminSession();
+		await goto('../admin', { replaceState: true });
 	}
 
 	function closeMenu() {
