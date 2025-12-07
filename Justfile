@@ -36,3 +36,6 @@ test-backend: start-test-database && stop-test-database
 
 build:
     docker buildx bake --load
+
+setup-githooks:
+    git config core.hooksPath .githooks
