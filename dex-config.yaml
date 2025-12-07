@@ -11,7 +11,7 @@ staticClients:
     secret: veripass
 enablePasswordDB: true
 staticPasswords:
-  - name: "student"
+  - email: "student@example.com"
     hash: "$2y$10$6JmUm254bTxZSICSXtFWZ.joFmhkGZuHIMoXx6S7aHi2krB/BpsUm"
     username: "student"
     userID: "12345"
