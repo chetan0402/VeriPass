@@ -7,7 +7,7 @@ target "backend" {
   dockerfile = "Dockerfile.backend"
   tags = [ "veripass/backend:latest" ]
   args = {
-    "GO_VERSION" = "1.25.3-alpine"
+    "GO_VERSION" = "1.25-alpine"
   }
 }
 
