@@ -53,6 +53,9 @@ func Run(databaseUrl string) {
 			return
 		}
 	})
+	mux.HandleFunc("GET /callback", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/", http.StatusFound)
+	})
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))
 	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client, privateKey), interceptor))
 	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client, publicKey), interceptor))

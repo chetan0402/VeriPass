@@ -10,6 +10,9 @@ services:
   frontend:
     image: veripass/frontend:latest
     container_name: veripass-frontend
+    environment:
+      - CLIENT_ID=veripass
+      - REDIRECTION_URI=http://localhost:5002/api/callback
     depends_on:
       - backend
   nginx:
