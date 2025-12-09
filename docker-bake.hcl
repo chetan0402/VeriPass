@@ -23,6 +23,7 @@ target "frontend" {
     "VITE_MOCK" = "false"
     "VITE_CLIENT_ID" = "unknown"
     "VITE_REDIRECTION_URI" = "http://unknown"
+    "VITE_OAUTH_SERVER" = "http://unknown"
   }
 }
 
@@ -34,5 +35,6 @@ target "frontend-dev" {
     "VITE_MOCK" = "false"
     "VITE_CLIENT_ID" = "veripass"
     "VITE_REDIRECTION_URI" = "http://localhost:5002/api/callback"
+    "VITE_OAUTH_SERVER" = "http://localhost:1433/dex"
   }
 }

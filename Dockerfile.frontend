@@ -7,6 +7,7 @@ COPY web/app/package.json web/app/
 ARG VITE_CLIENT_ID=
 ARG VITE_REDIRECTION_URI=
 ARG VITE_MOCK=false
+ARG VITE_OAUTH_SERVER=
 
 FROM base AS builder
 RUN --mount=type=cache,target=/.pnpm-store pnpm install --frozen-lockfile
@@ -15,6 +16,7 @@ COPY web/app/ web/app/
 ENV VITE_CLIENT_ID=${VITE_CLIENT_ID}
 ENV VITE_REDIRECTION_URI=${VITE_REDIRECTION_URI}
 ENV VITE_MOCK=${VITE_MOCK}
+ENV VITE_OAUTH_SERVER=${VITE_OAUTH_SERVER}
 RUN --mount=type=cache,target=tmp/node-compile-cache pnpm -C web/app run build
 
 FROM base AS runner
