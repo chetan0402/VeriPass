@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	"connectrpc.com/connect"
 	"entgo.io/ent/dialect"
@@ -17,8 +18,10 @@ import (
 	adminservice "github.com/chetan0402/veripass/internal/services/admin"
 	passservice "github.com/chetan0402/veripass/internal/services/pass"
 	userservice "github.com/chetan0402/veripass/internal/services/user"
+	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
+	"golang.org/x/oauth2"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
@@ -45,6 +48,19 @@ func Run(databaseUrl string) {
 		veripass.NewIpMiddleware(),
 	)
 
+	provider, err := oidc.NewProvider(ctx, os.Getenv("OAUTH_SERVER"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	oauth2config := oauth2.Config{
+		ClientID:     os.Getenv("CLIENT_ID"),
+		ClientSecret: os.Getenv("CLIENT_SECRET"),
+		RedirectURL:  os.Getenv("REDIRECTION_URI"),
+		Endpoint:     provider.Endpoint(),
+		Scopes:       []string{oidc.ScopeOpenID},
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("pong"))
@@ -54,6 +70,34 @@ func Run(databaseUrl string) {
 		}
 	})
 	mux.HandleFunc("GET /callback", func(w http.ResponseWriter, r *http.Request) {
+		verifier := provider.Verifier(&oidc.Config{ClientID: oauth2config.ClientID})
+
+		oauth2Token, err := oauth2config.Exchange(ctx, r.URL.Query().Get("code"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		rawIDToken, ok := oauth2Token.Extra("id_token").(string)
+		if !ok {
+			http.Error(w, "Bad request", http.StatusBadRequest)
+			return
+		}
+
+		if _, err := verifier.Verify(ctx, rawIDToken); err != nil {
+			http.Error(w, "Bad credentials", http.StatusUnauthorized)
+			return
+		}
+
+		http.SetCookie(w, &http.Cookie{
+			Name:  "token",
+			Value: rawIDToken,
+			Path:  "/",
+		})
+		if r.URL.Query().Get("state") == "admin" {
+			http.Redirect(w, r, "/admin", http.StatusFound)
+			return
+		}
 		http.Redirect(w, r, "/", http.StatusFound)
 	})
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))

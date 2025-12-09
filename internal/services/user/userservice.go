@@ -89,7 +89,7 @@ func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.Ex
 }
 
 func (s *UserService) GetPhoto(context.Context, *connect.Request[veripassv1.GetPhotoRequest]) (*connect.Response[veripassv1.GetPhotoResponse], error) {
-	panic("unimplemented")
+	return nil, connect.NewError(connect.CodeInternal, nil)
 }
 
 func (s *UserService) GetUser(ctx context.Context, r *connect.Request[veripassv1.GetUserRequest]) (*connect.Response[veripassv1.User], error) {
