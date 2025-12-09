@@ -15,7 +15,7 @@ import { sha512 } from '@noble/hashes/sha2.js';
 
 ed.hashes.sha512 = sha512;
 
-const MOCK = true;
+const MOCK = import.meta.env.VITE_MOCK != 'false';
 
 const { secretKey, publicKey } = ed.keygen();
 

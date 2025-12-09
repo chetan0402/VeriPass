@@ -4,14 +4,9 @@ services:
     container_name: veripass-backend
     env_file:
       - ./cmd/veripass/.env
-    depends_on:
-      pgdb:
-        condition: service_healthy
   frontend:
     image: veripass/frontend:latest
     container_name: veripass-frontend
-    depends_on:
-      - backend
   nginx:
     image: nginx:latest
     container_name: veripass-nginx
@@ -23,29 +18,3 @@ services:
     depends_on:
       - frontend
       - backend
-  pgdb:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: veripass
-      POSTGRES_PASSWORD: veripass
-      POSTGRES_DB: veripass
-    volumes:
-      - pgdata:/var/lib/postgresql
-    container_name: veripass-pgdb
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "veripass"]
-      interval: 10s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
-  dex:
-    image: dexidp/dex:latest
-    container_name: veripass-dex
-    ports:
-      - "1433:1433"
-    volumes:
-      - ./dex-config.yaml:/etc/dex/config.yaml
-    command: ["dex","serve","/etc/dex/config.yaml"]
-
-volumes:
-  pgdata:

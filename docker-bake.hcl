@@ -2,6 +2,10 @@ group "default" {
   targets = [ "backend", "frontend" ]
 }
 
+group "dev" {
+  targets = [ "backend", "frontend-dev" ]
+}
+
 target "backend" {
   context = "."
   dockerfile = "Dockerfile.backend"
@@ -15,4 +19,22 @@ target "frontend" {
   context = "."
   dockerfile = "Dockerfile.frontend"
   tags = [ "veripass/frontend:latest" ]
+  args = {
+    "VITE_MOCK" = "false"
+    "VITE_CLIENT_ID" = "unknown"
+    "VITE_REDIRECTION_URI" = "http://unknown"
+    "VITE_OAUTH_SERVER" = "http://unknown"
+  }
+}
+
+target "frontend-dev" {
+  context = "."
+  dockerfile = "Dockerfile.frontend"
+  tags = [ "veripass/frontend:dev" ]
+  args = {
+    "VITE_MOCK" = "false"
+    "VITE_CLIENT_ID" = "veripass"
+    "VITE_REDIRECTION_URI" = "http://localhost:5002/api/callback"
+    "VITE_OAUTH_SERVER" = "http://localhost:1433/dex"
+  }
 }
