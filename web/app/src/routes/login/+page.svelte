@@ -8,6 +8,10 @@
 	import { onMount } from 'svelte';
 	import { getUserFromState } from '$lib/state/user_state';
 
+	const CLIENT_ID = import.meta.env.VITE_CLIENT_ID || 'veripass';
+	const REDIRECTION_URI =
+		import.meta.env.VITE_REDIRECTION_URI || 'http://localhost:5002/api/callback';
+
 	let show_help_dialog: boolean = $state(false);
 
 	onMount(async () => {
