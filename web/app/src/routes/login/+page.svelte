@@ -9,10 +9,9 @@
 	import { getUserFromState } from '$lib/state/user_state';
 
 	const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
-	const REDIRECTION_URI =
-		import.meta.env.VITE_REDIRECTION_URI;
+	const REDIRECTION_URI = import.meta.env.VITE_REDIRECTION_URI;
 	const OAUTH_SERVER = import.meta.env.VITE_OAUTH_SERVER;
-	
+
 	const OAUTH = `${OAUTH_SERVER}/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URI}&response_type=code&scope=openid`;
 
 	let show_help_dialog: boolean = $state(false);
