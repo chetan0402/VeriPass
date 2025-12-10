@@ -4,9 +4,12 @@ services:
     container_name: veripass-backend
     env_file:
       - ./cmd/veripass/.env
+    restart: unless-stopped
     depends_on:
       pgdb:
         condition: service_healthy
+      dex:
+        condition: service_started
   frontend:
     image: veripass/frontend:dev
     container_name: veripass-frontend

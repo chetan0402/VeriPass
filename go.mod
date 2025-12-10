@@ -5,9 +5,11 @@ go 1.25.5
 require (
 	connectrpc.com/connect v1.18.1
 	entgo.io/ent v0.14.4
+	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.5
 	golang.org/x/net v0.23.0
+	golang.org/x/oauth2 v0.28.0
 	google.golang.org/protobuf v1.36.6
 )
 
@@ -19,6 +21,7 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.3 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
