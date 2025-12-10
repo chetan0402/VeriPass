@@ -70,6 +70,13 @@ func Run(databaseUrl string) {
 		}
 	})
 	mux.HandleFunc("GET /callback", func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		code := r.URL.Query().Get("code")
+		if code == "" {
+			http.Error(w, "missing code", http.StatusBadRequest)
+			return
+		}
+
 		verifier := provider.Verifier(&oidc.Config{ClientID: oauth2config.ClientID})
 
 		oauth2Token, err := oauth2config.Exchange(ctx, r.URL.Query().Get("code"))
@@ -90,9 +97,11 @@ func Run(databaseUrl string) {
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:  "token",
-			Value: rawIDToken,
-			Path:  "/",
+			Name:     "token",
+			Value:    rawIDToken,
+			Path:     "/",
+			HttpOnly: true,
+			SameSite: http.SameSiteStrictMode,
 		})
 		if r.URL.Query().Get("state") == "admin" {
 			http.Redirect(w, r, "/admin", http.StatusFound)
