@@ -31,7 +31,13 @@ start-test-database: stop-test-database
 stop-test-database:
     docker stop veripass-test-db || true
 
-test-backend: start-test-database && stop-test-database
+start-test-dex: stop-test-dex
+    docker run --rm -d --name veripass-test-dex -p 1433:1433 -v ./dex-config-testing.yaml:/etc/dex/config.yaml dexidp/dex:latest dex serve /etc/dex/config.yaml
+
+stop-test-dex:
+    docker stop veripass-test-dex || true
+
+test-backend: start-test-database start-test-dex && stop-test-database stop-test-dex
     go test -v ./internal/...
 
 build group="":

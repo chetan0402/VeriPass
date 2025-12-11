@@ -30,7 +30,13 @@ func TestMain(t *testing.T) {
 	timeout := time.After(30 * time.Second)
 	host := "http://localhost:8000"
 	dbUrl := "postgres://veripass:veripass@localhost:5432/veripass"
-	go veripass.Run(dbUrl)
+	go veripass.Run(&veripass.Config{
+		DatabaseUrl:    dbUrl,
+		OAuthServer:    "http://localhost:1433/dex",
+		ClientID:       "veripass",
+		ClientSecret:   "veripass",
+		RedirectionURI: "http://localhost:8000/api/callback",
+	})
 
 	for {
 		if _, err := http.DefaultClient.Get(host + "/ping"); err == nil {
