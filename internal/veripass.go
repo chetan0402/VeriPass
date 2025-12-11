@@ -7,7 +7,6 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
 
 	"connectrpc.com/connect"
 	"entgo.io/ent/dialect"
@@ -26,13 +25,21 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
-func Run(databaseUrl string) {
+type Config struct {
+	DatabaseUrl    string
+	OAuthServer    string
+	ClientID       string
+	ClientSecret   string
+	RedirectionURI string
+}
+
+func Run(config *Config) {
 	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := sql.Open("pgx", databaseUrl)
+	db, err := sql.Open("pgx", config.DatabaseUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,15 +55,15 @@ func Run(databaseUrl string) {
 		veripass.NewIpMiddleware(),
 	)
 
-	provider, err := oidc.NewProvider(ctx, os.Getenv("OAUTH_SERVER"))
+	provider, err := oidc.NewProvider(ctx, config.OAuthServer)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	oauth2config := oauth2.Config{
-		ClientID:     os.Getenv("CLIENT_ID"),
-		ClientSecret: os.Getenv("CLIENT_SECRET"),
-		RedirectURL:  os.Getenv("REDIRECTION_URI"),
+		ClientID:     config.ClientID,
+		ClientSecret: config.ClientSecret,
+		RedirectURL:  config.RedirectionURI,
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID},
 	}
