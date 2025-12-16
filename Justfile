@@ -4,12 +4,12 @@ default:
 lint:
     buf lint
     golangci-lint run ./internal/... ./cmd/...
-    pnpm -r lint
+    bun --workspaces --bun lint
 
 fmt:
     buf format -w
     golangci-lint fmt ./internal/... ./cmd/...
-    pnpm -r format
+    bun --workspaces --bun format
     go mod tidy
 
 gen:
