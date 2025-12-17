@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { type User } from '$lib/gen/veripass/v1/user_pb';
 	import { transport } from '$lib';
-	import { Code, createClient } from '@connectrpc/connect';
+	import { Code, ConnectError, createClient } from '@connectrpc/connect';
 	import Dashboard from './fragments/dashboard.svelte';
 	import History from './fragments/history.svelte';
 	import { NoUserSessionFound } from '$lib/errors';
@@ -28,7 +28,7 @@
 				console.log('no open pass found');
 			}
 		} catch (error) {
-			if (error == Code.NotFound) {
+			if (error instanceof ConnectError && error.code == Code.NotFound) {
 				console.log('no open pass found');
 			}
 		}

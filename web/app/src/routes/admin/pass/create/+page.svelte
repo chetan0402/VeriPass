@@ -12,6 +12,7 @@
 	import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
 	import { CloseOutline } from 'flowbite-svelte-icons';
+	import { invalidateAdminSession } from '$lib/state/admin_state.js';
 
 	let show_generating_box = $state(false);
 	let admin = $state<Admin>();
@@ -32,10 +33,10 @@
 			admin = await getAdminFromState();
 			if (!admin?.canAddPass) {
 				alert('You are not allowed to add a new pass! Contact CCF');
-				await goto('../../admin');
+				await goto('/admin');
 			}
 		} catch {
-			await goto('../../admin', { replaceState: true });
+			await goto('/admin', { replaceState: true });
 			alert('error no admin session found, Please login again');
 		}
 	});
@@ -47,7 +48,7 @@
 		}
 		if (!admin) {
 			alert('error no admin session found, Please login again');
-			await goto('../../admin');
+			await goto('/admin');
 			return;
 		}
 		try {
@@ -64,6 +65,11 @@
 				switch (e.code) {
 					case Code.NotFound:
 						alert(`User with id ${userId} not found!`);
+						break;
+					case Code.Unauthenticated:
+						alert(`Admin session expired! Please login again`);
+						await invalidateAdminSession();
+						await goto('/admin', { replaceState: true });
 						break;
 					case Code.PermissionDenied:
 						alert(`Permission denied: You are not allowed to create manual passes`);
@@ -88,7 +94,7 @@
 	}
 
 	function gotoDashboard() {
-		goto('../../admin/home', { replaceState: true });
+		goto('/admin/home', { replaceState: true });
 	}
 </script>
 

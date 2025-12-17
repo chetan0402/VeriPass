@@ -12,6 +12,8 @@ import {
 } from '$lib/gen/veripass/v1/admin_pb';
 import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha2.js';
+import { resetAuthToken } from '$lib/auth_utils';
+import { goto } from '$app/navigation';
 
 ed.hashes.sha512 = sha512;
 
@@ -170,6 +172,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			passId: id
 		};
 	});
+
 	rpc(PassService.method.createManualPass, (req) => {
 		if (req.userId !== '12345') {
 			throw new ConnectError('user not found', Code.NotFound);
@@ -260,6 +263,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			publicKey: publicKey
 		};
 	});
+
 	rpc(AdminService.method.getOutCountByHostel, (req) => {
 		const start = req.startTime?.seconds;
 		const end = req.endTime?.seconds;
@@ -274,17 +278,27 @@ export const transport = createConnectTransport({
 	baseUrl: '/api',
 	interceptors: [
 		(next) => async (req) => {
-			if (!req.stream && MOCK) {
-				return await mockRouter.unary(
-					req.method,
-					req.signal,
-					undefined,
-					req.header,
-					req.message,
-					req.contextValues
-				);
+			try {
+				console.log(req.url);
+				if (!req.stream && MOCK) {
+					return await mockRouter.unary(
+						req.method,
+						req.signal,
+						undefined,
+						req.header,
+						req.message,
+						req.contextValues
+					);
+				}
+				return await next(req);
+			} catch (error) {
+				if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
+					resetAuthToken();
+					console.log('unauthenticated session');
+					await goto('/');
+				}
+				throw error;
 			}
-			return await next(req);
 		}
 	]
 });

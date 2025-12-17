@@ -31,7 +31,7 @@
 
 	async function logout() {
 		await invalidateAdminSession();
-		await goto('../admin', { replaceState: true });
+		await goto('/admin', { replaceState: true });
 	}
 
 	function closeMenu() {
@@ -40,14 +40,14 @@
 
 	function openCreatePass() {
 		if (admin?.canAddPass) {
-			goto('../admin/pass/create');
+			goto('/admin/pass/create');
 		} else {
 			alert('You are not allowed to add a new pass! Contact CCF');
 		}
 	}
 
 	function openScanPass() {
-		goto('../admin/pass/scan');
+		goto('/admin/pass/scan');
 	}
 </script>
 

@@ -29,9 +29,7 @@
 
 	function openGoogleLogin() {
 		console.log(OAUTH);
-		alert('Not implemented yet');
-		localStorage.setItem('user_id', '12345');
-		loginSuccess();
+		window.location.href = OAUTH;
 	}
 
 	function loginSuccess() {
