@@ -16,21 +16,23 @@
 			const id = setTimeout(() => {
 				progress = progress + 1;
 			}, 10);
-			return () => clearTimeout(id);
+			return () => {
+				clearTimeout(id);
+			};
 		}
 	});
 
 	function openNextScreen(user: User) {
-		status_message = 'Welcome ' + user?.name + '!';
-		setTimeout(() => {
-			goto('/home', { replaceState: true });
+		status_message = 'Welcome ' + user.name + '!';
+		setTimeout(async () => {
+			await goto('/home', { replaceState: true });
 		}, 1600);
 	}
 
 	function openLoginScreen() {
 		status_message = 'Taking you to the login page...';
-		setTimeout(() => {
-			goto('../login', { replaceState: true });
+		setTimeout(async () => {
+			await goto('../login', { replaceState: true });
 		}, 1600);
 	}
 
@@ -44,7 +46,7 @@
 			if (error instanceof NoUserSessionFound) {
 				openLoginScreen();
 			} else {
-				await invalidateUserSession();
+				invalidateUserSession();
 				status_message = 'Please Login again';
 				openLoginScreen();
 			}

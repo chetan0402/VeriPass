@@ -20,9 +20,9 @@
 				status = `Welcome ${admin.name}`;
 				listVisible = true;
 			}
-		} catch (error) {
+		} catch (error: unknown) {
 			console.log(error);
-			status = `Error ${error}`;
+			status = `Error ${String(error)}`;
 			alert('error no admin session found, Please login again');
 			await logout();
 		}
@@ -30,7 +30,7 @@
 	});
 
 	async function logout() {
-		await invalidateAdminSession();
+		invalidateAdminSession();
 		await goto('../admin', { replaceState: true });
 	}
 
@@ -38,16 +38,16 @@
 		replaceState('', { popupVisible: PopupType.NONE });
 	}
 
-	function openCreatePass() {
+	async function openCreatePass() {
 		if (admin?.canAddPass) {
-			goto('../admin/pass/create');
+			await goto('../admin/pass/create');
 		} else {
 			alert('You are not allowed to add a new pass! Contact CCF');
 		}
 	}
 
-	function openScanPass() {
-		goto('../admin/pass/scan');
+	async function openScanPass() {
+		await goto('../admin/pass/scan');
 	}
 </script>
 

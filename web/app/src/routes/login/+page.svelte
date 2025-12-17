@@ -8,9 +8,9 @@
 	import { onMount } from 'svelte';
 	import { getUserFromState } from '$lib/state/user_state';
 
-	const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
-	const REDIRECTION_URI = import.meta.env.VITE_REDIRECTION_URI;
-	const OAUTH_SERVER = import.meta.env.VITE_OAUTH_SERVER;
+	const CLIENT_ID = import.meta.env.VITE_CLIENT_ID as string;
+	const REDIRECTION_URI = import.meta.env.VITE_REDIRECTION_URI as string;
+	const OAUTH_SERVER = import.meta.env.VITE_OAUTH_SERVER as string;
 
 	const OAUTH = `${OAUTH_SERVER}/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URI}&response_type=code&scope=openid`;
 
@@ -18,24 +18,22 @@
 
 	onMount(async () => {
 		try {
-			let user = await getUserFromState();
-			if (user) {
-				loginSuccess();
-			}
+			await getUserFromState();
+			await loginSuccess();
 		} catch {
 			//No active session present
 		}
 	});
 
-	function openGoogleLogin() {
+	async function openGoogleLogin() {
 		console.log(OAUTH);
 		alert('Not implemented yet');
 		localStorage.setItem('user_id', '12345');
-		loginSuccess();
+		await loginSuccess();
 	}
 
-	function loginSuccess() {
-		goto('/home', { replaceState: true });
+	async function loginSuccess() {
+		await goto('/home', { replaceState: true });
 	}
 </script>
 

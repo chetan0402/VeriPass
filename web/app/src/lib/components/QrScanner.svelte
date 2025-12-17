@@ -4,13 +4,16 @@
 
 	let isScanning = $state(false);
 	let cameraStream: MediaStream | undefined;
-	type optionsType = {
-		onPermissionError: () => void;
-		onResulted: (data: string) => void;
-		onUpdateStatus: (update: string) => void;
-	};
 
-	let { options }: { options: optionsType } = $props();
+	let {
+		options
+	}: {
+		options: {
+			onPermissionError: () => void;
+			onResulted: (data: string) => void;
+			onUpdateStatus: (update: string) => void;
+		};
+	} = $props();
 
 	let video: HTMLVideoElement;
 	let canvas: HTMLCanvasElement;
@@ -27,19 +30,15 @@
 					facingMode: 'environment'
 				}
 			})
-			.then((userStream) => {
+			.then(async (userStream) => {
 				video.srcObject = userStream;
 				video.setAttribute('playsinline', 'true');
-				video.play();
+				await video.play();
 				isScanning = true;
 				cameraStream = userStream;
 			})
-			.catch((err) => {
-				if (options?.onPermissionError != undefined) {
-					options.onPermissionError();
-				} else {
-					alert(err);
-				}
+			.catch(() => {
+				options.onPermissionError();
 			});
 	}
 
@@ -57,12 +56,8 @@
 			const qrCode = jsQR(imageData.data, width, height);
 
 			if (qrCode) {
-				if (options?.onResulted != undefined) {
-					options.onResulted(qrCode.data);
-					isScanning = false;
-				} else {
-					setTimeout(startScan, 1000);
-				}
+				options.onResulted(qrCode.data);
+				isScanning = false;
 			} else {
 				options.onUpdateStatus('Scanning for qr code');
 				setTimeout(startScan, 500);
@@ -74,7 +69,9 @@
 		isScanning = false;
 		video.srcObject = null;
 		if (cameraStream) {
-			cameraStream.getTracks().forEach((t) => t.stop());
+			cameraStream.getTracks().forEach((t) => {
+				t.stop();
+			});
 			cameraStream = undefined;
 			console.log('closed camera');
 		}

@@ -24,7 +24,7 @@ export function formatTimeStringLocal(date: Date): string {
 	return `${hoursStr}:${minuteStr}`;
 }
 
-export function getFormattedTimeSuffixLocal(timeStamp: Timestamp) {
+export function getFormattedTimeSuffixLocal(timeStamp?: Timestamp) {
 	if (timeStamp) {
 		const startDate = timestampToDate(timeStamp);
 		return startDate.getHours() < 12 ? 'AM' : 'PM';
@@ -46,9 +46,10 @@ export function msToDurationString(ms: number): string {
 	const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
 	const minutes = Math.floor((totalSeconds % 3600) / 60);
 	const seconds = totalSeconds % 60;
-	if (totalSeconds < 60) return `${seconds}s`;
-	if (days > 0) return `${days} day${days > 1 ? 's' : ''} ${hours} hr${hours !== 1 ? 's' : ''}`;
-	return `${hours} hr${hours !== 1 ? 's' : ''} ${minutes} min${minutes !== 1 ? 's' : ''}`;
+	if (totalSeconds < 60) return `${seconds.toString()}s`;
+	if (days > 0)
+		return `${days.toString()} day${days > 1 ? 's' : ''} ${hours.toString()} hr${hours !== 1 ? 's' : ''}`;
+	return `${hours.toString()} hr${hours !== 1 ? 's' : ''} ${minutes.toString()} min${minutes !== 1 ? 's' : ''}`;
 }
 
 export function get12oClockDate(date: Date): Date {
