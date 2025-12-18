@@ -135,7 +135,7 @@ func Run(config *Config) {
 
 	interceptor := connect.WithInterceptors(
 		veripass.NewIpMiddleware(),
-		veripass.NewAuthMiddleware(verifier, oauth2config),
+		veripass.NewAuthMiddleware(verifier),
 	)
 
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))
