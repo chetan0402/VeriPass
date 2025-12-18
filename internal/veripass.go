@@ -52,10 +52,6 @@ func Run(config *Config) {
 		log.Fatal(err)
 	}
 
-	interceptor := connect.WithInterceptors(
-		veripass.NewIpMiddleware(),
-	)
-
 	provider, err := oidc.NewProvider(ctx, config.OAuthServer)
 	if err != nil {
 		log.Fatal(err)
@@ -68,6 +64,8 @@ func Run(config *Config) {
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID},
 	}
+
+	verifier := provider.Verifier(&oidc.Config{ClientID: oauth2config.ClientID})
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
@@ -84,8 +82,6 @@ func Run(config *Config) {
 			http.Error(w, "missing code", http.StatusBadRequest)
 			return
 		}
-
-		verifier := provider.Verifier(&oidc.Config{ClientID: oauth2config.ClientID})
 
 		oauth2Token, err := oauth2config.Exchange(ctx, r.URL.Query().Get("code"))
 		if err != nil {
@@ -136,6 +132,12 @@ func Run(config *Config) {
 		})
 		http.Redirect(w, r, redirect, http.StatusFound)
 	})
+
+	interceptor := connect.WithInterceptors(
+		veripass.NewIpMiddleware(),
+		veripass.NewAuthMiddleware(verifier, oauth2config),
+	)
+
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))
 	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client, privateKey), interceptor))
 	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client, publicKey), interceptor))
