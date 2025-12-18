@@ -30,7 +30,7 @@
 	onMount(async () => {
 		try {
 			admin = await getAdminFromState();
-			if (!admin?.canAddPass) {
+			if (!admin.canAddPass) {
 				alert('You are not allowed to add a new pass! Contact CCF');
 				await goto('../../admin');
 			}
@@ -84,11 +84,11 @@
 
 	function getPurposeNameByType(type: number): string {
 		const item = purposes.find((p) => p.value === type);
-		return item ? item?.name : 'unspecified';
+		return item ? item.name : 'unspecified';
 	}
 
-	function gotoDashboard() {
-		goto('../../admin/home', { replaceState: true });
+	async function gotoDashboard() {
+		await goto('../../admin/home', { replaceState: true });
 	}
 </script>
 

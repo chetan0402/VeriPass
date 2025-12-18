@@ -25,8 +25,8 @@
 			console.error('Error fetching pass data:', error);
 			passFetchStatus =
 				'No latest pass found. You can try creating a new one.\nRedirecting you to dashboard';
-			setTimeout(() => {
-				goto('../home', { replaceState: true });
+			setTimeout(async () => {
+				await goto('../home', { replaceState: true });
 			}, 2500);
 		}
 	}

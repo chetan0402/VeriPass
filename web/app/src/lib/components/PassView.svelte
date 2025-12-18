@@ -63,8 +63,8 @@
 		}
 	}
 
-	function gotoHome() {
-		goto('../home', { replaceState: true });
+	async function gotoHome() {
+		await goto('../home', { replaceState: true });
 	}
 
 	function showClosePassDialog() {
@@ -78,12 +78,14 @@
 					userprofile = url;
 				}
 			})
-			.catch((err) => {
+			.catch((err: unknown) => {
 				console.log(err);
 			});
 
 		const interval = setInterval(updateTimeTicker, 1000);
-		return () => clearInterval(interval);
+		return () => {
+			clearInterval(interval);
+		};
 	});
 
 	function updateTimeTicker() {
@@ -101,7 +103,7 @@
 			try {
 				const userClient = createClient(UserService, transport);
 				await userClient.entry({ passId: pass.id });
-				await refreshPass();
+				refreshPass();
 			} catch (error: unknown) {
 				if (error instanceof ConnectError) {
 					switch (error.code) {
@@ -244,7 +246,9 @@
 		{#if isClosed || !pass}
 			<p class="text-center text-sm font-bold">Pass is already closed</p>
 			<button
-				onclick={() => gotoHome()}
+				onclick={async () => {
+					await gotoHome();
+				}}
 				class="from-primary-200 to-secondary-200 text-primary-600 mt-2 h-12 w-full rounded-[18px] border-2 border-solid bg-gradient-to-r font-semibold focus:outline-amber-100"
 			>
 				Back to Dashboard

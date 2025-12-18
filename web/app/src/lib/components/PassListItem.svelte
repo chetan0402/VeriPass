@@ -8,7 +8,7 @@
 		timestampToDate
 	} from '$lib/time_utils';
 
-	const { onclick, pass } = $props<{ onclick: () => void; pass: Pass }>();
+	const { onclick, pass }: { onclick: () => void; pass: Pass } = $props();
 
 	let dateFormatted: string = $derived(getFormattedDate(pass.startTime));
 	let endTime: string = $derived(getFormattedTime(pass.endTime));
@@ -32,14 +32,14 @@
 				return 'Not specified';
 		}
 	}
-	function getFormattedTime(timeStamp: Timestamp) {
+	function getFormattedTime(timeStamp?: Timestamp) {
 		if (timeStamp) {
 			const date = timestampToDate(timeStamp);
 			return formatTimeStringLocal(date);
 		}
 		return '----';
 	}
-	function getFormattedDate(timeStamp: Timestamp) {
+	function getFormattedDate(timeStamp?: Timestamp) {
 		if (timeStamp) {
 			const date = timestampToDate(timeStamp);
 			return formatDateString(date);

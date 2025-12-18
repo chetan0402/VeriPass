@@ -37,18 +37,16 @@ export async function getUserProfileFromState() {
 	}
 	try {
 		const userProfileResponse = await userClient.getPhoto({ id: userId });
-		if (userProfileResponse.photo) {
-			const blob = new Blob([userProfileResponse.photo]);
-			userprofile = URL.createObjectURL(blob);
-			return userprofile;
-		}
+		const blob = new Blob([userProfileResponse.photo as BlobPart]);
+		userprofile = URL.createObjectURL(blob);
+		return userprofile;
 	} catch (e) {
 		console.error('Error fetching user image from server', e);
 		throw e;
 	}
 }
 
-export async function invalidateUserSession() {
+export function invalidateUserSession() {
 	//Reset all the session info
 	localStorage.removeItem('user_id');
 	user = undefined;

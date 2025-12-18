@@ -2,8 +2,8 @@ import { Code, ConnectError, createRouterTransport } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
-import { msToTimestamp, timestampToDate, timestampToMs } from '$lib/time_utils';
-import { type Timestamp, timestampNow } from '@bufbuild/protobuf/wkt';
+import { msToTimestamp, timestampToMs } from '$lib/time_utils';
+import { timestampNow } from '@bufbuild/protobuf/wkt';
 import {
 	type Admin,
 	AdminService,
@@ -19,9 +19,7 @@ const MOCK = import.meta.env.VITE_MOCK != 'false';
 
 const { secretKey, publicKey } = ed.keygen();
 
-const mockPasses: {
-	[id: string]: Pass;
-} = {};
+const mockPasses: Record<string, Pass> = {};
 
 function generateMockPasesForPage() {
 	const newMockPasses: Pass[] = [];
@@ -29,7 +27,7 @@ function generateMockPasesForPage() {
 		let endtime;
 		const idIdentifier = timestampToMs(timestampNow()) - i * 60 * 60 * 1000;
 		if (idIdentifier % 3 == 0) endtime = msToTimestamp(idIdentifier - 4 * 60 * 60 * 1000);
-		const id = 'pass' + idIdentifier;
+		const id = 'pass' + idIdentifier.toString();
 		mockPasses[id] = {
 			id: id,
 			userId: '12345',
@@ -56,7 +54,7 @@ function createQrCode(passId: string, userId: string): string {
 		combined.set(signature, qrBytes.length);
 
 		let bin = '';
-		for (let i = 0; i < combined.length; i++) bin += String.fromCharCode(combined[i]);
+		for (const c of combined) bin += String.fromCharCode(c);
 		return btoa(bin);
 	} catch (e) {
 		console.log(e);
@@ -72,7 +70,7 @@ function getPassType(selected: ExitRequest_ExitType): Pass_PassType {
 		[ExitRequest_ExitType.EVENT]: Pass_PassType.EVENT,
 		[ExitRequest_ExitType.UNSPECIFIED]: Pass_PassType.UNSPECIFIED
 	};
-	return map[selected] ?? ExitRequest_ExitType.UNSPECIFIED;
+	return map[selected] || Pass_PassType.UNSPECIFIED;
 }
 
 function generateMockPasesForHostel(
@@ -86,7 +84,7 @@ function generateMockPasesForHostel(
 			mockStartTime = req.pageToken;
 		}
 		const idIdentifier = timestampToMs(mockStartTime) + (i + 1) * 60 * 1000;
-		const id = 'pass' + idIdentifier;
+		const id = 'pass' + idIdentifier.toString();
 		if (!req.passIsOpen) {
 			endtime = msToTimestamp(idIdentifier + Math.random() * 60 * 60 * 1000);
 		}
@@ -108,8 +106,8 @@ function generateMockPasesForHostel(
 		const infoPass: GetAllPassesByHostelResponse_InfoIncludedPass = {
 			$typeName: 'veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass',
 			pass: passN,
-			studentRoom: 'C' + Math.floor(Math.random() * 100),
-			studentName: 'Mock Student' + Math.floor(Math.random() * 100)
+			studentRoom: 'C' + Math.floor(Math.random() * 100).toString(),
+			studentName: 'Mock Student' + Math.floor(Math.random() * 100).toString()
 		};
 		newMockPasses.push(infoPass);
 	}
@@ -154,7 +152,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		console.log('exit', req.id);
 
 		const userId = String(req.id);
-		const idIdentifier = userId + timestampToMs(timestampNow());
+		const idIdentifier = userId + timestampToMs(timestampNow()).toString();
 		const id = 'pass' + idIdentifier;
 
 		mockPasses[id] = {
@@ -175,7 +173,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			throw new ConnectError('user not found', Code.NotFound);
 		}
 		const userId = String(req.userId);
-		const idIdentifier = userId + timestampToMs(timestampNow());
+		const idIdentifier = userId + timestampToMs(timestampNow()).toString();
 		const id = 'pass' + idIdentifier;
 
 		mockPasses[id] = {
@@ -191,21 +189,18 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(UserService.method.entry, (req) => {
-		const mockPass = mockPasses[req.passId];
-		if (!mockPass) {
+		if (!(req.passId in mockPasses)) {
 			throw new ConnectError('Pass not found', Code.NotFound);
 		}
-		mockPass.endTime = timestampNow();
-		mockPasses[req.passId] = mockPass;
+		mockPasses[req.passId].endTime = timestampNow();
 		return {};
 	});
 
 	rpc(PassService.method.getPass, (req) => {
-		const pass = mockPasses[req.id];
-		if (!pass) {
+		if (!(req.id in mockPasses)) {
 			throw new ConnectError('Pass not found', Code.NotFound);
 		}
-		return pass;
+		return mockPasses[req.id];
 	});
 
 	rpc(PassService.method.listPassesByUser, (req) => {
@@ -230,14 +225,6 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(AdminService.method.getAllPassesByHostel, (req) => {
 		const infoIncludedPasses: GetAllPassesByHostelResponse_InfoIncludedPass[] =
 			generateMockPasesForHostel(req);
-		console.log(
-			'loading from ' +
-				timestampToDate(req.startTime as Timestamp) +
-				' to ' +
-				timestampToDate(req.endTime as Timestamp) +
-				' with next page ' +
-				timestampToDate(req.pageToken as Timestamp)
-		);
 		return {
 			passes: infoIncludedPasses,
 			nextPageToken: infoIncludedPasses[infoIncludedPasses.length - 1].pass?.startTime

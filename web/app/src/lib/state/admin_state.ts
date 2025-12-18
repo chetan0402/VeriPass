@@ -30,7 +30,7 @@ function getSavedAdminEmail() {
 	return localStorage.getItem('admin_email');
 }
 
-export async function invalidateAdminSession() {
+export function invalidateAdminSession() {
 	//Reset all the session info
 	localStorage.removeItem('admin_email');
 	admin = undefined;

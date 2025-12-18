@@ -10,17 +10,17 @@
 		try {
 			admin = await getAdminFromState();
 			if (admin.name) {
-				goto('../admin/home', { replaceState: true });
+				await goto('../admin/home', { replaceState: true });
 			}
 		} catch {
 			//No active session found
 		}
 	});
 
-	function openGoogleLogin() {
+	async function openGoogleLogin() {
 		alert('Google login not implemented yet');
 		localStorage.setItem('admin_email', 'mock@veripass.app');
-		goto('../admin/home', { replaceState: true });
+		await goto('../admin/home', { replaceState: true });
 	}
 </script>
 
