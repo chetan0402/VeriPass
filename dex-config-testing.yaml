@@ -6,7 +6,7 @@ web:
 staticClients:
   - id: veripass
     redirectURIs:
-      - 'http://localhost:8000/api/callback'
+      - 'http://localhost:8000/callback'
     name: 'VeriPass'
     secret: veripass
 enablePasswordDB: true
