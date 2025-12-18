@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"time"
 
 	"connectrpc.com/connect"
 	"entgo.io/ent/dialect"
@@ -115,6 +116,25 @@ func Run(config *Config) {
 			return
 		}
 		http.Redirect(w, r, "/", http.StatusFound)
+	})
+	mux.HandleFunc("GET /logout", func(w http.ResponseWriter, r *http.Request) {
+		if !r.URL.Query().Has("redirect") {
+			http.Error(w, "No redirect param set.", http.StatusBadRequest)
+			return
+		}
+
+		redirect := r.URL.Query().Get("redirect")
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "token",
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			SameSite: http.SameSiteStrictMode,
+			Expires:  time.Now(),
+			MaxAge:   -1,
+		})
+		http.Redirect(w, r, redirect, http.StatusFound)
 	})
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))
 	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client, privateKey), interceptor))
