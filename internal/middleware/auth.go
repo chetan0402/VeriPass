@@ -46,7 +46,7 @@ func NewAuthMiddleware(verifier *oidc.IDTokenVerifier) connect.UnaryInterceptorF
 					}
 				}
 
-				return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("No token cookie found"))
+				return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("no token cookie found"))
 			}
 			return next(ctx, req)
 		}

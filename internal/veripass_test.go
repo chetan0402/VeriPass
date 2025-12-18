@@ -324,6 +324,7 @@ func verifyPass(t *testing.T, pass *veripassv1.Pass, publicKey ed25519.PublicKey
 
 func getToken(t *testing.T) *http.Cookie {
 	jar, err := cookiejar.New(nil)
+	attest(t, err)
 	client := &http.Client{
 		Jar: jar,
 	}
@@ -344,7 +345,7 @@ func getToken(t *testing.T) *http.Cookie {
 	formData.Set("req", resp.Request.URL.Query().Get("req"))
 	formData.Set("approval", "approve")
 
-	resp, err = client.PostForm(resp.Request.URL.String(), formData)
+	_, err = client.PostForm(resp.Request.URL.String(), formData)
 	attest(t, err)
 
 	for _, c := range jar.Cookies(&url.URL{
