@@ -2,7 +2,6 @@ import { createClient } from '@connectrpc/connect';
 import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 import { transport } from '$lib/transport';
 import { NoUserSessionFound } from '$lib/errors';
-import { resetAuthToken } from '$lib/auth_utils';
 
 let user: User | undefined;
 const userClient = createClient(UserService, transport);
@@ -44,7 +43,6 @@ export async function getUserProfileFromState() {
 
 export function invalidateUserSession() {
 	//Reset all the session info
-	resetAuthToken();
 	localStorage.removeItem('user_id');
 	user = undefined;
 	return;

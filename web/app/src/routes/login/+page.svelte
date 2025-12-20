@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { Toast } from 'flowbite-svelte';
-	import { ExclamationCircleOutline, QuestionCircleOutline } from 'flowbite-svelte-icons';
+	import {
+		ExclamationCircleOutline,
+		QuestionCircleOutline,
+		UserGraduateSolid
+	} from 'flowbite-svelte-icons';
 	import { blur } from 'svelte/transition';
-	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import LoginHelpDialog from '$lib/components/LoginHelpDialog.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -12,22 +15,22 @@
 	const REDIRECTION_URI = import.meta.env.VITE_REDIRECTION_URI as string;
 	const OAUTH_SERVER = import.meta.env.VITE_OAUTH_SERVER as string;
 
-	const OAUTH = `${OAUTH_SERVER}/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URI}&response_type=code&scope=openid`;
+	const OAUTH = `${OAUTH_SERVER}/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URI}&response_type=code&scope=openid&state=student`;
 
 	let show_help_dialog: boolean = $state(false);
 
 	onMount(async () => {
 		try {
 			await getUserFromState();
-            await loginSuccess();
+			await loginSuccess();
 		} catch {
 			//No active session present
 		}
 	});
 
 	function openGoogleLogin() {
-		console.log(OAUTH);
 		window.location.href = OAUTH;
+		localStorage.setItem('user_id', '12345');
 	}
 
 	async function loginSuccess() {
@@ -47,8 +50,16 @@
 	<div
 		class="mt-5 flex h-full w-dvw flex-col items-center justify-center bg-[url('/wave-bg.svg')] bg-cover bg-top bg-no-repeat pt-10"
 	>
-		<p class="text-center text-2xl font-bold text-white">Login with <br /> institute's Email ID</p>
-		<GoogleButton className="mt-10 scale-125" onclick={openGoogleLogin}></GoogleButton>
+		<p class="text-center text-2xl font-bold text-white">
+			Login with <br /> institute student account
+		</p>
+		<button
+			class="ring-primary-500 hover:ring-secondary-800 from-secondary-50 to-secondary-200 text-primary-700 mt-6 flex flex-row items-center justify-center rounded-full bg-gradient-to-bl px-4 py-4 text-xl font-semibold ring-4 transition-all duration-200"
+			onclick={openGoogleLogin}
+		>
+			<UserGraduateSolid class="mr-2 h-6 w-6 shrink-0" />
+			Student Login
+		</button>
 		<button
 			onclick={() => (show_help_dialog = true)}
 			class="w- mt-6 flex h-[40px] flex-row items-center justify-center rounded-full border-2 pr-[24px] pl-[12px] text-[12px] text-white"
@@ -66,7 +77,7 @@
 				<ExclamationCircleOutline class="text-primary-500 dark:bg-primary-800 h-6  w-6"
 				></ExclamationCircleOutline>
 			{/snippet}
-			Only login with @stu.manit.ac.in Google ID
+			You will be redirected to institute authentication portal
 		</Toast>
 	</div>
 

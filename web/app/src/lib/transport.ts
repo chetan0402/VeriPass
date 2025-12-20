@@ -13,7 +13,6 @@ import {
 import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha2.js';
 import { resetAuthToken } from '$lib/auth_utils';
-import { goto } from '$app/navigation';
 
 ed.hashes.sha512 = sha512;
 
@@ -280,9 +279,7 @@ export const transport = createConnectTransport({
 				return await next(req);
 			} catch (error) {
 				if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
-					resetAuthToken();
-					console.log('unauthenticated session');
-					await goto('/');
+					resetAuthToken('/');
 				}
 				throw error;
 			}

@@ -7,6 +7,9 @@
 	import { goto, pushState, replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import { PopupType } from '$lib';
+	import { resetAuthToken } from '$lib/auth_utils';
+	import { Code, ConnectError } from '@connectrpc/connect';
+	import { NoAdminSessionFound } from '$lib/errors';
 
 	let listVisible: boolean = $state<boolean>(false);
 	let status: string = $state<string>('Loading Admin Details...');
@@ -23,15 +26,24 @@
 		} catch (error: unknown) {
 			console.log(error);
 			status = `Error ${String(error)}`;
-			alert('error no admin session found, Please login again');
-			await logout();
+			if (error instanceof NoAdminSessionFound) {
+				alert('No admin session found, Please login again');
+				logout();
+			} else if (error instanceof ConnectError && error.code == Code.NotFound) {
+				alert('No admin session found, Please login again');
+				logout();
+			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
+				await goto('/admin');
+			} else {
+				await goto('/admin');
+			}
 		}
 		pushState('', { popupVisible: PopupType.NONE });
 	});
 
-	async function logout() {
-		  invalidateAdminSession();
-		await goto('../admin', { replaceState: true });
+	function logout() {
+		invalidateAdminSession();
+		resetAuthToken('/admin');
 	}
 
 	function closeMenu() {

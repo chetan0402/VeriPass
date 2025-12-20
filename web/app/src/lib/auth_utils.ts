@@ -1,4 +1,3 @@
-export function resetAuthToken(): void {
-	console.log('Reset Auth Token');
-	document.cookie = 'token=; Path=/; Max-Age=0; Secure; SameSite=Strict';
+export function resetAuthToken(redirect: string): void {
+	window.location.href = `/api/logout?redirect=${encodeURIComponent(redirect)}`;
 }

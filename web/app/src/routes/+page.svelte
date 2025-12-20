@@ -5,6 +5,8 @@
 	import { getUserFromState, invalidateUserSession } from '$lib/state/user_state';
 	import type { User } from '$lib/gen/veripass/v1/user_pb';
 	import { NoUserSessionFound } from '$lib/errors';
+	import { Code, ConnectError } from '@connectrpc/connect';
+	import { resetAuthToken } from '$lib/auth_utils';
 
 	let status_message: string = $state<string>('Getting things ready...');
 
@@ -45,9 +47,13 @@
 		} catch (error) {
 			if (error instanceof NoUserSessionFound) {
 				openLoginScreen();
-			} else {
+			} else if (error instanceof ConnectError && error.code == Code.NotFound) {
+				alert('User ID is invalid.');
 				invalidateUserSession();
 				status_message = 'Please Login again';
+				resetAuthToken('/');
+			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
+				maxProgress = 100;
 				openLoginScreen();
 			}
 		}

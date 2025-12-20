@@ -68,14 +68,11 @@
 						break;
 					case Code.Unauthenticated:
 						alert(`Admin session expired! Please login again`);
-						  invalidateAdminSession();
+						invalidateAdminSession();
 						await goto('/admin', { replaceState: true });
 						break;
 					case Code.PermissionDenied:
 						alert(`Permission denied: You are not allowed to create manual passes`);
-						break;
-					default:
-						alert(`Error: ${e.message}`);
 						break;
 				}
 			} else {
@@ -154,10 +151,6 @@
 					Pass Details
 				</h3>
 				<div class="space-y-3">
-					<div class="flex flex-wrap justify-between gap-2">
-						<span class="text-sm font-medium text-gray-500">Pass ID:</span>
-						<span class="font-mono text-sm break-all text-gray-900">{pass.id}</span>
-					</div>
 					<div class="flex justify-between gap-2">
 						<span class="text-sm font-medium text-gray-500">User ID:</span>
 						<span class="text-sm font-semibold text-gray-900">{pass.userId}</span>

@@ -1,16 +1,22 @@
 <script lang="ts">
-	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { getAdminFromState } from '$lib/state/admin_state';
 	import type { Admin } from '$lib/gen/veripass/v1/admin_pb';
+	import { UserSolid } from 'flowbite-svelte-icons';
+
+	const CLIENT_ID = import.meta.env.VITE_CLIENT_ID as string;
+	const REDIRECTION_URI = import.meta.env.VITE_REDIRECTION_URI as string;
+	const OAUTH_SERVER = import.meta.env.VITE_OAUTH_SERVER as string;
+
+	const OAUTH = `${OAUTH_SERVER}/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URI}&response_type=code&scope=openid&state=admin`;
 
 	let admin = $state<Admin>();
 	onMount(async () => {
 		try {
 			admin = await getAdminFromState();
 			if (admin.name) {
-				goto('/admin/home', { replaceState: true });
+				await goto('/admin/home', { replaceState: true });
 			}
 		} catch {
 			//No active session found
@@ -18,9 +24,8 @@
 	});
 
 	function openGoogleLogin() {
-		alert('Google login not implemented yet');
 		localStorage.setItem('admin_email', 'mock@veripass.app');
-		goto('/admin/home', { replaceState: true });
+		window.location.href = OAUTH;
 	}
 </script>
 
@@ -39,9 +44,15 @@
 		<p class="black mt-4 w-60 text-center text-sm text-gray-500">
 			Only registered admins and guards are allowed beyond this point.
 		</p>
-		<GoogleButton className="mt-12 scale-150" onclick={openGoogleLogin}></GoogleButton>
+		<button
+			class="text-primary-700 mt-6 flex flex-row items-center justify-center rounded-full bg-white bg-gradient-to-bl px-4 py-2 font-semibold ring-2 transition-all duration-200"
+			onclick={openGoogleLogin}
+		>
+			<UserSolid class="mr-2 h-6 w-6 shrink-0" />
+			Login using Email
+		</button>
 		<p class="mt-10 w-50 text-center text-sm font-medium text-gray-600">
-			Sign in with your authorized Google account
+			Sign in with your authorized account
 		</p>
 		<p class="absolute bottom-10 text-center text-xs font-normal text-gray-800">
 			For guard access registration contact to CCF MANIT

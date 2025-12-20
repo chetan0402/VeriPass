@@ -2,7 +2,6 @@ import { createClient } from '@connectrpc/connect';
 import { transport } from '$lib/transport';
 import { NoAdminSessionFound } from '$lib/errors';
 import { AdminService, type Admin } from '$lib/gen/veripass/v1/admin_pb';
-import { resetAuthToken } from '$lib/auth_utils';
 
 let admin: Admin | undefined;
 const adminClient = createClient(AdminService, transport);
@@ -28,7 +27,6 @@ function getSavedAdminEmail() {
 
 export function invalidateAdminSession() {
 	//Reset all the session info
-	resetAuthToken();
 	localStorage.removeItem('admin_email');
 	admin = undefined;
 	return;
