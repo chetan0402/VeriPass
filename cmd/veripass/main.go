@@ -3,10 +3,15 @@ package main
 import (
 	"os"
 
-	"github.com/chetan0402/veripass/internal"
+	veripass "github.com/chetan0402/veripass/internal"
 )
 
 func main() {
-	dbUrl := os.Getenv("VERIPASS_DATABASE_URL")
-	veripass.Run(dbUrl)
+	veripass.Run(&veripass.Config{
+		DatabaseUrl:    os.Getenv("VERIPASS_DATABASE_URL"),
+		OAuthServer:    os.Getenv("OAUTH_SERVER"),
+		ClientID:       os.Getenv("CLIENT_ID"),
+		ClientSecret:   os.Getenv("CLIENT_SECRET"),
+		RedirectionURI: os.Getenv("REDIRECTION_URI"),
+	})
 }

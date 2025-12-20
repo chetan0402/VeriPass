@@ -15,7 +15,7 @@
 	import { onMount } from 'svelte';
 	import { getUserProfileFromState } from '$lib/state/user_state';
 
-	const { user } = $props<{ user: User }>();
+	const { user }: { user: User } = $props();
 	const client = createClient(UserService, transport);
 	let selected: Pass_PassType = $state(Pass_PassType.UNSPECIFIED);
 	let purposes: { value: number; name: string }[] = [
@@ -55,14 +55,10 @@
 			[Pass_PassType.EVENT]: ExitRequest_ExitType.EVENT,
 			[Pass_PassType.UNSPECIFIED]: ExitRequest_ExitType.UNSPECIFIED
 		};
-		return map[selected] ?? ExitRequest_ExitType.UNSPECIFIED;
+		return map[selected] || ExitRequest_ExitType.UNSPECIFIED;
 	}
 
 	async function generatePassByServer() {
-		if (!user) {
-			alert('User not found: Try logging in again.');
-			await goto('../login', { replaceState: true });
-		}
 		try {
 			let response: ExitResponse = await client.exit({ id: user.id, type: getExitType(selected) });
 			if (response.passId) {
@@ -91,7 +87,7 @@
 
 	function getPurposeNameByType(type: number): string {
 		const item = purposes.find((p) => p.value === type);
-		return item ? item?.name : 'unspecified';
+		return item ? item.name : 'unspecified';
 	}
 </script>
 

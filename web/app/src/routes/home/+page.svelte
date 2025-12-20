@@ -40,9 +40,9 @@
 		} catch (error) {
 			if (error instanceof NoUserSessionFound) {
 				alert('No session found! Please Login Again');
-				goto('../login', { replaceState: true });
+				await goto('../login', { replaceState: true });
 			} else {
-				goto('../', { replaceState: true });
+				await goto('../', { replaceState: true });
 			}
 		}
 		if (user) {

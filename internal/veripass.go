@@ -7,7 +7,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
+	"time"
 
 	"connectrpc.com/connect"
 	"entgo.io/ent/dialect"
@@ -26,13 +26,21 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
-func Run(databaseUrl string) {
+type Config struct {
+	DatabaseUrl    string
+	OAuthServer    string
+	ClientID       string
+	ClientSecret   string
+	RedirectionURI string
+}
+
+func Run(config *Config) {
 	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := sql.Open("pgx", databaseUrl)
+	db, err := sql.Open("pgx", config.DatabaseUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,22 +52,20 @@ func Run(databaseUrl string) {
 		log.Fatal(err)
 	}
 
-	interceptor := connect.WithInterceptors(
-		veripass.NewIpMiddleware(),
-	)
-
-	provider, err := oidc.NewProvider(ctx, os.Getenv("OAUTH_SERVER"))
+	provider, err := oidc.NewProvider(ctx, config.OAuthServer)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	oauth2config := oauth2.Config{
-		ClientID:     os.Getenv("CLIENT_ID"),
-		ClientSecret: os.Getenv("CLIENT_SECRET"),
-		RedirectURL:  os.Getenv("REDIRECTION_URI"),
+		ClientID:     config.ClientID,
+		ClientSecret: config.ClientSecret,
+		RedirectURL:  config.RedirectionURI,
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID},
 	}
+
+	verifier := provider.Verifier(&oidc.Config{ClientID: oauth2config.ClientID})
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
@@ -76,8 +82,6 @@ func Run(databaseUrl string) {
 			http.Error(w, "missing code", http.StatusBadRequest)
 			return
 		}
-
-		verifier := provider.Verifier(&oidc.Config{ClientID: oauth2config.ClientID})
 
 		oauth2Token, err := oauth2config.Exchange(ctx, r.URL.Query().Get("code"))
 		if err != nil {
@@ -109,6 +113,31 @@ func Run(databaseUrl string) {
 		}
 		http.Redirect(w, r, "/", http.StatusFound)
 	})
+	mux.HandleFunc("GET /logout", func(w http.ResponseWriter, r *http.Request) {
+		if !r.URL.Query().Has("redirect") {
+			http.Error(w, "No redirect param set.", http.StatusBadRequest)
+			return
+		}
+
+		redirect := r.URL.Query().Get("redirect")
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "token",
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			SameSite: http.SameSiteStrictMode,
+			Expires:  time.Now(),
+			MaxAge:   -1,
+		})
+		http.Redirect(w, r, redirect, http.StatusFound)
+	})
+
+	interceptor := connect.WithInterceptors(
+		veripass.NewIpMiddleware(),
+		veripass.NewAuthMiddleware(verifier),
+	)
+
 	mux.Handle(veripassv1connect.NewUserServiceHandler(userservice.New(client), interceptor))
 	mux.Handle(veripassv1connect.NewPassServiceHandler(passservice.New(client, privateKey), interceptor))
 	mux.Handle(veripassv1connect.NewAdminServiceHandler(adminservice.New(client, publicKey), interceptor))

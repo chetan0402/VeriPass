@@ -8,31 +8,34 @@
 		getFormattedTimeSuffixLocal
 	} from '$lib/time_utils';
 
-	const { onclick, infoPass } = $props<{
-		onclick: () => void;
+	const {
+		onclick,
+		infoPass
+	}: {
+		onclick?: () => void;
 		infoPass: GetAllPassesByHostelResponse_InfoIncludedPass;
-	}>();
+	} = $props();
 
 	let sName = $state(infoPass.studentName);
 	let pass = $derived(infoPass.pass);
-	let sNumber = $derived(pass.userId);
+	let sNumber = $derived(pass?.userId);
 	let sRoom = $state(infoPass.studentRoom);
 
-	let dateFormatted: string = $derived(getFormattedDate(pass.startTime));
-	let endTime: string = $derived(getFormattedTime(pass.endTime));
-	let endTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass.endTime));
-	let startTime: string = $derived(getFormattedTime(pass.startTime));
-	let startTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass.startTime));
+	let dateFormatted: string = $derived(getFormattedDate(pass?.startTime));
+	let endTime: string = $derived(getFormattedTime(pass?.endTime));
+	let endTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass?.endTime));
+	let startTime: string = $derived(getFormattedTime(pass?.startTime));
+	let startTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass?.startTime));
 	let passType: string = $derived(getPassType(pass));
-	let passClosed = $derived(pass.endTime);
+	let passClosed = $derived(pass?.endTime);
 
 	function timestampToDate(startTime: Timestamp) {
 		const startMillis = Number(startTime.seconds) * 1000 + Math.floor(startTime.nanos / 1e6);
 		return new Date(startMillis);
 	}
 
-	function getPassType(passItem: Pass) {
-		switch (passItem.type) {
+	function getPassType(passItem?: Pass) {
+		switch (passItem?.type) {
 			case Pass_PassType.CLASS:
 				return 'Class';
 			case Pass_PassType.HOME:
@@ -46,14 +49,14 @@
 		}
 	}
 
-	function getFormattedTime(timeStamp: Timestamp) {
+	function getFormattedTime(timeStamp?: Timestamp) {
 		if (timeStamp) {
 			const date = timestampToDate(timeStamp);
 			return formatTimeStringLocal(date);
 		}
 		return '----';
 	}
-	function getFormattedDate(timeStamp: Timestamp) {
+	function getFormattedDate(timeStamp?: Timestamp) {
 		if (timeStamp) {
 			const date = timestampToDate(timeStamp);
 			return formatDateString(date);
@@ -67,7 +70,7 @@
 	role="button"
 	tabindex="0"
 	onkeydown={(e) => {
-		if (e.key === 'Enter' || e.key === ' ') onclick();
+		if ((e.key === 'Enter' || e.key === ' ') && onclick) onclick();
 	}}
 	class="w-full bg-gray-100 pb-[2px]"
 >

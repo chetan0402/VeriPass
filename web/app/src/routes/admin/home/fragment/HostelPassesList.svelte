@@ -33,7 +33,7 @@
 
 	let outCount = $state<number | undefined>();
 
-	let loading: boolean = false;
+	let loading = false;
 
 	let observing: boolean = $state(false);
 
@@ -42,11 +42,13 @@
 	let passes: GetAllPassesByHostelResponse_InfoIncludedPass[] = $state([]);
 
 	const loadMorePassObserver = new IntersectionObserver(
-		async (entries) => {
+		(entries) => {
 			if (entries[0].isIntersecting && !loading) {
+				loadMorePassObserver.unobserve(entries[0].target);
 				loading = true;
-				await fetchPassesFromServer();
+				fetchPassesFromServer().catch(console.error);
 				loading = false;
+				loadMorePassObserver.observe(entries[0].target);
 			}
 		},
 		{ threshold: 1.0 }
@@ -105,11 +107,11 @@
 		}
 	}
 
-	function onFiltersChanged() {
+	async function onFiltersChanged() {
 		passes = [];
 		nextPageToken = timestampNow();
-		fetchPassesFromServer();
-		fetchOutCount();
+		await fetchPassesFromServer();
+		await fetchOutCount();
 	}
 
 	function observeMorePasses() {
@@ -167,7 +169,9 @@
 		<div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
 			<p class="text-xs font-semibold text-gray-800">Type</p>
 			<Select
-				onchange={() => onFiltersChanged()}
+				onchange={async () => {
+					await onFiltersChanged();
+				}}
 				class="select-style-filter"
 				items={statusOptions}
 				bind:value={selectedStatus}
@@ -177,7 +181,9 @@
 		<div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
 			<p class="text-xs font-semibold text-gray-800">Purpose</p>
 			<Select
-				onchange={() => onFiltersChanged()}
+				onchange={async () => {
+					await onFiltersChanged();
+				}}
 				class="select-style-filter"
 				items={purposeOptions}
 				bind:value={selectedPurpose}
@@ -226,7 +232,7 @@
 			class="flex w-full flex-1 flex-col items-center overflow-x-hidden overflow-y-scroll border-1 border-[#D9D9F2]"
 		>
 			{#each passes as pass (pass.pass?.id)}
-				<AdminPassListItem infoPass={pass} onclick={() => {}} />
+				<AdminPassListItem infoPass={pass} />
 			{/each}
 			<div bind:this={loadMoreElem} class="m-2 flex w-full justify-center">{listFooterMessage}</div>
 		</div>
@@ -240,11 +246,11 @@
 		toClose={() => {
 			replaceState('', { popupVisible: PopupType.NONE });
 		}}
-		toProceed={(startDate: Date, endDate: Date) => {
+		toProceed={async (startDate: Date, endDate: Date) => {
 			selectedStartDate = startDate;
 			selectedEndDate = endDate;
 			replaceState('', { popupVisible: PopupType.NONE });
-			onFiltersChanged();
+			await onFiltersChanged();
 		}}
 	/>
 {/if}

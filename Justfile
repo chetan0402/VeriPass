@@ -25,13 +25,21 @@ gen-ent:
     go run -mod=mod entgo.io/ent/cmd/ent generate ./internal/ent/schema
 
 start-test-database: stop-test-database
+    sleep 1
     docker run --rm -d --name veripass-test-db -e POSTGRES_USER=veripass -e POSTGRES_PASSWORD=veripass -e POSTGRES_DB=veripass -p 5432:5432 postgres:latest -c logging_collector=on -c log_statement=all -c log_filename=postgresql.log
     until docker exec veripass-test-db pg_isready -U veripass; do sleep 1; done
 
 stop-test-database:
     docker stop veripass-test-db || true
 
-test-backend: start-test-database && stop-test-database
+start-test-dex: stop-test-dex
+    sleep 1
+    docker run --rm -d --name veripass-test-dex -p 1433:1433 -v ./dex-config-testing.yaml:/etc/dex/config.yaml dexidp/dex:latest dex serve /etc/dex/config.yaml
+
+stop-test-dex:
+    docker stop veripass-test-dex || true
+
+test-backend: start-test-database start-test-dex && stop-test-database stop-test-dex
     go test -v ./internal/...
 
 build group="":

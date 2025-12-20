@@ -26,9 +26,9 @@
 		scanState = SCANNING;
 	});
 
-	function _onPermissionError() {
+	async function _onPermissionError() {
 		alert('Permission rejected');
-		gotoDashboard();
+		await gotoDashboard();
 	}
 
 	function base64ToBytes(b64: string): Uint8Array {
@@ -87,9 +87,9 @@
 		}
 	}
 
-	function _onResulted(result: string) {
+	async function _onResulted(result: string) {
 		status = 'verifying';
-		verifyPass(result);
+		await verifyPass(result);
 	}
 
 	function getPurposeNameByType(type: number): string {
@@ -101,11 +101,11 @@
 			{ value: Pass_PassType.EVENT, name: 'Event' }
 		];
 		const item = purposes.find((p) => p.value === type);
-		return item ? item?.name : 'unspecified';
+		return item ? item.name : 'unspecified';
 	}
 
-	function gotoDashboard() {
-		goto('../../admin/home', { replaceState: true });
+	async function gotoDashboard() {
+		await goto('../../admin/home', { replaceState: true });
 	}
 </script>
 
@@ -114,9 +114,15 @@
 	{#if scanState === SCANNING}
 		<QrScanner
 			options={{
-				onPermissionError: () => _onPermissionError(),
-				onResulted: (result) => _onResulted(result),
-				onUpdateStatus: (update) => (status = update)
+				onPermissionError: async () => {
+					await _onPermissionError();
+				},
+				onResulted: async (result: string) => {
+					await _onResulted(result);
+				},
+				onUpdateStatus: (update: string) => {
+					status = update;
+				}
 			}}
 		/>
 		<p class="text-primary-800 bg-primary-200 m-3 rounded-2xl p-5 text-xl font-bold">{status}</p>

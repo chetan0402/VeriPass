@@ -1,0 +1,17 @@
+issuer: http://localhost:1433/dex
+storage:
+  type: memory
+web:
+  http: 0.0.0.0:1433
+staticClients:
+  - id: veripass
+    redirectURIs:
+      - 'http://localhost:8000/callback'
+    name: 'VeriPass'
+    secret: veripass
+enablePasswordDB: true
+staticPasswords:
+  - email: "student@example.com"
+    hash: "$2y$10$6JmUm254bTxZSICSXtFWZ.joFmhkGZuHIMoXx6S7aHi2krB/BpsUm"
+    username: "student"
+    userID: "12345"

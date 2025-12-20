@@ -7,6 +7,8 @@ import (
 	"encoding/base64"
 	"math"
 	"net/http"
+	"net/http/cookiejar"
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -18,6 +20,7 @@ import (
 	"github.com/chetan0402/veripass/internal/ent"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	"golang.org/x/net/publicsuffix"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -30,7 +33,13 @@ func TestMain(t *testing.T) {
 	timeout := time.After(30 * time.Second)
 	host := "http://localhost:8000"
 	dbUrl := "postgres://veripass:veripass@localhost:5432/veripass"
-	go veripass.Run(dbUrl)
+	go veripass.Run(&veripass.Config{
+		DatabaseUrl:    dbUrl,
+		OAuthServer:    "http://localhost:1433/dex",
+		ClientID:       "veripass",
+		ClientSecret:   "veripass",
+		RedirectionURI: "http://localhost:8000/callback",
+	})
 
 	for {
 		if _, err := http.DefaultClient.Get(host + "/ping"); err == nil {
@@ -43,9 +52,20 @@ func TestMain(t *testing.T) {
 		}
 	}
 
-	userClient := veripassv1connect.NewUserServiceClient(&http.Client{}, host)
-	passClient := veripassv1connect.NewPassServiceClient(&http.Client{}, host)
-	adminClient := veripassv1connect.NewAdminServiceClient(&http.Client{}, host)
+	jar, err := cookiejar.New(&cookiejar.Options{
+		PublicSuffixList: publicsuffix.List,
+	})
+	attest(t, err)
+
+	jar.SetCookies(&url.URL{
+		Scheme: "http",
+		Host:   "localhost:8000",
+	}, []*http.Cookie{getToken(t)})
+	client := &http.Client{Jar: jar}
+
+	userClient := veripassv1connect.NewUserServiceClient(client, host)
+	passClient := veripassv1connect.NewPassServiceClient(client, host)
+	adminClient := veripassv1connect.NewAdminServiceClient(client, host)
 	ctx := context.Background()
 
 	db, err := sql.Open("pgx", dbUrl)
@@ -300,4 +320,43 @@ func verifyPass(t *testing.T, pass *veripassv1.Pass, publicKey ed25519.PublicKey
 	if userid != pass.UserId {
 		t.Fatalf("Expected user ID %v, got %v", pass.UserId, userid)
 	}
+}
+
+func getToken(t *testing.T) *http.Cookie {
+	jar, err := cookiejar.New(nil)
+	attest(t, err)
+	client := &http.Client{
+		Jar: jar,
+	}
+
+	resp, err := client.Get("http://localhost:1433/dex/auth?client_id=veripass&redirect_uri=http://localhost:8000/callback&response_type=code&scope=openid")
+	attest(t, err)
+
+	dexLoginFormURL := resp.Request.URL.String()
+
+	formData := url.Values{}
+	formData.Set("login", "student@example.com")
+	formData.Set("password", "veripass")
+
+	resp, err = client.PostForm(dexLoginFormURL, formData)
+	attest(t, err)
+
+	formData = url.Values{}
+	formData.Set("req", resp.Request.URL.Query().Get("req"))
+	formData.Set("approval", "approve")
+
+	_, err = client.PostForm(resp.Request.URL.String(), formData)
+	attest(t, err)
+
+	for _, c := range jar.Cookies(&url.URL{
+		Scheme: "http",
+		Host:   "localhost:8000",
+	}) {
+		if c.Name == "token" {
+			return c
+		}
+	}
+
+	t.Fatalf("Couldn't get token from dex")
+	return nil
 }
