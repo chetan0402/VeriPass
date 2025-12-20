@@ -12,14 +12,16 @@
 
 	let loadMoreElem: HTMLDivElement;
 	let nextPageToken: Timestamp | undefined = timestampNow();
-	let loading: boolean = false;
+	let loading = false;
 
 	const loadMorePassObserver = new IntersectionObserver(
-		async (entries) => {
+		(entries) => {
 			if (entries[0].isIntersecting && !loading) {
+				loadMorePassObserver.unobserve(entries[0].target);
 				loading = true;
-				await fetchHistory();
+				fetchHistory().catch(console.error);
 				loading = false;
+				loadMorePassObserver.observe(entries[0].target);
 			}
 		},
 		{ threshold: 1.0 }
@@ -47,7 +49,7 @@
 		}
 	}
 
-	onMount(async () => {
+	onMount(() => {
 		loadMorePassObserver.observe(loadMoreElem);
 	});
 
