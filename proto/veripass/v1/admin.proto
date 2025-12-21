@@ -14,14 +14,10 @@ message Admin {
 }
 
 service AdminService {
-  rpc GetAdmin(GetAdminRequest) returns (Admin);
+  rpc GetAdmin(google.protobuf.Empty) returns (Admin);
   rpc GetAllPassesByHostel(GetAllPassesByHostelRequest) returns (GetAllPassesByHostelResponse);
   rpc GetPublicKey(google.protobuf.Empty) returns (GetPublicKeyResponse);
   rpc GetOutCountByHostel(GetOutCountByHostelRequest) returns (GetOutCountByHostelResponse);
-}
-
-message GetAdminRequest {
-  string email = 1;
 }
 
 message GetAllPassesByHostelRequest {

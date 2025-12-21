@@ -49,7 +49,7 @@ const (
 
 // AdminServiceClient is a client for the veripass.v1.AdminService service.
 type AdminServiceClient interface {
-	GetAdmin(context.Context, *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error)
+	GetAdmin(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Admin], error)
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
 	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
 	GetOutCountByHostel(context.Context, *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error)
@@ -66,7 +66,7 @@ func NewAdminServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 	baseURL = strings.TrimRight(baseURL, "/")
 	adminServiceMethods := v1.File_veripass_v1_admin_proto.Services().ByName("AdminService").Methods()
 	return &adminServiceClient{
-		getAdmin: connect.NewClient[v1.GetAdminRequest, v1.Admin](
+		getAdmin: connect.NewClient[emptypb.Empty, v1.Admin](
 			httpClient,
 			baseURL+AdminServiceGetAdminProcedure,
 			connect.WithSchema(adminServiceMethods.ByName("GetAdmin")),
@@ -95,14 +95,14 @@ func NewAdminServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 
 // adminServiceClient implements AdminServiceClient.
 type adminServiceClient struct {
-	getAdmin             *connect.Client[v1.GetAdminRequest, v1.Admin]
+	getAdmin             *connect.Client[emptypb.Empty, v1.Admin]
 	getAllPassesByHostel *connect.Client[v1.GetAllPassesByHostelRequest, v1.GetAllPassesByHostelResponse]
 	getPublicKey         *connect.Client[emptypb.Empty, v1.GetPublicKeyResponse]
 	getOutCountByHostel  *connect.Client[v1.GetOutCountByHostelRequest, v1.GetOutCountByHostelResponse]
 }
 
 // GetAdmin calls veripass.v1.AdminService.GetAdmin.
-func (c *adminServiceClient) GetAdmin(ctx context.Context, req *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error) {
+func (c *adminServiceClient) GetAdmin(ctx context.Context, req *connect.Request[emptypb.Empty]) (*connect.Response[v1.Admin], error) {
 	return c.getAdmin.CallUnary(ctx, req)
 }
 
@@ -123,7 +123,7 @@ func (c *adminServiceClient) GetOutCountByHostel(ctx context.Context, req *conne
 
 // AdminServiceHandler is an implementation of the veripass.v1.AdminService service.
 type AdminServiceHandler interface {
-	GetAdmin(context.Context, *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error)
+	GetAdmin(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Admin], error)
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
 	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
 	GetOutCountByHostel(context.Context, *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error)
@@ -179,7 +179,7 @@ func NewAdminServiceHandler(svc AdminServiceHandler, opts ...connect.HandlerOpti
 // UnimplementedAdminServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedAdminServiceHandler struct{}
 
-func (UnimplementedAdminServiceHandler) GetAdmin(context.Context, *connect.Request[v1.GetAdminRequest]) (*connect.Response[v1.Admin], error) {
+func (UnimplementedAdminServiceHandler) GetAdmin(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Admin], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.AdminService.GetAdmin is not implemented"))
 }
 

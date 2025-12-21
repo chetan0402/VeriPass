@@ -109,9 +109,9 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 }
 
 // GetAdmin implements veripassv1connect.AdminServiceHandler.
-func (s *AdminService) GetAdmin(ctx context.Context, r *connect.Request[veripassv1.GetAdminRequest]) (*connect.Response[veripassv1.Admin], error) {
+func (s *AdminService) GetAdmin(ctx context.Context, r *connect.Request[emptypb.Empty]) (*connect.Response[veripassv1.Admin], error) {
 	var (
-		email = r.Msg.Email
+		email = veripass.GetEmailFromCtx(ctx)
 	)
 
 	admin, err := s.client.Admin.Query().Where(admin.Email(email)).First(ctx)

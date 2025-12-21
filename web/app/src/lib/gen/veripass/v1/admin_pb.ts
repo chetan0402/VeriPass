@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file veripass/v1/admin.proto.
  */
 export const file_veripass_v1_admin: GenFile = /*@__PURE__*/
-  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIiAKD0dldEFkbWluUmVxdWVzdBINCgVlbWFpbBgBIAEoCSKkAgobR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIsCghlbmRfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASGQoMcGFzc19pc19vcGVuGAQgASgISACIAQESKAoEdHlwZRgFIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUSEQoJcGFnZV9zaXplGAYgASgFEi4KCnBhZ2VfdG9rZW4YByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQg8KDV9wYXNzX2lzX29wZW4igAIKHEdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2USSgoGcGFzc2VzGAEgAygLMjoudmVyaXBhc3MudjEuR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXNwb25zZS5JbmZvSW5jbHVkZWRQYXNzEjMKD25leHRfcGFnZV90b2tlbhgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaXwoQSW5mb0luY2x1ZGVkUGFzcxIfCgRwYXNzGAEgASgLMhEudmVyaXBhc3MudjEuUGFzcxIUCgxzdHVkZW50X25hbWUYAiABKAkSFAoMc3R1ZGVudF9yb29tGAMgASgJIioKFEdldFB1YmxpY0tleVJlc3BvbnNlEhIKCnB1YmxpY19rZXkYASABKAwitAEKGkdldE91dENvdW50QnlIb3N0ZWxSZXF1ZXN0Eg4KBmhvc3RlbBgBIAEoCRIuCgpzdGFydF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIsCghlbmRfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASKAoEdHlwZRgEIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUiKgobR2V0T3V0Q291bnRCeUhvc3RlbFJlc3BvbnNlEgsKA291dBgBIAEoAzLuAgoMQWRtaW5TZXJ2aWNlEjwKCEdldEFkbWluEhwudmVyaXBhc3MudjEuR2V0QWRtaW5SZXF1ZXN0GhIudmVyaXBhc3MudjEuQWRtaW4SawoUR2V0QWxsUGFzc2VzQnlIb3N0ZWwSKC52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlcXVlc3QaKS52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlc3BvbnNlEkkKDEdldFB1YmxpY0tleRIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRohLnZlcmlwYXNzLnYxLkdldFB1YmxpY0tleVJlc3BvbnNlEmgKE0dldE91dENvdW50QnlIb3N0ZWwSJy52ZXJpcGFzcy52MS5HZXRPdXRDb3VudEJ5SG9zdGVsUmVxdWVzdBooLnZlcmlwYXNzLnYxLkdldE91dENvdW50QnlIb3N0ZWxSZXNwb25zZUKuAQoPY29tLnZlcmlwYXNzLnYxQgpBZG1pblByb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z", [file_google_protobuf_empty, file_google_protobuf_timestamp, file_veripass_v1_pass]);
+  fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIqQCChtHZXRBbGxQYXNzZXNCeUhvc3RlbFJlcXVlc3QSDgoGaG9zdGVsGAEgASgJEi4KCnN0YXJ0X3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiwKCGVuZF90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIZCgxwYXNzX2lzX29wZW4YBCABKAhIAIgBARIoCgR0eXBlGAUgASgOMhoudmVyaXBhc3MudjEuUGFzcy5QYXNzVHlwZRIRCglwYWdlX3NpemUYBiABKAUSLgoKcGFnZV90b2tlbhgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCDwoNX3Bhc3NfaXNfb3BlbiKAAgocR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXNwb25zZRJKCgZwYXNzZXMYASADKAsyOi52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlc3BvbnNlLkluZm9JbmNsdWRlZFBhc3MSMwoPbmV4dF9wYWdlX3Rva2VuGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBpfChBJbmZvSW5jbHVkZWRQYXNzEh8KBHBhc3MYASABKAsyES52ZXJpcGFzcy52MS5QYXNzEhQKDHN0dWRlbnRfbmFtZRgCIAEoCRIUCgxzdHVkZW50X3Jvb20YAyABKAkiKgoUR2V0UHVibGljS2V5UmVzcG9uc2USEgoKcHVibGljX2tleRgBIAEoDCK0AQoaR2V0T3V0Q291bnRCeUhvc3RlbFJlcXVlc3QSDgoGaG9zdGVsGAEgASgJEi4KCnN0YXJ0X3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiwKCGVuZF90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIoCgR0eXBlGAQgASgOMhoudmVyaXBhc3MudjEuUGFzcy5QYXNzVHlwZSIqChtHZXRPdXRDb3VudEJ5SG9zdGVsUmVzcG9uc2USCwoDb3V0GAEgASgDMugCCgxBZG1pblNlcnZpY2USNgoIR2V0QWRtaW4SFi5nb29nbGUucHJvdG9idWYuRW1wdHkaEi52ZXJpcGFzcy52MS5BZG1pbhJrChRHZXRBbGxQYXNzZXNCeUhvc3RlbBIoLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVxdWVzdBopLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2USSQoMR2V0UHVibGljS2V5EhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GiEudmVyaXBhc3MudjEuR2V0UHVibGljS2V5UmVzcG9uc2USaAoTR2V0T3V0Q291bnRCeUhvc3RlbBInLnZlcmlwYXNzLnYxLkdldE91dENvdW50QnlIb3N0ZWxSZXF1ZXN0GigudmVyaXBhc3MudjEuR2V0T3V0Q291bnRCeUhvc3RlbFJlc3BvbnNlQq4BCg9jb20udmVyaXBhc3MudjFCCkFkbWluUHJvdG9QAVpCZ2l0aHViLmNvbS9jaGV0YW4wNDAyL3ZlcmlwYXNzL2ludGVybmFsL2dlbi92ZXJpcGFzcy92MTt2ZXJpcGFzc3YxogIDVlhYqgILVmVyaXBhc3MuVjHKAgtWZXJpcGFzc1xWMeICF1ZlcmlwYXNzXFYxXEdQQk1ldGFkYXRh6gIMVmVyaXBhc3M6OlYxYgZwcm90bzM", [file_google_protobuf_empty, file_google_protobuf_timestamp, file_veripass_v1_pass]);
 
 /**
  * @generated from message veripass.v1.Admin
@@ -47,23 +47,6 @@ export type Admin = Message<"veripass.v1.Admin"> & {
  */
 export const AdminSchema: GenMessage<Admin> = /*@__PURE__*/
   messageDesc(file_veripass_v1_admin, 0);
-
-/**
- * @generated from message veripass.v1.GetAdminRequest
- */
-export type GetAdminRequest = Message<"veripass.v1.GetAdminRequest"> & {
-  /**
-   * @generated from field: string email = 1;
-   */
-  email: string;
-};
-
-/**
- * Describes the message veripass.v1.GetAdminRequest.
- * Use `create(GetAdminRequestSchema)` to create a new message.
- */
-export const GetAdminRequestSchema: GenMessage<GetAdminRequest> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_admin, 1);
 
 /**
  * @generated from message veripass.v1.GetAllPassesByHostelRequest
@@ -112,7 +95,7 @@ export type GetAllPassesByHostelRequest = Message<"veripass.v1.GetAllPassesByHos
  * Use `create(GetAllPassesByHostelRequestSchema)` to create a new message.
  */
 export const GetAllPassesByHostelRequestSchema: GenMessage<GetAllPassesByHostelRequest> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_admin, 2);
+  messageDesc(file_veripass_v1_admin, 1);
 
 /**
  * @generated from message veripass.v1.GetAllPassesByHostelResponse
@@ -134,7 +117,7 @@ export type GetAllPassesByHostelResponse = Message<"veripass.v1.GetAllPassesByHo
  * Use `create(GetAllPassesByHostelResponseSchema)` to create a new message.
  */
 export const GetAllPassesByHostelResponseSchema: GenMessage<GetAllPassesByHostelResponse> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_admin, 3);
+  messageDesc(file_veripass_v1_admin, 2);
 
 /**
  * @generated from message veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
@@ -161,7 +144,7 @@ export type GetAllPassesByHostelResponse_InfoIncludedPass = Message<"veripass.v1
  * Use `create(GetAllPassesByHostelResponse_InfoIncludedPassSchema)` to create a new message.
  */
 export const GetAllPassesByHostelResponse_InfoIncludedPassSchema: GenMessage<GetAllPassesByHostelResponse_InfoIncludedPass> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_admin, 3, 0);
+  messageDesc(file_veripass_v1_admin, 2, 0);
 
 /**
  * @generated from message veripass.v1.GetPublicKeyResponse
@@ -178,7 +161,7 @@ export type GetPublicKeyResponse = Message<"veripass.v1.GetPublicKeyResponse"> &
  * Use `create(GetPublicKeyResponseSchema)` to create a new message.
  */
 export const GetPublicKeyResponseSchema: GenMessage<GetPublicKeyResponse> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_admin, 4);
+  messageDesc(file_veripass_v1_admin, 3);
 
 /**
  * @generated from message veripass.v1.GetOutCountByHostelRequest
@@ -210,7 +193,7 @@ export type GetOutCountByHostelRequest = Message<"veripass.v1.GetOutCountByHoste
  * Use `create(GetOutCountByHostelRequestSchema)` to create a new message.
  */
 export const GetOutCountByHostelRequestSchema: GenMessage<GetOutCountByHostelRequest> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_admin, 5);
+  messageDesc(file_veripass_v1_admin, 4);
 
 /**
  * @generated from message veripass.v1.GetOutCountByHostelResponse
@@ -227,7 +210,7 @@ export type GetOutCountByHostelResponse = Message<"veripass.v1.GetOutCountByHost
  * Use `create(GetOutCountByHostelResponseSchema)` to create a new message.
  */
 export const GetOutCountByHostelResponseSchema: GenMessage<GetOutCountByHostelResponse> = /*@__PURE__*/
-  messageDesc(file_veripass_v1_admin, 6);
+  messageDesc(file_veripass_v1_admin, 5);
 
 /**
  * @generated from service veripass.v1.AdminService
@@ -238,7 +221,7 @@ export const AdminService: GenService<{
    */
   getAdmin: {
     methodKind: "unary";
-    input: typeof GetAdminRequestSchema;
+    input: typeof EmptySchema;
     output: typeof AdminSchema;
   },
   /**

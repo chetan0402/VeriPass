@@ -16,6 +16,7 @@ import (
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
 	veripass "github.com/chetan0402/veripass/internal/services"
 	"github.com/google/uuid"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -35,7 +36,7 @@ func New(client *ent.Client, privateKey ed25519.PrivateKey) *PassService {
 
 func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[veripassv1.CreateManualPassRequest]) (*connect.Response[veripassv1.Pass], error) {
 	var (
-		adminEmail = r.Msg.AdminEmail
+		adminEmail = veripass.GetEmailFromCtx(ctx)
 		userId     = r.Msg.UserId
 		passType   = ProtoPassTypeToEnt(r.Msg.Type)
 	)
@@ -69,9 +70,9 @@ func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[v
 	}), nil
 }
 
-func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Request[veripassv1.GetLatestPassByUserRequest]) (*connect.Response[veripassv1.Pass], error) {
+func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Request[emptypb.Empty]) (*connect.Response[veripassv1.Pass], error) {
 	var (
-		userId = r.Msg.UserId
+		userId = veripass.GetUsernamefromCtx(ctx)
 	)
 
 	entPass, err := s.client.Pass.Query().Where(
@@ -123,7 +124,7 @@ func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1
 
 func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[veripassv1.ListPassesByUserRequest]) (*connect.Response[veripassv1.ListPassesByUserResponse], error) {
 	var (
-		userId    = r.Msg.UserId
+		userId    = veripass.GetUsernamefromCtx(ctx)
 		pageToken = r.Msg.PageToken
 		pageSize  = r.Msg.PageSize
 		passType  = r.Msg.Type

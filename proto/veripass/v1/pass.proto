@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package veripass.v1;
 
+import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 message Pass {
@@ -23,12 +24,11 @@ message Pass {
 service PassService {
   rpc CreateManualPass(CreateManualPassRequest) returns (Pass);
   rpc GetPass(GetPassRequest) returns (Pass);
-  rpc GetLatestPassByUser(GetLatestPassByUserRequest) returns (Pass);
+  rpc GetLatestPassByUser(google.protobuf.Empty) returns (Pass);
   rpc ListPassesByUser(ListPassesByUserRequest) returns (ListPassesByUserResponse);
 }
 
 message CreateManualPassRequest {
-  string admin_email = 1;
   string user_id = 2;
   Pass.PassType type = 3;
 }
@@ -37,12 +37,7 @@ message GetPassRequest {
   string id = 1;
 }
 
-message GetLatestPassByUserRequest {
-  string user_id = 1;
-}
-
 message ListPassesByUserRequest {
-  string user_id = 1;
   google.protobuf.Timestamp page_token = 2;
   int32 page_size = 3;
   optional Pass.PassType type = 4;

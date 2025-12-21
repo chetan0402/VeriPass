@@ -339,7 +339,7 @@ func (x *GetUserRequest) GetId() string {
 
 type GetPhotoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -375,8 +375,8 @@ func (*GetPhotoRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *GetPhotoRequest) GetId() string {
-	if x != nil {
-		return x.Id
+	if x != nil && x.Id != nil {
+		return *x.Id
 	}
 	return ""
 }
@@ -450,9 +450,10 @@ const file_veripass_v1_user_proto_rawDesc = "" +
 	"\fExitResponse\x12\x17\n" +
 	"\apass_id\x18\x01 \x01(\tR\x06passId\" \n" +
 	"\x0eGetUserRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"!\n" +
-	"\x0fGetPhotoRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"(\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"-\n" +
+	"\x0fGetPhotoRequest\x12\x13\n" +
+	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01B\x05\n" +
+	"\x03_id\"(\n" +
 	"\x10GetPhotoResponse\x12\x14\n" +
 	"\x05photo\x18\x01 \x01(\fR\x05photo2\x8a\x02\n" +
 	"\vUserService\x12:\n" +
@@ -509,6 +510,7 @@ func file_veripass_v1_user_proto_init() {
 	if File_veripass_v1_user_proto != nil {
 		return
 	}
+	file_veripass_v1_user_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

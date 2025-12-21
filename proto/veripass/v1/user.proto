@@ -44,7 +44,7 @@ message GetUserRequest {
 }
 
 message GetPhotoRequest {
-  string id = 1;
+  optional string id = 1;
 }
 
 message GetPhotoResponse {
