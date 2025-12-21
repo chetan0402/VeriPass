@@ -1,4 +1,4 @@
-import { Code, ConnectError, createRouterTransport } from '@connectrpc/connect';
+import { Code, ConnectError, createRouterTransport, type Interceptor } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
@@ -260,29 +260,34 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 });
 
+const mockInterceptor: Interceptor = (next) => async (req) => {
+	console.log(req.url);
+	if (!req.stream && MOCK) {
+		return await mockRouter.unary(
+			req.method,
+			req.signal,
+			undefined,
+			req.header,
+			req.message,
+			req.contextValues
+		);
+	}
+	return await next(req);
+};
+
+const authInterceptor: Interceptor = (next) => async (req) => {
+	try {
+		return await next(req);
+	} catch (error) {
+		if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
+			//TODO:add admin support
+			resetAuthToken('/');
+		}
+		throw error;
+	}
+};
+
 export const transport = createConnectTransport({
 	baseUrl: '/api',
-	interceptors: [
-		(next) => async (req) => {
-			try {
-				console.log(req.url);
-				if (!req.stream && MOCK) {
-					return await mockRouter.unary(
-						req.method,
-						req.signal,
-						undefined,
-						req.header,
-						req.message,
-						req.contextValues
-					);
-				}
-				return await next(req);
-			} catch (error) {
-				if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
-					resetAuthToken('/');
-				}
-				throw error;
-			}
-		}
-	]
+	interceptors: [mockInterceptor, authInterceptor]
 });

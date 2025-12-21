@@ -54,7 +54,6 @@
 		try {
 			pass = await passClient.createManualPass({
 				userId: userId,
-				adminEmail: admin.email,
 				type: selected
 			});
 			show_generating_box = false;
@@ -66,7 +65,7 @@
 					case Code.NotFound:
 						alert(`User with id ${userId} not found!`);
 						break;
-					case Code.Unauthenticated:
+					case Code.InvalidArgument:
 						alert(`Admin session expired! Please login again`);
 						invalidateAdminSession();
 						await goto('/admin', { replaceState: true });

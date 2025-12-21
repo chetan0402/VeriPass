@@ -9,7 +9,6 @@
 	import { PopupType } from '$lib';
 	import { resetAuthToken } from '$lib/auth_utils';
 	import { Code, ConnectError } from '@connectrpc/connect';
-	import { NoAdminSessionFound } from '$lib/errors';
 
 	let listVisible: boolean = $state<boolean>(false);
 	let status: string = $state<string>('Loading Admin Details...');
@@ -26,10 +25,7 @@
 		} catch (error: unknown) {
 			console.log(error);
 			status = `Error ${String(error)}`;
-			if (error instanceof NoAdminSessionFound) {
-				alert('No admin session found, Please login again');
-				logout();
-			} else if (error instanceof ConnectError && error.code == Code.NotFound) {
+			if (error instanceof ConnectError && error.code == Code.NotFound) {
 				alert('No admin session found, Please login again');
 				logout();
 			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {

@@ -9,7 +9,7 @@
 	const REDIRECTION_URI = import.meta.env.VITE_REDIRECTION_URI as string;
 	const OAUTH_SERVER = import.meta.env.VITE_OAUTH_SERVER as string;
 
-	const OAUTH = `${OAUTH_SERVER}/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URI}&response_type=code&scope=openid&state=admin`;
+	const OAUTH = `${OAUTH_SERVER}/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URI}&response_type=code&scope=openid%20profile%20email&state=admin`;
 
 	let admin = $state<Admin>();
 	onMount(async () => {
