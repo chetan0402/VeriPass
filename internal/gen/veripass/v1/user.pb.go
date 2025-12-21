@@ -295,7 +295,7 @@ func (x *ExitResponse) GetPassId() string {
 
 type GetUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -331,8 +331,8 @@ func (*GetUserRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *GetUserRequest) GetId() string {
-	if x != nil {
-		return x.Id
+	if x != nil && x.Id != nil {
+		return *x.Id
 	}
 	return ""
 }
@@ -448,9 +448,10 @@ const file_veripass_v1_user_proto_rawDesc = "" +
 	"\x0eEXIT_TYPE_HOME\x10\x03\x12\x13\n" +
 	"\x0fEXIT_TYPE_EVENT\x10\x04\"'\n" +
 	"\fExitResponse\x12\x17\n" +
-	"\apass_id\x18\x01 \x01(\tR\x06passId\" \n" +
-	"\x0eGetUserRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"-\n" +
+	"\apass_id\x18\x01 \x01(\tR\x06passId\",\n" +
+	"\x0eGetUserRequest\x12\x13\n" +
+	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01B\x05\n" +
+	"\x03_id\"-\n" +
 	"\x0fGetPhotoRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x88\x01\x01B\x05\n" +
 	"\x03_id\"(\n" +
@@ -510,6 +511,7 @@ func file_veripass_v1_user_proto_init() {
 	if File_veripass_v1_user_proto != nil {
 		return
 	}
+	file_veripass_v1_user_proto_msgTypes[4].OneofWrappers = []any{}
 	file_veripass_v1_user_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
