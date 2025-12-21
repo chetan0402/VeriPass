@@ -125,7 +125,7 @@ func TestMain(t *testing.T) {
 	attest(t, err)
 
 	user, err := userClient.GetUser(ctx, connect.NewRequest(&veripassv1.GetUserRequest{
-		Id: mockUser.Id,
+		Id: nil,
 	}))
 	attest(t, err)
 	if !proto.Equal(user.Msg, &mockUser) {
