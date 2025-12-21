@@ -62,7 +62,7 @@ func Run(config *Config) {
 		ClientSecret: config.ClientSecret,
 		RedirectURL:  config.RedirectionURI,
 		Endpoint:     provider.Endpoint(),
-		Scopes:       []string{oidc.ScopeOpenID},
+		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 	}
 
 	verifier := provider.Verifier(&oidc.Config{ClientID: oauth2config.ClientID})

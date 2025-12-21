@@ -74,7 +74,7 @@ func TestMain(t *testing.T) {
 	dbClient := ent.NewClient(ent.Driver(entsql.OpenDB(dialect.Postgres, db)))
 
 	mockUser := veripassv1.User{
-		Id:     "test_id",
+		Id:     "2411012345",
 		Name:   "test_name",
 		Room:   "test_room",
 		Hostel: "test_hostel",
@@ -92,7 +92,7 @@ func TestMain(t *testing.T) {
 	}
 
 	mockAdmin := veripassv1.Admin{
-		Email:      "test_email",
+		Email:      "2411012345@stu.manit.ac.in",
 		Name:       "test_name",
 		Hostel:     "test_hostel",
 		CanAddPass: true,
@@ -171,9 +171,7 @@ func TestMain(t *testing.T) {
 
 	failIfNotEqualPass(t, pass2.Msg, &mockPass2, publicKey.Msg.PublicKey)
 
-	latestPass, err := passClient.GetLatestPassByUser(ctx, connect.NewRequest(&veripassv1.GetLatestPassByUserRequest{
-		UserId: mockUser.Id,
-	}))
+	latestPass, err := passClient.GetLatestPassByUser(ctx, connect.NewRequest(&emptypb.Empty{}))
 	attest(t, err)
 
 	failIfNotEqualPass(t, latestPass.Msg, &mockPass2, publicKey.Msg.PublicKey)
@@ -181,7 +179,6 @@ func TestMain(t *testing.T) {
 	pageToken := timestamppb.Now()
 
 	passList1, err := passClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
-		UserId:    mockUser.Id,
 		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED.Enum(),
 		PageToken: pageToken,
 		PageSize:  1,
@@ -194,7 +191,6 @@ func TestMain(t *testing.T) {
 	pageToken = passList1.Msg.NextPageToken
 
 	passList2, err := passClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
-		UserId:    mockUser.Id,
 		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED.Enum(),
 		PageToken: pageToken,
 		PageSize:  1,
@@ -205,9 +201,7 @@ func TestMain(t *testing.T) {
 	}
 	failIfNotEqualPass(t, passList2.Msg.Passes[0], pass.Msg, publicKey.Msg.PublicKey)
 
-	admin, err := adminClient.GetAdmin(ctx, connect.NewRequest(&veripassv1.GetAdminRequest{
-		Email: mockAdmin.Email,
-	}))
+	admin, err := adminClient.GetAdmin(ctx, connect.NewRequest(&emptypb.Empty{}))
 	attest(t, err)
 
 	if !proto.Equal(admin.Msg, &mockAdmin) {
@@ -329,17 +323,23 @@ func getToken(t *testing.T) *http.Cookie {
 		Jar: jar,
 	}
 
-	resp, err := client.Get("http://localhost:1433/dex/auth?client_id=veripass&redirect_uri=http://localhost:8000/callback&response_type=code&scope=openid")
+	resp, err := client.Get("http://localhost:1433/dex/auth?client_id=veripass&redirect_uri=http://localhost:8000/callback&response_type=code&scope=openid%20profile%20email")
 	attest(t, err)
+	if resp.StatusCode >= 400 {
+		t.Fatal(resp)
+	}
 
 	dexLoginFormURL := resp.Request.URL.String()
 
 	formData := url.Values{}
-	formData.Set("login", "student@example.com")
+	formData.Set("login", "2411012345@stu.manit.ac.in")
 	formData.Set("password", "veripass")
 
 	resp, err = client.PostForm(dexLoginFormURL, formData)
 	attest(t, err)
+	if resp.StatusCode >= 400 {
+		t.Fatal(resp)
+	}
 
 	formData = url.Values{}
 	formData.Set("req", resp.Request.URL.Query().Get("req"))

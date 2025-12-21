@@ -9,6 +9,7 @@ package veripassv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -163,7 +164,6 @@ func (x *Pass) GetQrCode() string {
 
 type CreateManualPassRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AdminEmail    string                 `protobuf:"bytes,1,opt,name=admin_email,json=adminEmail,proto3" json:"admin_email,omitempty"`
 	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Type          Pass_PassType          `protobuf:"varint,3,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -198,13 +198,6 @@ func (x *CreateManualPassRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CreateManualPassRequest.ProtoReflect.Descriptor instead.
 func (*CreateManualPassRequest) Descriptor() ([]byte, []int) {
 	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *CreateManualPassRequest) GetAdminEmail() string {
-	if x != nil {
-		return x.AdminEmail
-	}
-	return ""
 }
 
 func (x *CreateManualPassRequest) GetUserId() string {
@@ -265,53 +258,8 @@ func (x *GetPassRequest) GetId() string {
 	return ""
 }
 
-type GetLatestPassByUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetLatestPassByUserRequest) Reset() {
-	*x = GetLatestPassByUserRequest{}
-	mi := &file_veripass_v1_pass_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetLatestPassByUserRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetLatestPassByUserRequest) ProtoMessage() {}
-
-func (x *GetLatestPassByUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_veripass_v1_pass_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetLatestPassByUserRequest.ProtoReflect.Descriptor instead.
-func (*GetLatestPassByUserRequest) Descriptor() ([]byte, []int) {
-	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *GetLatestPassByUserRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
 type ListPassesByUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	PageToken     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	Type          *Pass_PassType         `protobuf:"varint,4,opt,name=type,proto3,enum=veripass.v1.Pass_PassType,oneof" json:"type,omitempty"`
@@ -323,7 +271,7 @@ type ListPassesByUserRequest struct {
 
 func (x *ListPassesByUserRequest) Reset() {
 	*x = ListPassesByUserRequest{}
-	mi := &file_veripass_v1_pass_proto_msgTypes[4]
+	mi := &file_veripass_v1_pass_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -335,7 +283,7 @@ func (x *ListPassesByUserRequest) String() string {
 func (*ListPassesByUserRequest) ProtoMessage() {}
 
 func (x *ListPassesByUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_veripass_v1_pass_proto_msgTypes[4]
+	mi := &file_veripass_v1_pass_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,14 +296,7 @@ func (x *ListPassesByUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPassesByUserRequest.ProtoReflect.Descriptor instead.
 func (*ListPassesByUserRequest) Descriptor() ([]byte, []int) {
-	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *ListPassesByUserRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
+	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ListPassesByUserRequest) GetPageToken() *timestamppb.Timestamp {
@@ -403,7 +344,7 @@ type ListPassesByUserResponse struct {
 
 func (x *ListPassesByUserResponse) Reset() {
 	*x = ListPassesByUserResponse{}
-	mi := &file_veripass_v1_pass_proto_msgTypes[5]
+	mi := &file_veripass_v1_pass_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -415,7 +356,7 @@ func (x *ListPassesByUserResponse) String() string {
 func (*ListPassesByUserResponse) ProtoMessage() {}
 
 func (x *ListPassesByUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_veripass_v1_pass_proto_msgTypes[5]
+	mi := &file_veripass_v1_pass_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -428,7 +369,7 @@ func (x *ListPassesByUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPassesByUserResponse.ProtoReflect.Descriptor instead.
 func (*ListPassesByUserResponse) Descriptor() ([]byte, []int) {
-	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{5}
+	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ListPassesByUserResponse) GetPasses() []*Pass {
@@ -449,7 +390,7 @@ var File_veripass_v1_pass_proto protoreflect.FileDescriptor
 
 const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\n" +
-	"\x16veripass/v1/pass.proto\x12\vveripass.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf7\x02\n" +
+	"\x16veripass/v1/pass.proto\x12\vveripass.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf7\x02\n" +
 	"\x04Pass\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12.\n" +
@@ -464,18 +405,13 @@ const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\x10PASS_TYPE_MARKET\x10\x02\x12\x12\n" +
 	"\x0ePASS_TYPE_HOME\x10\x03\x12\x13\n" +
 	"\x0fPASS_TYPE_EVENT\x10\x04B\v\n" +
-	"\t_end_time\"\x83\x01\n" +
-	"\x17CreateManualPassRequest\x12\x1f\n" +
-	"\vadmin_email\x18\x01 \x01(\tR\n" +
-	"adminEmail\x12\x17\n" +
+	"\t_end_time\"b\n" +
+	"\x17CreateManualPassRequest\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12.\n" +
 	"\x04type\x18\x03 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\" \n" +
 	"\x0eGetPassRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"5\n" +
-	"\x1aGetLatestPassByUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"\xe0\x02\n" +
-	"\x17ListPassesByUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x129\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xc7\x02\n" +
+	"\x17ListPassesByUserRequest\x129\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tpageToken\x12\x1b\n" +
 	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x123\n" +
@@ -488,11 +424,11 @@ const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\t_end_time\"\x89\x01\n" +
 	"\x18ListPassesByUserResponse\x12)\n" +
 	"\x06passes\x18\x01 \x03(\v2\x11.veripass.v1.PassR\x06passes\x12B\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\rnextPageToken2\xc9\x02\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\rnextPageToken2\xb8\x02\n" +
 	"\vPassService\x12K\n" +
 	"\x10CreateManualPass\x12$.veripass.v1.CreateManualPassRequest\x1a\x11.veripass.v1.Pass\x129\n" +
-	"\aGetPass\x12\x1b.veripass.v1.GetPassRequest\x1a\x11.veripass.v1.Pass\x12Q\n" +
-	"\x13GetLatestPassByUser\x12'.veripass.v1.GetLatestPassByUserRequest\x1a\x11.veripass.v1.Pass\x12_\n" +
+	"\aGetPass\x12\x1b.veripass.v1.GetPassRequest\x1a\x11.veripass.v1.Pass\x12@\n" +
+	"\x13GetLatestPassByUser\x12\x16.google.protobuf.Empty\x1a\x11.veripass.v1.Pass\x12_\n" +
 	"\x10ListPassesByUser\x12$.veripass.v1.ListPassesByUserRequest\x1a%.veripass.v1.ListPassesByUserResponseB\xad\x01\n" +
 	"\x0fcom.veripass.v1B\tPassProtoP\x01ZBgithub.com/chetan0402/veripass/internal/gen/veripass/v1;veripassv1\xa2\x02\x03VXX\xaa\x02\vVeripass.V1\xca\x02\vVeripass\\V1\xe2\x02\x17Veripass\\V1\\GPBMetadata\xea\x02\fVeripass::V1b\x06proto3"
 
@@ -509,36 +445,36 @@ func file_veripass_v1_pass_proto_rawDescGZIP() []byte {
 }
 
 var file_veripass_v1_pass_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_veripass_v1_pass_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_veripass_v1_pass_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_veripass_v1_pass_proto_goTypes = []any{
-	(Pass_PassType)(0),                 // 0: veripass.v1.Pass.PassType
-	(*Pass)(nil),                       // 1: veripass.v1.Pass
-	(*CreateManualPassRequest)(nil),    // 2: veripass.v1.CreateManualPassRequest
-	(*GetPassRequest)(nil),             // 3: veripass.v1.GetPassRequest
-	(*GetLatestPassByUserRequest)(nil), // 4: veripass.v1.GetLatestPassByUserRequest
-	(*ListPassesByUserRequest)(nil),    // 5: veripass.v1.ListPassesByUserRequest
-	(*ListPassesByUserResponse)(nil),   // 6: veripass.v1.ListPassesByUserResponse
-	(*timestamppb.Timestamp)(nil),      // 7: google.protobuf.Timestamp
+	(Pass_PassType)(0),               // 0: veripass.v1.Pass.PassType
+	(*Pass)(nil),                     // 1: veripass.v1.Pass
+	(*CreateManualPassRequest)(nil),  // 2: veripass.v1.CreateManualPassRequest
+	(*GetPassRequest)(nil),           // 3: veripass.v1.GetPassRequest
+	(*ListPassesByUserRequest)(nil),  // 4: veripass.v1.ListPassesByUserRequest
+	(*ListPassesByUserResponse)(nil), // 5: veripass.v1.ListPassesByUserResponse
+	(*timestamppb.Timestamp)(nil),    // 6: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),            // 7: google.protobuf.Empty
 }
 var file_veripass_v1_pass_proto_depIdxs = []int32{
 	0,  // 0: veripass.v1.Pass.type:type_name -> veripass.v1.Pass.PassType
-	7,  // 1: veripass.v1.Pass.start_time:type_name -> google.protobuf.Timestamp
-	7,  // 2: veripass.v1.Pass.end_time:type_name -> google.protobuf.Timestamp
+	6,  // 1: veripass.v1.Pass.start_time:type_name -> google.protobuf.Timestamp
+	6,  // 2: veripass.v1.Pass.end_time:type_name -> google.protobuf.Timestamp
 	0,  // 3: veripass.v1.CreateManualPassRequest.type:type_name -> veripass.v1.Pass.PassType
-	7,  // 4: veripass.v1.ListPassesByUserRequest.page_token:type_name -> google.protobuf.Timestamp
+	6,  // 4: veripass.v1.ListPassesByUserRequest.page_token:type_name -> google.protobuf.Timestamp
 	0,  // 5: veripass.v1.ListPassesByUserRequest.type:type_name -> veripass.v1.Pass.PassType
-	7,  // 6: veripass.v1.ListPassesByUserRequest.start_time:type_name -> google.protobuf.Timestamp
-	7,  // 7: veripass.v1.ListPassesByUserRequest.end_time:type_name -> google.protobuf.Timestamp
+	6,  // 6: veripass.v1.ListPassesByUserRequest.start_time:type_name -> google.protobuf.Timestamp
+	6,  // 7: veripass.v1.ListPassesByUserRequest.end_time:type_name -> google.protobuf.Timestamp
 	1,  // 8: veripass.v1.ListPassesByUserResponse.passes:type_name -> veripass.v1.Pass
-	7,  // 9: veripass.v1.ListPassesByUserResponse.next_page_token:type_name -> google.protobuf.Timestamp
+	6,  // 9: veripass.v1.ListPassesByUserResponse.next_page_token:type_name -> google.protobuf.Timestamp
 	2,  // 10: veripass.v1.PassService.CreateManualPass:input_type -> veripass.v1.CreateManualPassRequest
 	3,  // 11: veripass.v1.PassService.GetPass:input_type -> veripass.v1.GetPassRequest
-	4,  // 12: veripass.v1.PassService.GetLatestPassByUser:input_type -> veripass.v1.GetLatestPassByUserRequest
-	5,  // 13: veripass.v1.PassService.ListPassesByUser:input_type -> veripass.v1.ListPassesByUserRequest
+	7,  // 12: veripass.v1.PassService.GetLatestPassByUser:input_type -> google.protobuf.Empty
+	4,  // 13: veripass.v1.PassService.ListPassesByUser:input_type -> veripass.v1.ListPassesByUserRequest
 	1,  // 14: veripass.v1.PassService.CreateManualPass:output_type -> veripass.v1.Pass
 	1,  // 15: veripass.v1.PassService.GetPass:output_type -> veripass.v1.Pass
 	1,  // 16: veripass.v1.PassService.GetLatestPassByUser:output_type -> veripass.v1.Pass
-	6,  // 17: veripass.v1.PassService.ListPassesByUser:output_type -> veripass.v1.ListPassesByUserResponse
+	5,  // 17: veripass.v1.PassService.ListPassesByUser:output_type -> veripass.v1.ListPassesByUserResponse
 	14, // [14:18] is the sub-list for method output_type
 	10, // [10:14] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
@@ -552,14 +488,14 @@ func file_veripass_v1_pass_proto_init() {
 		return
 	}
 	file_veripass_v1_pass_proto_msgTypes[0].OneofWrappers = []any{}
-	file_veripass_v1_pass_proto_msgTypes[4].OneofWrappers = []any{}
+	file_veripass_v1_pass_proto_msgTypes[3].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_veripass_v1_pass_proto_rawDesc), len(file_veripass_v1_pass_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   6,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
