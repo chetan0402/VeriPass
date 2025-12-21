@@ -9,6 +9,7 @@ import (
 	context "context"
 	errors "errors"
 	v1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
 )
@@ -50,7 +51,7 @@ const (
 type PassServiceClient interface {
 	CreateManualPass(context.Context, *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error)
 	GetPass(context.Context, *connect.Request[v1.GetPassRequest]) (*connect.Response[v1.Pass], error)
-	GetLatestPassByUser(context.Context, *connect.Request[v1.GetLatestPassByUserRequest]) (*connect.Response[v1.Pass], error)
+	GetLatestPassByUser(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Pass], error)
 	ListPassesByUser(context.Context, *connect.Request[v1.ListPassesByUserRequest]) (*connect.Response[v1.ListPassesByUserResponse], error)
 }
 
@@ -77,7 +78,7 @@ func NewPassServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(passServiceMethods.ByName("GetPass")),
 			connect.WithClientOptions(opts...),
 		),
-		getLatestPassByUser: connect.NewClient[v1.GetLatestPassByUserRequest, v1.Pass](
+		getLatestPassByUser: connect.NewClient[emptypb.Empty, v1.Pass](
 			httpClient,
 			baseURL+PassServiceGetLatestPassByUserProcedure,
 			connect.WithSchema(passServiceMethods.ByName("GetLatestPassByUser")),
@@ -96,7 +97,7 @@ func NewPassServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 type passServiceClient struct {
 	createManualPass    *connect.Client[v1.CreateManualPassRequest, v1.Pass]
 	getPass             *connect.Client[v1.GetPassRequest, v1.Pass]
-	getLatestPassByUser *connect.Client[v1.GetLatestPassByUserRequest, v1.Pass]
+	getLatestPassByUser *connect.Client[emptypb.Empty, v1.Pass]
 	listPassesByUser    *connect.Client[v1.ListPassesByUserRequest, v1.ListPassesByUserResponse]
 }
 
@@ -111,7 +112,7 @@ func (c *passServiceClient) GetPass(ctx context.Context, req *connect.Request[v1
 }
 
 // GetLatestPassByUser calls veripass.v1.PassService.GetLatestPassByUser.
-func (c *passServiceClient) GetLatestPassByUser(ctx context.Context, req *connect.Request[v1.GetLatestPassByUserRequest]) (*connect.Response[v1.Pass], error) {
+func (c *passServiceClient) GetLatestPassByUser(ctx context.Context, req *connect.Request[emptypb.Empty]) (*connect.Response[v1.Pass], error) {
 	return c.getLatestPassByUser.CallUnary(ctx, req)
 }
 
@@ -124,7 +125,7 @@ func (c *passServiceClient) ListPassesByUser(ctx context.Context, req *connect.R
 type PassServiceHandler interface {
 	CreateManualPass(context.Context, *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error)
 	GetPass(context.Context, *connect.Request[v1.GetPassRequest]) (*connect.Response[v1.Pass], error)
-	GetLatestPassByUser(context.Context, *connect.Request[v1.GetLatestPassByUserRequest]) (*connect.Response[v1.Pass], error)
+	GetLatestPassByUser(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Pass], error)
 	ListPassesByUser(context.Context, *connect.Request[v1.ListPassesByUserRequest]) (*connect.Response[v1.ListPassesByUserResponse], error)
 }
 
@@ -186,7 +187,7 @@ func (UnimplementedPassServiceHandler) GetPass(context.Context, *connect.Request
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.PassService.GetPass is not implemented"))
 }
 
-func (UnimplementedPassServiceHandler) GetLatestPassByUser(context.Context, *connect.Request[v1.GetLatestPassByUserRequest]) (*connect.Response[v1.Pass], error) {
+func (UnimplementedPassServiceHandler) GetLatestPassByUser(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Pass], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("veripass.v1.PassService.GetLatestPassByUser is not implemented"))
 }
 

@@ -7,6 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	veripass "github.com/chetan0402/veripass/internal/services"
 	"github.com/coreos/go-oidc/v3/oidc"
 )
 
@@ -37,9 +38,22 @@ func NewAuthMiddleware(verifier *oidc.IDTokenVerifier) connect.UnaryInterceptorF
 
 				for _, c := range cookies {
 					if c.Name == "token" {
-						if _, err := verifier.Verify(ctx, c.Value); err != nil {
+						token, err := verifier.Verify(ctx, c.Value)
+						if err != nil {
 							return nil, connect.NewError(connect.CodeUnauthenticated, err)
 						}
+
+						var claims struct {
+							Email string `json:"email,omitempty"`
+							Name  string `json:"name,omitempty"`
+						}
+
+						if err := token.Claims(&claims); err != nil {
+							return nil, connect.NewError(connect.CodeInternal, errors.New("token doesn't contain required claims"))
+						}
+
+						ctx = veripass.GetCtxWithEmail(ctx, claims.Email)
+						ctx = veripass.GetCtxWithUsername(ctx, claims.Name)
 
 						// TODO: check student or admin
 						return next(ctx, req)

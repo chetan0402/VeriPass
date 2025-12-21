@@ -128,9 +128,9 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		};
 	});
 
-	rpc(AdminService.method.getAdmin, (req) => {
+	rpc(AdminService.method.getAdmin, () => {
 		return {
-			email: req.email,
+			email: 'Mock Email',
 			name: 'Mock Admin',
 			hostel: 'Mock Hostel',
 			canAddPass: true,
@@ -138,9 +138,9 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 		} satisfies Admin;
 	});
 
-	rpc(PassService.method.getLatestPassByUser, (req) => {
+	rpc(PassService.method.getLatestPassByUser, () => {
 		const sortedPasses = Object.values(mockPasses)
-			.filter((p) => p.userId === req.userId)
+			.filter((p) => p.userId === '12345')
 			.sort((a, b) => timestampToMs(b.startTime) - timestampToMs(a.startTime));
 		if (!sortedPasses[0]) {
 			throw new ConnectError('Pass not found', Code.NotFound);
@@ -210,7 +210,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			generateMockPasesForPage();
 		}
 		const sortedPasses = Object.values(mockPasses)
-			.filter((p) => p.userId === req.userId)
+			.filter((p) => p.userId === '12345')
 			.sort((a, b) => timestampToMs(b.startTime) - timestampToMs(a.startTime));
 		const paginated = sortedPasses.filter((p) => timestampToMs(p.startTime) < pageTokenMs);
 		const passes = paginated.slice(0, pageSize);
