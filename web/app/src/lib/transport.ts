@@ -118,7 +118,7 @@ function generateMockPasesForHostel(
 const mockRouter = createRouterTransport(({ rpc }) => {
 	rpc(UserService.method.getUser, () => {
 		return {
-			id: "12345",
+			id: '12345',
 			name: 'Mock User',
 			hostel: 'Mock Hostel',
 			room: 'Mock Room',
@@ -147,9 +147,9 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(UserService.method.exit, (req) => {
-		console.log('exit', "12345");
+		console.log('exit', '12345');
 
-		const userId = String("12345");
+		const userId = String('12345');
 		const idIdentifier = userId + timestampToMs(timestampNow()).toString();
 		const id = 'pass' + idIdentifier;
 
@@ -277,9 +277,9 @@ const authInterceptor: Interceptor = (next) => async (req) => {
 		return await next(req);
 	} catch (error) {
 		if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
-			let redirectUrl = "/";
-			if(req.url.includes("veripass.v1.AdminService")){
-				redirectUrl = "/admin";
+			let redirectUrl = '/';
+			if (req.url.includes('veripass.v1.AdminService')) {
+				redirectUrl = '/admin';
 			}
 			resetAuthToken(redirectUrl);
 		}
