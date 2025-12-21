@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { type Timestamp, timestampNow } from '@bufbuild/protobuf/wkt';
-	const { user } = $props<{ user: User }>();
 	import PassListItem from '$lib/components/PassListItem.svelte';
 	import { onMount } from 'svelte';
 	import { transport } from '$lib';
 	import { createClient } from '@connectrpc/connect';
 	import { type Pass, PassService } from '$lib/gen/veripass/v1/pass_pb';
-	import type { User } from '$lib/gen/veripass/v1/user_pb';
 	import { timestampToMs } from '$lib/time_utils';
 	import { goto } from '$app/navigation';
 
@@ -20,7 +18,6 @@
 				loadMorePassObserver.unobserve(entries[0].target);
 				loading = true;
 				fetchHistory().catch(console.error);
-				loading = false;
 				loadMorePassObserver.observe(entries[0].target);
 			}
 		},
@@ -34,7 +31,6 @@
 	async function fetchHistory() {
 		try {
 			let response = await client.listPassesByUser({
-				userId: user.id,
 				pageSize: 10,
 				pageToken: nextPageToken
 			});
@@ -47,6 +43,7 @@
 			console.error('Error fetching user data:', error);
 			endOfListReached('Could not load more passes');
 		}
+		loading = false;
 	}
 
 	onMount(() => {

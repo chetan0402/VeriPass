@@ -25,8 +25,8 @@
 			</p>
 		</div>
 		<div>
-			<p class="font-semibold">Q. I can’t find my account in the Google sign-in list.</p>
-			<p>A. Make sure your student Gmail account is logged in on the browser you are using.</p>
+			<p class="font-semibold">Q. I can’t find my account credentials in the mail inbox.</p>
+			<p>A. Make sure you are logged in with the email id register at the time of admission.</p>
 		</div>
 	</div>
 	<p class="text-secondary-700 mt-2 text-sm">Issue not listed here?</p>

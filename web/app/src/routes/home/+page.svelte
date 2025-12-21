@@ -2,13 +2,13 @@
 	import { onMount } from 'svelte';
 	import { type User } from '$lib/gen/veripass/v1/user_pb';
 	import { transport } from '$lib';
-	import { Code, createClient } from '@connectrpc/connect';
+	import { Code, ConnectError, createClient } from '@connectrpc/connect';
 	import Dashboard from './fragments/dashboard.svelte';
 	import History from './fragments/history.svelte';
-	import { NoUserSessionFound } from '$lib/errors';
 	import { goto } from '$app/navigation';
 	import { getUserFromState } from '$lib/state/user_state';
 	import { PassService } from '$lib/gen/veripass/v1/pass_pb';
+	import { resetAuthToken } from '$lib/auth_utils';
 
 	let dashboardVisible: boolean = $state<boolean>(true);
 
@@ -20,7 +20,7 @@
 		}
 		const passClient = createClient(PassService, transport);
 		try {
-			let pass = await passClient.getLatestPassByUser({ userId: user.id });
+			let pass = await passClient.getLatestPassByUser({});
 			if (!pass.endTime) {
 				await goto('../pass', { replaceState: true });
 				console.log('open pass found');
@@ -28,7 +28,7 @@
 				console.log('no open pass found');
 			}
 		} catch (error) {
-			if (error == Code.NotFound) {
+			if (error instanceof ConnectError && error.code == Code.NotFound) {
 				console.log('no open pass found');
 			}
 		}
@@ -38,11 +38,16 @@
 		try {
 			user = await getUserFromState();
 		} catch (error) {
-			if (error instanceof NoUserSessionFound) {
+			if (error instanceof ConnectError && error.code == Code.NotFound) {
 				alert('No session found! Please Login Again');
-				await goto('../login', { replaceState: true });
+				resetAuthToken('/');
+			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
+				alert('No session found! Please Login Again');
+				await goto('/login', { replaceState: true });
 			} else {
-				await goto('../', { replaceState: true });
+				console.log(error);
+				alert(error);
+				await goto('/', { replaceState: true });
 			}
 		}
 		if (user) {
@@ -69,7 +74,7 @@
 			</div>
 		{/if}
 	{:else if user}
-		<History {user} />
+		<History />
 	{:else}
 		<div class="text-primary-500 relative top-10 w-full pt-50 text-center text-xl font-bold">
 			Loading user history...

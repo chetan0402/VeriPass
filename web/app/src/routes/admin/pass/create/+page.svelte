@@ -12,6 +12,7 @@
 	import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
 	import { CloseOutline } from 'flowbite-svelte-icons';
+	import { invalidateAdminSession } from '$lib/state/admin_state.js';
 
 	let show_generating_box = $state(false);
 	let admin = $state<Admin>();
@@ -32,10 +33,10 @@
 			admin = await getAdminFromState();
 			if (!admin.canAddPass) {
 				alert('You are not allowed to add a new pass! Contact CCF');
-				await goto('../../admin');
+				await goto('/admin');
 			}
 		} catch {
-			await goto('../../admin', { replaceState: true });
+			await goto('/admin', { replaceState: true });
 			alert('error no admin session found, Please login again');
 		}
 	});
@@ -47,13 +48,12 @@
 		}
 		if (!admin) {
 			alert('error no admin session found, Please login again');
-			await goto('../../admin');
+			await goto('/admin');
 			return;
 		}
 		try {
 			pass = await passClient.createManualPass({
 				userId: userId,
-				adminEmail: admin.email,
 				type: selected
 			});
 			show_generating_box = false;
@@ -65,11 +65,13 @@
 					case Code.NotFound:
 						alert(`User with id ${userId} not found!`);
 						break;
+					case Code.InvalidArgument:
+						alert(`Admin session expired! Please login again`);
+						invalidateAdminSession();
+						await goto('/admin', { replaceState: true });
+						break;
 					case Code.PermissionDenied:
 						alert(`Permission denied: You are not allowed to create manual passes`);
-						break;
-					default:
-						alert(`Error: ${e.message}`);
 						break;
 				}
 			} else {
@@ -88,7 +90,7 @@
 	}
 
 	async function gotoDashboard() {
-		await goto('../../admin/home', { replaceState: true });
+		await goto('/admin/home', { replaceState: true });
 	}
 </script>
 
@@ -148,10 +150,6 @@
 					Pass Details
 				</h3>
 				<div class="space-y-3">
-					<div class="flex flex-wrap justify-between gap-2">
-						<span class="text-sm font-medium text-gray-500">Pass ID:</span>
-						<span class="font-mono text-sm break-all text-gray-900">{pass.id}</span>
-					</div>
 					<div class="flex justify-between gap-2">
 						<span class="text-sm font-medium text-gray-500">User ID:</span>
 						<span class="text-sm font-semibold text-gray-900">{pass.userId}</span>

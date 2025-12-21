@@ -1,4 +1,4 @@
-import { Code, ConnectError, createRouterTransport } from '@connectrpc/connect';
+import { Code, ConnectError, createRouterTransport, type Interceptor } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { ExitRequest_ExitType, UserService } from './gen/veripass/v1/user_pb';
 import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
@@ -12,6 +12,7 @@ import {
 } from '$lib/gen/veripass/v1/admin_pb';
 import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha2.js';
+import { resetAuthToken } from '$lib/auth_utils';
 
 ed.hashes.sha512 = sha512;
 
@@ -115,12 +116,9 @@ function generateMockPasesForHostel(
 }
 
 const mockRouter = createRouterTransport(({ rpc }) => {
-	rpc(UserService.method.getUser, (req) => {
-		if (req.id !== '12345') {
-			throw new ConnectError('user not found', Code.NotFound);
-		}
+	rpc(UserService.method.getUser, () => {
 		return {
-			id: req.id,
+			id: '12345',
 			name: 'Mock User',
 			hostel: 'Mock Hostel',
 			room: 'Mock Room',
@@ -149,9 +147,9 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(UserService.method.exit, (req) => {
-		console.log('exit', req.id);
+		console.log('exit', '12345');
 
-		const userId = String(req.id);
+		const userId = String('12345');
 		const idIdentifier = userId + timestampToMs(timestampNow()).toString();
 		const id = 'pass' + idIdentifier;
 
@@ -168,6 +166,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			passId: id
 		};
 	});
+
 	rpc(PassService.method.createManualPass, (req) => {
 		if (req.userId !== '12345') {
 			throw new ConnectError('user not found', Code.NotFound);
@@ -247,6 +246,7 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 			publicKey: publicKey
 		};
 	});
+
 	rpc(AdminService.method.getOutCountByHostel, (req) => {
 		const start = req.startTime?.seconds;
 		const end = req.endTime?.seconds;
@@ -257,21 +257,37 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 });
 
+const mockInterceptor: Interceptor = (next) => async (req) => {
+	console.log(req.url);
+	if (!req.stream && MOCK) {
+		return await mockRouter.unary(
+			req.method,
+			req.signal,
+			undefined,
+			req.header,
+			req.message,
+			req.contextValues
+		);
+	}
+	return await next(req);
+};
+
+const authInterceptor: Interceptor = (next) => async (req) => {
+	try {
+		return await next(req);
+	} catch (error) {
+		if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
+			let redirectUrl = '/';
+			if (req.url.includes('veripass.v1.AdminService')) {
+				redirectUrl = '/admin';
+			}
+			resetAuthToken(redirectUrl);
+		}
+		throw error;
+	}
+};
+
 export const transport = createConnectTransport({
 	baseUrl: '/api',
-	interceptors: [
-		(next) => async (req) => {
-			if (!req.stream && MOCK) {
-				return await mockRouter.unary(
-					req.method,
-					req.signal,
-					undefined,
-					req.header,
-					req.message,
-					req.contextValues
-				);
-			}
-			return await next(req);
-		}
-	]
+	interceptors: [mockInterceptor, authInterceptor]
 });

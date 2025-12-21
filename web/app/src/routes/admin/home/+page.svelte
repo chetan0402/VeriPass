@@ -7,6 +7,8 @@
 	import { goto, pushState, replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import { PopupType } from '$lib';
+	import { resetAuthToken } from '$lib/auth_utils';
+	import { Code, ConnectError } from '@connectrpc/connect';
 
 	let listVisible: boolean = $state<boolean>(false);
 	let status: string = $state<string>('Loading Admin Details...');
@@ -23,15 +25,21 @@
 		} catch (error: unknown) {
 			console.log(error);
 			status = `Error ${String(error)}`;
-			alert('error no admin session found, Please login again');
-			await logout();
+			if (error instanceof ConnectError && error.code == Code.NotFound) {
+				alert('No admin session found, Please login again');
+				logout();
+			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
+				await goto('/admin');
+			} else {
+				await goto('/admin');
+			}
 		}
 		pushState('', { popupVisible: PopupType.NONE });
 	});
 
-	async function logout() {
+	function logout() {
 		invalidateAdminSession();
-		await goto('../admin', { replaceState: true });
+		resetAuthToken('/admin');
 	}
 
 	function closeMenu() {
@@ -40,14 +48,14 @@
 
 	async function openCreatePass() {
 		if (admin?.canAddPass) {
-			await goto('../admin/pass/create');
+			await goto('/admin/pass/create');
 		} else {
 			alert('You are not allowed to add a new pass! Contact CCF');
 		}
 	}
 
 	async function openScanPass() {
-		await goto('../admin/pass/scan');
+		await goto('/admin/pass/scan');
 	}
 </script>
 

@@ -2,9 +2,10 @@
 	import { onMount } from 'svelte';
 	import { Progressbar } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
-	import { getUserFromState, invalidateUserSession } from '$lib/state/user_state';
 	import type { User } from '$lib/gen/veripass/v1/user_pb';
-	import { NoUserSessionFound } from '$lib/errors';
+	import { Code, ConnectError } from '@connectrpc/connect';
+	import { resetAuthToken } from '$lib/auth_utils';
+	import { getUserFromState } from '$lib/state/user_state';
 
 	let status_message: string = $state<string>('Getting things ready...');
 
@@ -43,11 +44,11 @@
 			maxProgress = 100;
 			openNextScreen(user);
 		} catch (error) {
-			if (error instanceof NoUserSessionFound) {
-				openLoginScreen();
-			} else {
-				invalidateUserSession();
-				status_message = 'Please Login again';
+			if (error instanceof ConnectError && error.code == Code.NotFound) {
+				alert('Invalid session found! Please Login Again');
+				resetAuthToken('/');
+			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
+				maxProgress = 100;
 				openLoginScreen();
 			}
 		}

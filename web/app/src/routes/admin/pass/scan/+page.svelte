@@ -105,26 +105,25 @@
 	}
 
 	async function gotoDashboard() {
-		await goto('../../admin/home', { replaceState: true });
+		await goto('/admin/home', { replaceState: true });
 	}
+	const qrOptions = {
+		onPermissionError: async () => {
+			await _onPermissionError();
+		},
+		onResulted: async (result: string) => {
+			await _onResulted(result);
+		},
+		onUpdateStatus: (update: string) => {
+			status = update;
+		}
+	};
 </script>
 
 <div class="light-grad-universal flex h-dvh flex-col items-center justify-center">
 	<CloseOutline onclick={gotoDashboard} class="accent-primary-700 absolute top-5 right-5 h-8 w-8" />
 	{#if scanState === SCANNING}
-		<QrScanner
-			options={{
-				onPermissionError: async () => {
-					await _onPermissionError();
-				},
-				onResulted: async (result: string) => {
-					await _onResulted(result);
-				},
-				onUpdateStatus: (update: string) => {
-					status = update;
-				}
-			}}
-		/>
+		<QrScanner options={qrOptions} />
 		<p class="text-primary-800 bg-primary-200 m-3 rounded-2xl p-5 text-xl font-bold">{status}</p>
 	{/if}
 	{#if scanState === SUCCESS}
