@@ -116,12 +116,9 @@ function generateMockPasesForHostel(
 }
 
 const mockRouter = createRouterTransport(({ rpc }) => {
-	rpc(UserService.method.getUser, (req) => {
-		if (req.id !== '12345') {
-			throw new ConnectError('user not found', Code.NotFound);
-		}
+	rpc(UserService.method.getUser, () => {
 		return {
-			id: req.id,
+			id: "12345",
 			name: 'Mock User',
 			hostel: 'Mock Hostel',
 			room: 'Mock Room',
@@ -150,9 +147,9 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(UserService.method.exit, (req) => {
-		console.log('exit', req.id);
+		console.log('exit', "12345");
 
-		const userId = String(req.id);
+		const userId = String("12345");
 		const idIdentifier = userId + timestampToMs(timestampNow()).toString();
 		const id = 'pass' + idIdentifier;
 
