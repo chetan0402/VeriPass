@@ -280,8 +280,11 @@ const authInterceptor: Interceptor = (next) => async (req) => {
 		return await next(req);
 	} catch (error) {
 		if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
-			//TODO:add admin support
-			resetAuthToken('/');
+			let redirectUrl = "/";
+			if(req.url.includes("veripass.v1.AdminService")){
+				redirectUrl = "/admin";
+			}
+			resetAuthToken(redirectUrl);
 		}
 		throw error;
 	}
