@@ -9,6 +9,7 @@ import (
 	"github.com/chetan0402/veripass/internal/ent/pass"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
+	veripass "github.com/chetan0402/veripass/internal/services"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -94,8 +95,12 @@ func (s *UserService) GetPhoto(context.Context, *connect.Request[veripassv1.GetP
 
 func (s *UserService) GetUser(ctx context.Context, r *connect.Request[veripassv1.GetUserRequest]) (*connect.Response[veripassv1.User], error) {
 	var (
-		id = r.Msg.Id
+		id = r.Msg.GetId()
 	)
+
+	if id == "" {
+		id = veripass.GetUsernamefromCtx(ctx)
+	}
 
 	user, err := s.client.User.Get(ctx, id)
 	if err != nil {

@@ -40,7 +40,7 @@ message ExitResponse {
 }
 
 message GetUserRequest {
-  string id = 1;
+  optional string id = 1;
 }
 
 message GetPhotoRequest {
