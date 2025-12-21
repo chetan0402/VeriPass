@@ -18,7 +18,6 @@
 				loadMorePassObserver.unobserve(entries[0].target);
 				loading = true;
 				fetchHistory().catch(console.error);
-				loading = false;
 				loadMorePassObserver.observe(entries[0].target);
 			}
 		},
@@ -44,6 +43,7 @@
 			console.error('Error fetching user data:', error);
 			endOfListReached('Could not load more passes');
 		}
+		loading = false;
 	}
 
 	onMount(() => {

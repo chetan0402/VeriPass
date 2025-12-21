@@ -45,7 +45,7 @@
 			openNextScreen(user);
 		} catch (error) {
 			if (error instanceof ConnectError && error.code == Code.NotFound) {
-				alert('No session found! Please Login Again');
+				alert('Invalid session found! Please Login Again');
 				resetAuthToken('/');
 			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
 				maxProgress = 100;
