@@ -30,7 +30,6 @@
 
 	function openGoogleLogin() {
 		window.location.href = OAUTH;
-		localStorage.setItem('user_id', '12345');
 	}
 
 	async function loginSuccess() {

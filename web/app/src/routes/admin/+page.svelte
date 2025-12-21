@@ -24,7 +24,6 @@
 	});
 
 	function openGoogleLogin() {
-		localStorage.setItem('admin_email', 'mock@veripass.app');
 		window.location.href = OAUTH;
 	}
 </script>
