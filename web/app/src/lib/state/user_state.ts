@@ -11,7 +11,7 @@ export async function getUserFromState(): Promise<User> {
 	if (user) {
 		return user;
 	}
-	user = await userClient.getUser({ id: '' });
+	user = await userClient.getUser({});
 	return user;
 }
 
@@ -20,7 +20,7 @@ export async function getUserProfileFromState() {
 		return userprofile;
 	}
 	try {
-		const userProfileResponse = await userClient.getPhoto({ id: '' });
+		const userProfileResponse = await userClient.getPhoto({});
 		const blob = new Blob([userProfileResponse.photo as BlobPart]);
 		userprofile = URL.createObjectURL(blob);
 		return userprofile;
