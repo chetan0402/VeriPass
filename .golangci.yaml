@@ -5,6 +5,7 @@ linters:
     - contextcheck
     - nilerr
     - unconvert
+    - godoclint
   
   settings:
     revive:
