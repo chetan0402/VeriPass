@@ -125,7 +125,7 @@ func (s *AdminService) GetAdmin(ctx context.Context, r *connect.Request[emptypb.
 	return connect.NewResponse(toProto(admin)), nil
 }
 
-// GetInOutCountByHostel implements veripassv1connect.AdminServiceHandler.
+// GetOutCountByHostel implements veripassv1connect.AdminServiceHandler.
 func (s *AdminService) GetOutCountByHostel(ctx context.Context, req *connect.Request[veripassv1.GetOutCountByHostelRequest]) (*connect.Response[veripassv1.GetOutCountByHostelResponse], error) {
 	var (
 		_         = req.Msg.Hostel
