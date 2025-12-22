@@ -14,16 +14,16 @@ type Pass struct {
 }
 
 // Fields defines the columns of the table for Pass.
-// 
+//
 // "id" is UUIDv7 because
-// 
+//
 // 1. Ordered: Since the primary key is physically stored as ordered on
 // the disk, having UUIDv7 allows the writes to be sequential.
-// 
+//
 // 2. Timestamp: Many queries in this application are around
 // the create time of the entity, UUIDv7 encodes this information
 // on the primary key itself allowing for faster queries
-// 
+//
 // 3. Randomness: Compared to an autoincrement bigint primary key an UUID
 // based provides better randomness.
 func (Pass) Fields() []ent.Field {

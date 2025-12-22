@@ -15,7 +15,7 @@ type Admin struct {
 }
 
 // Fields defines the columns of the table for Admin.
-// 
+//
 // "id" is a random 26 character string used to uniquely identify an admin.
 // This is is subject to change as there is no specific reason for a
 // random 26 string to be used for identification purpose.
