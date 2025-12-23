@@ -1,3 +1,7 @@
+// Package veripass
+// The name doesn't relate with the actual functionality at all.
+//
+// This package contains the middlewares/interceptors.
 package veripass
 
 import (
@@ -27,6 +31,11 @@ var isAuthProtected = map[string]bool{
 	veripassv1connect.UserServiceGetUserProcedure:  true,
 }
 
+// NewAuthMiddleware returns a interceptor which reads the Cookie for
+// "token" cookie which contains the OIDC token
+//
+// It sets the derived values from token i.e. claims in the context
+// and passes those onto the RPC.
 func NewAuthMiddleware(verifier *oidc.IDTokenVerifier) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {

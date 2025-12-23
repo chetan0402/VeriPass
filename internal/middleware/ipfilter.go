@@ -10,7 +10,9 @@ import (
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
 )
 
+// ALLOWED_IPv4_RANGE is CIDR notation of IPv4s allowed to access
 const ALLOWED_IPv4_RANGE = "0.0.0.0/0"
+// ALLOWED_IPv6_RANGE is CIDR notation of IPv6s allowed to access
 const ALLOWED_IPv6_RANGE = "::/0"
 
 var isIPProtected = map[string]bool{
@@ -18,6 +20,8 @@ var isIPProtected = map[string]bool{
 	veripassv1connect.UserServiceExitProcedure:  true,
 }
 
+// NewIpMiddleware returns a interceptor which checks if client's IP is
+// within the allowed IP ranges and blocks the request if it isn't
 func NewIpMiddleware() connect.UnaryInterceptorFunc {
 	_, ipv4Net, err := net.ParseCIDR(ALLOWED_IPv4_RANGE)
 	if err != nil {
