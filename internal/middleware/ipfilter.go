@@ -12,6 +12,7 @@ import (
 
 // ALLOWED_IPv4_RANGE is CIDR notation of IPv4s allowed to access
 const ALLOWED_IPv4_RANGE = "0.0.0.0/0"
+
 // ALLOWED_IPv6_RANGE is CIDR notation of IPv6s allowed to access
 const ALLOWED_IPv6_RANGE = "::/0"
 
