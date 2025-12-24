@@ -41,6 +41,9 @@
 		}
 	});
 
+	/**
+	 * Sends request to server to create pass of student with the entered student id using admin access
+	 */
 	async function generatePassByServer() {
 		if (userId.length == 0) {
 			alert('Invalid user id!');
@@ -79,16 +82,25 @@
 			}
 		}
 	}
-
+	/**
+	 * Opens generating status dialog box.
+	 */
 	function openGeneratingDialog() {
 		show_generating_box = true;
 	}
-
+	/**
+	 * Retrieves the display name for a purpose based on its numeric type ID.
+	 * @param type - The numeric value associated with the purpose.
+	 * @returns The name of the purpose if found, otherwise returns 'unspecified'.
+	 */
 	function getPurposeNameByType(type: number): string {
 		const item = purposes.find((p) => p.value === type);
 		return item ? item.name : 'unspecified';
 	}
 
+	/**
+	 * Redirects the user to the admin dashboard, replacing the current history entry.
+	 */
 	async function gotoDashboard() {
 		await goto('/admin/home', { replaceState: true });
 	}

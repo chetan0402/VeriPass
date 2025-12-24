@@ -12,7 +12,7 @@ import {
 } from '$lib/gen/veripass/v1/admin_pb';
 import * as ed from '@noble/ed25519';
 import { sha512 } from '@noble/hashes/sha2.js';
-import { resetAuthToken } from '$lib/auth_utils';
+import { resetAuthTokenAndLogout } from '$lib/auth_utils';
 
 ed.hashes.sha512 = sha512;
 
@@ -22,6 +22,10 @@ const { secretKey, publicKey } = ed.keygen();
 
 const mockPasses: Record<string, Pass> = {};
 
+/**
+ * generate mock passes for testing
+ * @returns list of mock passes
+ */
 function generateMockPasesForPage() {
 	const newMockPasses: Pass[] = [];
 	for (let i = 0; i < 30; i++) {
@@ -42,7 +46,12 @@ function generateMockPasesForPage() {
 	}
 	return newMockPasses;
 }
-
+/**
+ * Generates a signed, base64-encoded QR code string containing pass and user IDs.
+ * @param passId - The unique identifier for the pass.
+ * @param userId - The unique identifier for the user.
+ * @returns A base64-encoded string containing the piped data and cryptographic signature.
+ */
 function createQrCode(passId: string, userId: string): string {
 	try {
 		let qrCode = `${passId}|${userId}`;
@@ -63,6 +72,11 @@ function createQrCode(passId: string, userId: string): string {
 	}
 }
 
+/**
+ * Maps an ExitRequest_ExitType enum value to its corresponding Pass_PassType.
+ * @param selected - The exit request type to be converted.
+ * @returns The matching Pass_PassType, or Pass_PassType.UNSPECIFIED if no match is found.
+ */
 function getPassType(selected: ExitRequest_ExitType): Pass_PassType {
 	const map: Record<ExitRequest_ExitType, Pass_PassType> = {
 		[ExitRequest_ExitType.CLASS]: Pass_PassType.CLASS,
@@ -74,6 +88,11 @@ function getPassType(selected: ExitRequest_ExitType): Pass_PassType {
 	return map[selected] || Pass_PassType.UNSPECIFIED;
 }
 
+/**
+ * Generates info included mock passes for hostel used in admin panel
+ * @param req the request object
+ * @returns info included mock pass list
+ */
 function generateMockPasesForHostel(
 	req: GetAllPassesByHostelRequest
 ): GetAllPassesByHostelResponse_InfoIncludedPass[] {
@@ -281,7 +300,7 @@ const authInterceptor: Interceptor = (next) => async (req) => {
 			if (req.url.includes('veripass.v1.AdminService')) {
 				redirectUrl = '/admin';
 			}
-			resetAuthToken(redirectUrl);
+			resetAuthTokenAndLogout(redirectUrl);
 		}
 		throw error;
 	}

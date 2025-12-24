@@ -20,11 +20,17 @@
 		toProceed: (startDate: Date, endDate: Date) => void;
 	}>();
 
+	/**
+	 * Closes the date selector dialog
+	 */
 	function stopAndClose() {
 		console.log('Closing');
 		toClose();
 	}
 
+	/**
+	 * Proceeds the action to be performed after selecting the date
+	 */
 	function doAction() {
 		if (!intervalMode) {
 			selectedEndDate = getMaximumTimeFor(selectedStartDate);
@@ -34,6 +40,11 @@
 		toProceed(selectedStartDate, selectedEndDate);
 	}
 
+	/**
+	 * @param date object
+	 * @returns the date object having maximum time possible
+	 * if the date is today's date then it returns current time
+	 */
 	function getMaximumTimeFor(date: Date) {
 		const d = new Date(date);
 		const now = new Date();

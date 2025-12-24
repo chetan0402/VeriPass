@@ -7,13 +7,16 @@
 	import PassView from '$lib/components/PassView.svelte';
 	import { Code, ConnectError, createClient } from '@connectrpc/connect';
 	import { getUserFromState } from '$lib/state/user_state';
-	import { resetAuthToken } from '$lib/auth_utils';
+	import { resetAuthTokenAndLogout } from '$lib/auth_utils';
 
 	let passFetchStatus: string = $state('loading pass details...');
 	let pass = $state<Pass>();
 	let user = $state<User>();
 	const passClient = createClient(PassService, transport);
-
+	/**
+	 * Attempts to retrieve the most recent pass for the currently logged-in user.
+	 * Redirects to the home dashboard if no pass is found or an error occurs.
+	 */
 	async function refreshPass() {
 		if (!user) {
 			passFetchStatus = 'Cannot fetch User Details';
@@ -38,7 +41,7 @@
 		} catch (error) {
 			if (error instanceof ConnectError && error.code == Code.NotFound) {
 				alert('No session found! Please Login Again');
-				resetAuthToken('/');
+				resetAuthTokenAndLogout('/');
 			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
 				alert('No session found! Please Login Again');
 				await goto('/login', { replaceState: true });

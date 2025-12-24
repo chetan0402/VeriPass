@@ -4,12 +4,13 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import * as ed from '@noble/ed25519';
-	import { type Pass, Pass_PassType, PassService } from '$lib/gen/veripass/v1/pass_pb';
+	import { type Pass, PassService } from '$lib/gen/veripass/v1/pass_pb';
 	import { createClient } from '@connectrpc/connect';
 	import { transport } from '$lib';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import { AdminService } from '$lib/gen/veripass/v1/admin_pb';
+	import { getPassType } from '$lib/pass_utils';
 
 	let pass = $state<Pass>();
 	let user = $state<User>();
@@ -25,16 +26,27 @@
 	onMount(() => {
 		scanState = SCANNING;
 	});
-
+	/**
+	 * Handles permission rejection errors by alerting the user and redirecting to the dashboard.
+	 */
 	async function _onPermissionError() {
 		alert('Permission rejected');
 		await gotoDashboard();
 	}
-
+	/**
+	 * Converts a base64 encoded string into a Uint8Array of bytes.
+	 * @param b64 - The base64 string to decode.
+	 * @returns A Uint8Array containing the decoded byte data.
+	 */
 	function base64ToBytes(b64: string): Uint8Array {
 		return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 	}
 
+	/**
+	 * Fetches pass and user data from the server using the provided IDs.
+	 * @param passId - Unique identifier for the pass.
+	 * @param userId - Unique identifier for the user.
+	 */
 	async function fetchPass(passId: string, userId: string) {
 		try {
 			const passClient = createClient(PassService, transport);
@@ -51,6 +63,10 @@
 		}
 	}
 
+	/**
+	 * Decodes a QR code string, verifies its cryptographic signature, and loads associated details.
+	 * @param code - The base64-encoded QR code string containing signed data.
+	 */
 	async function verifyPass(code: string) {
 		scanState = VERIFYING;
 		try {
@@ -87,23 +103,18 @@
 		}
 	}
 
-	async function _onResulted(result: string) {
+	/**
+	 * Starts the verification process with the scanned qr code
+	 * @param result - qr string result from scanner
+	 */
+	async function startVerification(result: string) {
 		status = 'verifying';
 		await verifyPass(result);
 	}
 
-	function getPurposeNameByType(type: number): string {
-		let purposes: { value: number; name: string }[] = [
-			{ value: Pass_PassType.UNSPECIFIED, name: 'Select the purpose of the exit' },
-			{ value: Pass_PassType.CLASS, name: 'Class' },
-			{ value: Pass_PassType.MARKET, name: 'Market' },
-			{ value: Pass_PassType.HOME, name: 'Home' },
-			{ value: Pass_PassType.EVENT, name: 'Event' }
-		];
-		const item = purposes.find((p) => p.value === type);
-		return item ? item.name : 'unspecified';
-	}
-
+	/**
+	 * Redirects the user to the admin dashboard, replacing the current history entry.
+	 */
 	async function gotoDashboard() {
 		await goto('/admin/home', { replaceState: true });
 	}
@@ -112,7 +123,7 @@
 			await _onPermissionError();
 		},
 		onResulted: async (result: string) => {
-			await _onResulted(result);
+			await startVerification(result);
 		},
 		onUpdateStatus: (update: string) => {
 			status = update;
@@ -157,9 +168,7 @@
 
 							<div class="flex justify-between gap-2">
 								<span class="text-sm font-medium text-gray-500">Purpose:</span>
-								<span class="text-sm font-semibold text-gray-900"
-									>{getPurposeNameByType(pass.type)}</span
-								>
+								<span class="text-sm font-semibold text-gray-900">{getPassType(pass)}</span>
 							</div>
 						</div>
 						<PassTimeView {pass} />
