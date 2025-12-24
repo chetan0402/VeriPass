@@ -13,6 +13,8 @@ let userprofile: string | undefined;
  * Otherwise, the user details are fetched from the backend and cached
  * for future calls.
  * @returns A promise that resolves to the user details.
+ * @throws {NotFound} If user details are not found in database
+ * @throws {InvalidArgument} If token is not present
  */
 export async function getUserFromState(): Promise<User> {
 	if (user) {
@@ -29,6 +31,8 @@ export async function getUserFromState(): Promise<User> {
  * Otherwise, the profile photo is fetched from the backend and cached
  * for future calls.
  * @returns A promise that resolves to user profile url;
+ * @throws {NotFound} If user profile not found in database
+ * @throws {InvalidArgument} If token is not present
  */
 export async function getUserProfileFromState() {
 	if (userprofile) {

@@ -37,8 +37,11 @@
 	let userprofile = $state('./placeholder.png');
 
 	/**
-	 * @param pass object
-	 * @returns the string for duration for which the pass is or was open
+	 * Calculates the duration of a pass and returns a formatted string.
+	 * If pass is closed: |endTime - startTime|
+	 * If pass is open:   |currentTime - startTime|
+	 * @param pass - The pass object containing time data.
+	 * @returns A string formatted as "X days Y hrs" or "X hr Y min".
 	 */
 	function getDurationFromPass(pass: Pass | undefined): string {
 		if (!pass) return 'loading';

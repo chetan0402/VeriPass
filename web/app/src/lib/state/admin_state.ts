@@ -12,6 +12,8 @@ const adminClient = createClient(AdminService, transport);
  * Otherwise, the admin details are fetched from the backend and cached
  * for future calls.
  * @returns A promise that resolves to the admin details.
+ * @throws {NotFound} If admin is not found in database
+ * @throws {InvalidArgument} If token is not present
  */
 export async function getAdminFromState(): Promise<Admin> {
 	if (admin) {
