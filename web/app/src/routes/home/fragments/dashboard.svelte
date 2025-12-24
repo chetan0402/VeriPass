@@ -39,7 +39,9 @@
 			console.log(err);
 		}
 	});
-
+	/**
+	 * Initiates the pass generation process if a valid pass type is selected.
+	 */
 	function generatePass() {
 		if (selected === Pass_PassType.UNSPECIFIED) {
 			return;
@@ -47,6 +49,11 @@
 		show_generating_box = true;
 	}
 
+	/**
+	 * Maps a Pass_PassType enum value to its corresponding ExitRequest_ExitType.
+	 * @param selected - The internal pass type to be converted.
+	 * @returns The matching ExitRequest_ExitType for the server request.
+	 */
 	function getExitType(selected: Pass_PassType): ExitRequest_ExitType {
 		const map: Record<Pass_PassType, ExitRequest_ExitType> = {
 			[Pass_PassType.CLASS]: ExitRequest_ExitType.CLASS,
@@ -58,6 +65,9 @@
 		return map[selected] || ExitRequest_ExitType.UNSPECIFIED;
 	}
 
+	/**
+	 * Calls the remote service to generate a pass and handles the server response or errors.
+	 */
 	async function generatePassByServer() {
 		try {
 			let response: ExitResponse = await client.exit({ id: user.id, type: getExitType(selected) });
@@ -85,6 +95,11 @@
 		show_generating_box = false;
 	}
 
+	/**
+	 * Retrieves the display name of a purpose based on its numeric identifier.
+	 * @param type - The numeric ID of the purpose.
+	 * @returns The human-readable name of the purpose or 'unspecified'.
+	 */
 	function getPurposeNameByType(type: number): string {
 		const item = purposes.find((p) => p.value === type);
 		return item ? item.name : 'unspecified';

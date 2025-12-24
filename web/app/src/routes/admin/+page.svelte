@@ -23,7 +23,10 @@
 		}
 	});
 
-	function openGoogleLogin() {
+	/**
+	 * Navigates the user to OAUTH page
+	 */
+	function openLoginScreen() {
 		window.location.href = OAUTH;
 	}
 </script>
@@ -45,7 +48,7 @@
 		</p>
 		<button
 			class="text-primary-700 mt-6 flex flex-row items-center justify-center rounded-full bg-white bg-gradient-to-bl px-4 py-2 font-semibold ring-2 transition-all duration-200"
-			onclick={openGoogleLogin}
+			onclick={openLoginScreen}
 		>
 			<UserSolid class="mr-2 h-6 w-6 shrink-0" />
 			Login using Email

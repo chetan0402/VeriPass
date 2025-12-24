@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BorderDiv from '$lib/components/BorderDiv.svelte';
-	import { type Pass, Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
+	import { type Pass } from '$lib/gen/veripass/v1/pass_pb';
 	import { type User, UserService } from '$lib/gen/veripass/v1/user_pb';
 	import PassTimeView from '$lib/components/PassTimeView.svelte';
 	import { goto, pushState, replaceState } from '$app/navigation';
@@ -14,6 +14,7 @@
 	import Qrcode from '@castlenine/svelte-qrcode';
 	import { page } from '$app/state';
 	import { getUserProfileFromState } from '$lib/state/user_state';
+	import { getPassType } from '$lib/pass_utils';
 
 	let {
 		pass,
@@ -35,21 +36,13 @@
 
 	let userprofile = $state('./placeholder.png');
 
-	function getPassType(passItem: Pass) {
-		switch (passItem.type) {
-			case Pass_PassType.CLASS:
-				return 'Class';
-			case Pass_PassType.HOME:
-				return 'Home';
-			case Pass_PassType.EVENT:
-				return 'Event';
-			case Pass_PassType.MARKET:
-				return 'Market';
-			default:
-				return 'Not specified';
-		}
-	}
-
+	/**
+	 * Calculates the duration of a pass and returns a formatted string.
+	 * If pass is closed: |endTime - startTime|
+	 * If pass is open:   |currentTime - startTime|
+	 * @param pass - The pass object containing time data.
+	 * @returns A string formatted as "X days Y hrs" or "X hr Y min".
+	 */
 	function getDurationFromPass(pass: Pass | undefined): string {
 		if (!pass) return 'loading';
 		if (pass.endTime) {
@@ -63,10 +56,16 @@
 		}
 	}
 
+	/**
+	 * takes back the user to dashboard
+	 */
 	async function gotoHome() {
-		await goto('../home', { replaceState: true });
+		await goto('/home', { replaceState: true });
 	}
 
+	/**
+	 * opens the dialog to alert user that pass wll be closed
+	 */
 	function showClosePassDialog() {
 		show_closing_box = true;
 	}
@@ -88,6 +87,9 @@
 		};
 	});
 
+	/**
+	 * handles the ui updates for time and duration visible in pass view
+	 */
 	function updateTimeTicker() {
 		const now = new Date();
 		currentTime = now.toLocaleTimeString('en-In', {
@@ -97,7 +99,9 @@
 		});
 		duration = getDurationFromPass(pass);
 	}
-
+	/**
+	 * Send the request to server to close the currently opened pass
+	 */
 	async function closePassByServer() {
 		if (pass) {
 			try {
@@ -127,10 +131,16 @@
 		}
 	}
 
+	/**
+	 * Opens the qr code card view
+	 */
 	function viewQr() {
 		pushState('', { popupVisible: PopupType.MENU });
 	}
 
+	/**
+	 * Closes the qr code card view
+	 */
 	function closeQrView() {
 		replaceState('', { popupVisible: PopupType.NONE });
 	}

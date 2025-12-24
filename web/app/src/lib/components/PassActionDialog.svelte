@@ -30,12 +30,16 @@
 			}
 		}
 	});
-
+	/**
+	 * Closes the date selector dialog
+	 */
 	function stopAndClose() {
 		cancelled = true;
 		close();
 	}
-
+	/**
+	 * Proceeds the action to be performed after selecting the date
+	 */
 	function doAction() {
 		if (!cancelled) {
 			cancelled = true;

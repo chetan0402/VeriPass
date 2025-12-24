@@ -28,6 +28,9 @@
 
 	let passes: Pass[] = $state([]);
 
+	/**
+	 * Fetches history from server, also handles loading next passes page by handling next page token
+	 */
 	async function fetchHistory() {
 		try {
 			let response = await client.listPassesByUser({
@@ -50,6 +53,10 @@
 		loadMorePassObserver.observe(loadMoreElem);
 	});
 
+	/**
+	 * Updates ui and removes observer from loading more passes
+	 * @param msg - string to show to user
+	 */
 	function endOfListReached(msg: string) {
 		listFooterMessage = msg;
 		loadMorePassObserver.unobserve(loadMoreElem);

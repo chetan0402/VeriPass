@@ -1,12 +1,7 @@
 <script lang="ts">
-	import { type Pass, Pass_PassType } from '$lib/gen/veripass/v1/pass_pb';
-	import type { Timestamp } from '@bufbuild/protobuf/wkt';
 	import type { GetAllPassesByHostelResponse_InfoIncludedPass } from '$lib/gen/veripass/v1/admin_pb';
-	import {
-		formatDateString,
-		formatTimeStringLocal,
-		getFormattedTimeSuffixLocal
-	} from '$lib/time_utils';
+	import { getFormattedTimeSuffixLocal } from '$lib/time_utils';
+	import { getFormattedDate, getFormattedTime, getPassType } from '$lib/pass_utils';
 
 	const {
 		onclick,
@@ -28,41 +23,6 @@
 	let startTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass?.startTime));
 	let passType: string = $derived(getPassType(pass));
 	let passClosed = $derived(pass?.endTime);
-
-	function timestampToDate(startTime: Timestamp) {
-		const startMillis = Number(startTime.seconds) * 1000 + Math.floor(startTime.nanos / 1e6);
-		return new Date(startMillis);
-	}
-
-	function getPassType(passItem?: Pass) {
-		switch (passItem?.type) {
-			case Pass_PassType.CLASS:
-				return 'Class';
-			case Pass_PassType.HOME:
-				return 'Home';
-			case Pass_PassType.EVENT:
-				return 'Event';
-			case Pass_PassType.MARKET:
-				return 'Market';
-			default:
-				return 'Not specified';
-		}
-	}
-
-	function getFormattedTime(timeStamp?: Timestamp) {
-		if (timeStamp) {
-			const date = timestampToDate(timeStamp);
-			return formatTimeStringLocal(date);
-		}
-		return '----';
-	}
-	function getFormattedDate(timeStamp?: Timestamp) {
-		if (timeStamp) {
-			const date = timestampToDate(timeStamp);
-			return formatDateString(date);
-		}
-		return '----';
-	}
 </script>
 
 <div

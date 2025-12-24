@@ -7,7 +7,7 @@
 	import { goto, pushState, replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import { PopupType } from '$lib';
-	import { resetAuthToken } from '$lib/auth_utils';
+	import { resetAuthTokenAndLogout } from '$lib/auth_utils';
 	import { Code, ConnectError } from '@connectrpc/connect';
 
 	let listVisible: boolean = $state<boolean>(false);
@@ -37,15 +37,24 @@
 		pushState('', { popupVisible: PopupType.NONE });
 	});
 
+	/**
+	 * Terminates the current admin session and redirects to the admin login page.
+	 */
 	function logout() {
 		invalidateAdminSession();
-		resetAuthToken('/admin');
+		resetAuthTokenAndLogout('/admin');
 	}
 
+	/**
+	 * Closes any active popup menu by updating the navigation state.
+	 */
 	function closeMenu() {
 		replaceState('', { popupVisible: PopupType.NONE });
 	}
 
+	/**
+	 * Navigates to the pass creation page if the admin has the required permissions.
+	 */
 	async function openCreatePass() {
 		if (admin?.canAddPass) {
 			await goto('/admin/pass/create');
@@ -54,6 +63,9 @@
 		}
 	}
 
+	/**
+	 * Navigates the user to the pass scanning interface.
+	 */
 	async function openScanPass() {
 		await goto('/admin/pass/scan');
 	}

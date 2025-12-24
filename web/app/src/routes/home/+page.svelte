@@ -8,12 +8,16 @@
 	import { goto } from '$app/navigation';
 	import { getUserFromState } from '$lib/state/user_state';
 	import { PassService } from '$lib/gen/veripass/v1/pass_pb';
-	import { resetAuthToken } from '$lib/auth_utils';
+	import { resetAuthTokenAndLogout } from '$lib/auth_utils';
 
 	let dashboardVisible: boolean = $state<boolean>(true);
 
 	let user = $state<User>();
 
+	/**
+	 * Check if any active pass exists for the user. If present then redirect them to pass page
+	 * Does nothing if no actively open pass found
+	 */
 	async function checkForActivePass() {
 		if (!user) {
 			return;
@@ -40,7 +44,7 @@
 		} catch (error) {
 			if (error instanceof ConnectError && error.code == Code.NotFound) {
 				alert('No session found! Please Login Again');
-				resetAuthToken('/');
+				resetAuthTokenAndLogout('/');
 			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
 				alert('No session found! Please Login Again');
 				await goto('/login', { replaceState: true });
@@ -55,10 +59,16 @@
 		}
 	});
 
+	/**
+	 * Updates the UI state to display the dashboard view.
+	 */
 	function showDashboard() {
 		dashboardVisible = true;
 	}
 
+	/**
+	 * Updates the UI state to hide the dashboard and display the history view.
+	 */
 	function showHistory() {
 		dashboardVisible = false;
 	}
