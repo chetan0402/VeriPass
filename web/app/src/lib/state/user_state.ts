@@ -6,7 +6,16 @@ let user: User | undefined;
 const userClient = createClient(UserService, transport);
 
 let userprofile: string | undefined;
-
+/**
+ * Returns the currently cached user details.
+ *
+ * If the user is already present in state, it is returned immediately.
+ * Otherwise, the user details are fetched from the backend and cached
+ * for future calls.
+ * @returns A promise that resolves to the user details.
+ * @throws {NotFound} If user details are not found in database
+ * @throws {InvalidArgument} If token is not present
+ */
 export async function getUserFromState(): Promise<User> {
 	if (user) {
 		return user;
@@ -15,6 +24,16 @@ export async function getUserFromState(): Promise<User> {
 	return user;
 }
 
+/**
+ * Returns the currently caches user profile photo
+ *
+ * If the photo is already present in state, it is returned immediately.
+ * Otherwise, the profile photo is fetched from the backend and cached
+ * for future calls.
+ * @returns A promise that resolves to user profile url;
+ * @throws {NotFound} If user profile not found in database
+ * @throws {InvalidArgument} If token is not present
+ */
 export async function getUserProfileFromState() {
 	if (userprofile) {
 		return userprofile;
@@ -30,6 +49,9 @@ export async function getUserProfileFromState() {
 	}
 }
 
+/**
+ * Clears the cached user session details
+ */
 export function invalidateUserSession() {
 	user = undefined;
 	return;

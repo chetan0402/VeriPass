@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { type Pass } from '$lib/gen/veripass/v1/pass_pb';
-	import type { Timestamp } from '@bufbuild/protobuf/wkt';
-	import {
-		formatDateString,
-		formatTimeStringLocal,
-		getFormattedTimeSuffixLocal,
-		timestampToDate
-	} from '$lib/time_utils';
+	import { getFormattedTimeSuffixLocal } from '$lib/time_utils';
+	import { getFormattedDate, getFormattedTime } from '$lib/pass_utils';
 
 	const { pass }: { pass: Pass } = $props();
 
@@ -16,21 +11,6 @@
 	let endTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass.endTime));
 	let startTime: string = $derived(getFormattedTime(pass.startTime));
 	let startTimeSuffix: string = $derived(getFormattedTimeSuffixLocal(pass.startTime));
-
-	function getFormattedTime(timeStamp?: Timestamp) {
-		if (timeStamp) {
-			const date = timestampToDate(timeStamp);
-			return formatTimeStringLocal(date);
-		}
-		return '----';
-	}
-	function getFormattedDate(timeStamp?: Timestamp) {
-		if (timeStamp) {
-			const date = timestampToDate(timeStamp);
-			return formatDateString(date);
-		}
-		return '----';
-	}
 </script>
 
 <div class="flex h-full w-full flex-row items-center justify-center">

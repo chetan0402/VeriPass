@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import type { User } from '$lib/gen/veripass/v1/user_pb';
 	import { Code, ConnectError } from '@connectrpc/connect';
-	import { resetAuthToken } from '$lib/auth_utils';
+	import { resetAuthTokenAndLogout } from '$lib/auth_utils';
 	import { getUserFromState } from '$lib/state/user_state';
 
 	let status_message: string = $state<string>('Getting things ready...');
@@ -23,6 +23,10 @@
 		}
 	});
 
+	/**
+	 * Displays a personalized welcome message and navigates to the home screen after a delay.
+	 * @param user - The user object containing the display name.
+	 */
 	function openNextScreen(user: User) {
 		status_message = 'Welcome ' + user.name + '!';
 		setTimeout(async () => {
@@ -30,6 +34,9 @@
 		}, 1600);
 	}
 
+	/**
+	 * Navigates the user to login screen
+	 */
 	function openLoginScreen() {
 		status_message = 'Taking you to the login page...';
 		setTimeout(async () => {
@@ -46,7 +53,7 @@
 		} catch (error) {
 			if (error instanceof ConnectError && error.code == Code.NotFound) {
 				alert('Invalid session found! Please Login Again');
-				resetAuthToken('/');
+				resetAuthTokenAndLogout('/');
 			} else if (error instanceof ConnectError && error.code == Code.InvalidArgument) {
 				maxProgress = 100;
 				openLoginScreen();

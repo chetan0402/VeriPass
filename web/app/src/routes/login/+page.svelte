@@ -28,10 +28,16 @@
 		}
 	});
 
-	function openGoogleLogin() {
+	/**
+	 * Redirects the browser to the configured OAuth provider's authentication page.
+	 */
+	function redirectToOauth() {
 		window.location.href = OAUTH;
 	}
 
+	/**
+	 * Handles successful authentication by navigating the user to the home dashboard.
+	 */
 	async function loginSuccess() {
 		await goto('/home', { replaceState: true });
 	}
@@ -54,7 +60,7 @@
 		</p>
 		<button
 			class="ring-primary-500 hover:ring-secondary-800 from-secondary-50 to-secondary-200 text-primary-700 mt-6 flex flex-row items-center justify-center rounded-full bg-gradient-to-bl px-4 py-4 text-xl font-semibold ring-4 transition-all duration-200"
-			onclick={openGoogleLogin}
+			onclick={redirectToOauth}
 		>
 			<UserGraduateSolid class="mr-2 h-6 w-6 shrink-0" />
 			Student Login

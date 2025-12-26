@@ -1,20 +1,39 @@
 import { type Timestamp, timestampFromDate, timestampMs } from '@bufbuild/protobuf/wkt';
 
+/**
+ * Converts a Timestamp object to milliseconds.
+ * @param timestamp - The Timestamp to convert.
+ * @returns The time in milliseconds, or 0 if the timestamp is undefined.
+ */
 export function timestampToMs(timestamp: Timestamp | undefined): number {
 	if (!timestamp) return 0;
 	return timestampMs(timestamp);
 }
-
+/**
+ * Creates a Timestamp object from a millisecond value.
+ * @param ms - Time in milliseconds.
+ * @returns A Timestamp representation of the provided duration.
+ */
 export function msToTimestamp(ms: number): Timestamp {
 	const date = new Date(ms);
 	return timestampFromDate(date);
 }
 
+/**
+ * Converts a Timestamp object into a JavaScript Date object.
+ * @param startTime - The Timestamp to convert.
+ * @returns A new Date object based on seconds and nanoseconds.
+ */
 export function timestampToDate(startTime: Timestamp) {
 	const startMillis = Number(startTime.seconds) * 1000 + Math.floor(startTime.nanos / 1e6);
 	return new Date(startMillis);
 }
 
+/**
+ * Formats a Date object into a local 12-hour time string (HH:MM).
+ * @param date - The Date object to format.
+ * @returns A string in "HH:MM" format.
+ */
 export function formatTimeStringLocal(date: Date): string {
 	const hours = date.getHours();
 	const minutes = date.getMinutes();
@@ -24,6 +43,11 @@ export function formatTimeStringLocal(date: Date): string {
 	return `${hoursStr}:${minuteStr}`;
 }
 
+/**
+ * Determines the AM/PM suffix for a given Timestamp in local time.
+ * @param timeStamp - The Timestamp to evaluate.
+ * @returns "AM", "PM", or an empty string if undefined.
+ */
 export function getFormattedTimeSuffixLocal(timeStamp?: Timestamp) {
 	if (timeStamp) {
 		const startDate = timestampToDate(timeStamp);
@@ -31,7 +55,11 @@ export function getFormattedTimeSuffixLocal(timeStamp?: Timestamp) {
 	}
 	return '';
 }
-
+/**
+ * Formats a Date object into a DD-MMM-YYYY string (Indian locale).
+ * @param date - The Date object to format.
+ * @returns A string like "24-Dec-2025".
+ */
 export function formatDateString(date: Date) {
 	return date.toLocaleDateString('en-In', {
 		day: '2-digit',
@@ -40,6 +68,11 @@ export function formatDateString(date: Date) {
 	});
 }
 
+/**
+ * Converts milliseconds into a human-readable duration string.
+ * @param ms - The duration in milliseconds.
+ * @returns A string formatted as "X days Y hrs" or "X hr Y min".
+ */
 export function msToDurationString(ms: number): string {
 	const totalSeconds = Math.floor(ms / 1000);
 	const days = Math.floor(totalSeconds / (3600 * 24));
@@ -52,13 +85,12 @@ export function msToDurationString(ms: number): string {
 	return `${hours.toString()} hr${hours !== 1 ? 's' : ''} ${minutes.toString()} min${minutes !== 1 ? 's' : ''}`;
 }
 
+/**
+ * Resets a Date object to the start of the day (midnight).
+ * @param date - The Date object to modify.
+ * @returns The Date object set to 00:00:00.
+ */
 export function get12oClockDate(date: Date): Date {
 	date.setHours(0, 0, 0, 0);
 	return date;
-}
-
-export function toISTDateStringFull(date: Date) {
-	return date.toLocaleString('en-In', {
-		hour12: false
-	});
 }

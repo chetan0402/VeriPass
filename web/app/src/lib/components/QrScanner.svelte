@@ -22,6 +22,9 @@
 		requestCamera();
 	});
 
+	/**
+	 * Asks the user for camera related permission
+	 */
 	function requestCamera() {
 		navigator.mediaDevices
 			.getUserMedia({
@@ -42,6 +45,9 @@
 			});
 	}
 
+	/**
+	 * Start the  QR code scanning process
+	 */
 	function startScan() {
 		if (!isScanning) {
 			return;
@@ -65,6 +71,9 @@
 		}
 	}
 
+	/**
+	 * Closes the camera
+	 */
 	function stopCamera() {
 		isScanning = false;
 		video.srcObject = null;
@@ -81,6 +90,9 @@
 		stopCamera();
 	});
 
+	/**
+	 * Run when video view is ready to receive the stream
+	 */
 	function onCanPlay() {
 		canvas.width = video.videoWidth;
 		canvas.height = video.videoHeight;

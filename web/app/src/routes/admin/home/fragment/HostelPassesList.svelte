@@ -56,6 +56,10 @@
 
 	const client = createClient(AdminService, transport);
 
+	/**
+	 * Fetches a paginated list of passes from the server based on hostel, date range, and status filters.
+	 * Handles error and updates the UI footer if the server request fails.
+	 */
 	async function fetchPassesFromServer() {
 		try {
 			let passIsOpen: boolean | undefined = undefined;
@@ -91,6 +95,9 @@
 		await fetchOutCount();
 	});
 
+	/**
+	 * Fetches the count of users currently checked out from a specific hostel based on filters.
+	 */
 	async function fetchOutCount() {
 		try {
 			let response = await client.getOutCountByHostel({
@@ -107,6 +114,9 @@
 		}
 	}
 
+	/**
+	 * Resets list data and triggers a fresh fetch of passes and counts when filters are updated.
+	 */
 	async function onFiltersChanged() {
 		passes = [];
 		nextPageToken = timestampNow();
@@ -114,11 +124,18 @@
 		await fetchOutCount();
 	}
 
+	/**
+	 * Initializes an intersection observer to detect when the user scrolls to the bottom of the list.
+	 */
 	function observeMorePasses() {
 		loadMorePassObserver.observe(loadMoreElem);
 		observing = true;
 	}
 
+	/**
+	 * Disables the scroll observer and updates the footer message when no more passes are available.
+	 * @param msg - The message to display at the bottom of the list (e.g., "End of list").
+	 */
 	function endOfListReached(msg: string) {
 		listFooterMessage = msg;
 		observing = false;
