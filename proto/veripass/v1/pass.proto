@@ -5,47 +5,83 @@ package veripass.v1;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
+// Pass represents an entry+exit interaction.
 message Pass {
+  // Unique ID to identify a pass
   string id = 1;
+  // User whos pass this belongs to
   string user_id = 2;
+  // Various types of passes
   enum PassType {
+    // No pass type
     PASS_TYPE_UNSPECIFIED = 0;
+    // Student is going to class
     PASS_TYPE_CLASS = 1;
+    // Student is going to market
     PASS_TYPE_MARKET = 2;
+    // Student is going to home
     PASS_TYPE_HOME = 3;
+    // Student is going to an event
     PASS_TYPE_EVENT = 4;
   }
+  // Type of pass
   PassType type = 3;
+  // When did the student went out of the hostel
   google.protobuf.Timestamp start_time = 4;
+  // When did the student come back to hostel
   optional google.protobuf.Timestamp end_time = 5;
+  // A ed25519 signed QR Code to verify
   string qr_code = 6;
 }
 
+// PassService defines RPCs that could be accessed by both Admin/Student (Not All)
 service PassService {
+  // Allows admins to manually create passes for student
+  // Does not allow any time manipulation
   rpc CreateManualPass(CreateManualPassRequest) returns (Pass);
+  // Can be accessed by both admin and student
   rpc GetPass(GetPassRequest) returns (Pass);
+  // Should only be accessed by student
+  // If there is currently an open pass for the user i.e. the user is out of hostel
+  // The student shouldn't be able to create another pass
   rpc GetLatestPassByUser(google.protobuf.Empty) returns (Pass);
+  // Should only be accessed by student
+  // Cursor based pagination
   rpc ListPassesByUser(ListPassesByUserRequest) returns (ListPassesByUserResponse);
 }
 
+// CreateManualPassRequest
 message CreateManualPassRequest {
+  // The user for whom the pass is being created
   string user_id = 2;
+  // Type of pass (unspecified not allowed)
   Pass.PassType type = 3;
 }
 
+// GetPassRequest
 message GetPassRequest {
+  // Unique ID of pass
   string id = 1;
 }
 
+// ListPassesByUserRequest
 message ListPassesByUserRequest {
+  // Page token, must be current time initially
   google.protobuf.Timestamp page_token = 2;
+  // Size of expected response
   int32 page_size = 3;
+  // Filters based on type of pass
   optional Pass.PassType type = 4;
+  // Filters based on create time of pass
   optional google.protobuf.Timestamp start_time = 5;
+  // Filters based on end time of pass
   optional google.protobuf.Timestamp end_time = 6;
 }
 
+// ListPassesByUserResponse
 message ListPassesByUserResponse {
+  // Passes based on filters
   repeated Pass passes = 1;
+  // Token to be sent in next request, zero/nil/null if no more records avaliable
   google.protobuf.Timestamp next_page_token = 2;
 }
