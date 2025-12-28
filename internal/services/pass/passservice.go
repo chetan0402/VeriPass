@@ -1,3 +1,4 @@
+// Package passservice implements PassService
 package passservice
 
 import (
@@ -20,6 +21,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// PassService represents PassService defined in proto
 type PassService struct {
 	client *ent.Client
 }
@@ -27,6 +29,7 @@ type PassService struct {
 var _ veripassv1connect.PassServiceHandler = (*PassService)(nil)
 var passPrivateKey ed25519.PrivateKey
 
+// New returns an instance of PassService and sets unexported fields
 func New(client *ent.Client, privateKey ed25519.PrivateKey) *PassService {
 	passPrivateKey = privateKey
 	return &PassService{
@@ -34,6 +37,7 @@ func New(client *ent.Client, privateKey ed25519.PrivateKey) *PassService {
 	}
 }
 
+// CreateManualPass implements veripassv1connect.PassServiceHandler
 func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[veripassv1.CreateManualPassRequest]) (*connect.Response[veripassv1.Pass], error) {
 	var (
 		adminEmail = veripass.GetEmailFromCtx(ctx)
@@ -70,6 +74,7 @@ func (s *PassService) CreateManualPass(ctx context.Context, r *connect.Request[v
 	}), nil
 }
 
+// GetLatestPassByUser implements veripassv1connect.PassServiceHandler
 func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Request[emptypb.Empty]) (*connect.Response[veripassv1.Pass], error) {
 	var (
 		userId = veripass.GetUsernamefromCtx(ctx)
@@ -96,6 +101,7 @@ func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Reques
 	return connect.NewResponse(protoPass), nil
 }
 
+// GetPass implements veripassv1connect.PassServiceHandler
 func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1.GetPassRequest]) (*connect.Response[veripassv1.Pass], error) {
 	var (
 		passId = r.Msg.Id
@@ -122,6 +128,9 @@ func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1
 	return connect.NewResponse(protoPass), nil
 }
 
+// ListPassesByUser implements veripassv1connect.PassServiceHandler
+//
+// Cursor based pagination is used on ID (UUIDv7)
 func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[veripassv1.ListPassesByUserRequest]) (*connect.Response[veripassv1.ListPassesByUserResponse], error) {
 	var (
 		userId    = veripass.GetUsernamefromCtx(ctx)
@@ -187,6 +196,7 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 	return connect.NewResponse(response), nil
 }
 
+// ToProto returns Pass entity
 func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 	passType := veripassv1.Pass_PASS_TYPE_UNSPECIFIED
 
@@ -222,6 +232,7 @@ func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 	return protoPass, nil
 }
 
+// ProtoPassTypeToEnt returns corresponding proto pass type or unspecified
 func ProtoPassTypeToEnt(passType veripassv1.Pass_PassType) pass.Type {
 	switch passType {
 	case veripassv1.Pass_PASS_TYPE_CLASS:

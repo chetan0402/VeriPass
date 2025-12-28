@@ -6,9 +6,12 @@ linters:
     - nilerr
     - unconvert
     - godoclint
+    - misspell
   
   settings:
     revive:
       rules:
       - name: package-comments
         disabled: true
+    godoclint:
+      default: all

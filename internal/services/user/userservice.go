@@ -1,3 +1,4 @@
+// Package userservice implements UserService
 package userservice
 
 import (
@@ -14,18 +15,21 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// UserService implements UserService defined in proto
 type UserService struct {
 	client *ent.Client
 }
 
 var _ veripassv1connect.UserServiceHandler = (*UserService)(nil)
 
+// New returns an instance of UserService and sets unexported fields
 func New(client *ent.Client) *UserService {
 	return &UserService{
 		client: client,
 	}
 }
 
+// Entry implements veripass veripassv1connect.UserServiceHandler
 func (s *UserService) Entry(ctx context.Context, r *connect.Request[veripassv1.EntryRequest]) (*connect.Response[emptypb.Empty], error) {
 	var (
 		passId = r.Msg.PassId
@@ -46,6 +50,7 @@ func (s *UserService) Entry(ctx context.Context, r *connect.Request[veripassv1.E
 	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
+// Exit implements veripassv1connect.UserServiceHandler
 func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.ExitRequest]) (*connect.Response[veripassv1.ExitResponse], error) {
 	var (
 		id       = r.Msg.Id
@@ -89,10 +94,12 @@ func (s *UserService) Exit(ctx context.Context, r *connect.Request[veripassv1.Ex
 	}), nil
 }
 
+// GetPhoto implements veripassv1connect.UserServiceHandler
 func (s *UserService) GetPhoto(context.Context, *connect.Request[veripassv1.GetPhotoRequest]) (*connect.Response[veripassv1.GetPhotoResponse], error) {
 	return nil, connect.NewError(connect.CodeInternal, nil)
 }
 
+// GetUser implements veripassv1connect.UserServiceHandler
 func (s *UserService) GetUser(ctx context.Context, r *connect.Request[veripassv1.GetUserRequest]) (*connect.Response[veripassv1.User], error) {
 	var (
 		id = r.Msg.GetId()

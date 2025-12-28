@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// ToUUIDv7Nil returns the minimum possible UUIDv7 for a given time.
 func ToUUIDv7Nil(t time.Time) uuid.UUID {
 	u := [16]byte{}
 
@@ -23,6 +24,7 @@ func ToUUIDv7Nil(t time.Time) uuid.UUID {
 	return u
 }
 
+// ToUUIDv7Max returns the maximum possible UUIDv7 for a given time.
 func ToUUIDv7Max(t time.Time) uuid.UUID {
 	u := ToUUIDv7Nil(t)
 

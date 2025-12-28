@@ -1,3 +1,4 @@
+// Package veripass
 package veripass
 
 import (
@@ -26,6 +27,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
+// Config defines the expected parameters by Run
 type Config struct {
 	DatabaseUrl    string
 	OAuthServer    string
@@ -34,6 +36,15 @@ type Config struct {
 	RedirectionURI string
 }
 
+// Run setups
+//
+// 1. Public-private key pair
+//
+// 2. Connect to Postgres
+//
+// 3. Conenct to OIDC provider
+//
+// Registers all required APIs
 func Run(config *Config) {
 	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
