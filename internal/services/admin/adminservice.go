@@ -1,3 +1,4 @@
+// Package adminservice implements AdminService
 package adminservice
 
 import (
@@ -18,6 +19,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// AdminService represents AdminService defined in proto
 type AdminService struct {
 	client    *ent.Client
 	publicKey ed25519.PublicKey
@@ -25,6 +27,7 @@ type AdminService struct {
 
 var _ veripassv1connect.AdminServiceHandler = (*AdminService)(nil)
 
+// New returns an instnace of AdminService and sets unexported fields
 func New(client *ent.Client, publicKey ed25519.PublicKey) *AdminService {
 	return &AdminService{
 		client:    client,
@@ -40,6 +43,8 @@ func (s *AdminService) GetPublicKey(context.Context, *connect.Request[emptypb.Em
 }
 
 // GetAllPassesByHostel implements veripassv1connect.AdminServiceHandler.
+//
+// Cursor based pagination is used on ID (UUIDv7)
 func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Request[veripassv1.GetAllPassesByHostelRequest]) (*connect.Response[veripassv1.GetAllPassesByHostelResponse], error) {
 	var (
 		_            = r.Msg.Hostel
