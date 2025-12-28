@@ -23,12 +23,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Admin can be guard/caretaker/warden.
 type Admin struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Hostel        string                 `protobuf:"bytes,3,opt,name=hostel,proto3" json:"hostel,omitempty"`
-	CanAddPass    bool                   `protobuf:"varint,4,opt,name=can_add_pass,json=canAddPass,proto3" json:"can_add_pass,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Email is email of admin registered with the university.
+	Email string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	// Name can be any form of name i.e. first name/last name/full name.
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Hostel is the hostel of which the admin belongs to and can access records of.
+	Hostel string `protobuf:"bytes,3,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	// Whether or not admin can manually create pass for students.
+	CanAddPass    bool `protobuf:"varint,4,opt,name=can_add_pass,json=canAddPass,proto3" json:"can_add_pass,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -91,15 +96,25 @@ func (x *Admin) GetCanAddPass() bool {
 	return false
 }
 
+// GetAllPassesByHostelRequest
 type GetAllPassesByHostelRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Hostel        string                 `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
-	StartTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime       *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
-	PassIsOpen    *bool                  `protobuf:"varint,4,opt,name=pass_is_open,json=passIsOpen,proto3,oneof" json:"pass_is_open,omitempty"`
-	Type          Pass_PassType          `protobuf:"varint,5,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
-	PageSize      int32                  `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	PageToken     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"` // Based on start_time
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Hostel filters on hostel of passes.
+	Hostel string `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	// Start time filters on create time of passes.
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	// End time filters on create time of passes.
+	EndTime *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
+	// Filters whether the students are currently out or not.
+	PassIsOpen *bool `protobuf:"varint,4,opt,name=pass_is_open,json=passIsOpen,proto3,oneof" json:"pass_is_open,omitempty"`
+	// Filters on which type of pass (unspecified if all)
+	Type Pass_PassType `protobuf:"varint,5,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
+	// Size of response
+	PageSize int32 `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	// Based on start_time
+	// Pagination token
+	// Set to current time initially
+	PageToken     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -183,10 +198,13 @@ func (x *GetAllPassesByHostelRequest) GetPageToken() *timestamppb.Timestamp {
 	return nil
 }
 
+// GetAllPassesByHostelResponse
 type GetAllPassesByHostelResponse struct {
-	state         protoimpl.MessageState                           `protogen:"open.v1"`
-	Passes        []*GetAllPassesByHostelResponse_InfoIncludedPass `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
-	NextPageToken *timestamppb.Timestamp                           `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Passes
+	Passes []*GetAllPassesByHostelResponse_InfoIncludedPass `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
+	// Token to send for next request, will be zero/nil/null if no further records avaliable
+	NextPageToken *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -235,9 +253,11 @@ func (x *GetAllPassesByHostelResponse) GetNextPageToken() *timestamppb.Timestamp
 	return nil
 }
 
+// GetPublicKeyResponse
 type GetPublicKeyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PublicKey     []byte                 `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ed25519 public key in raw bytes format
+	PublicKey     []byte `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -279,12 +299,17 @@ func (x *GetPublicKeyResponse) GetPublicKey() []byte {
 	return nil
 }
 
+// GetOutCountByHostelRequest
 type GetOutCountByHostelRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Hostel        string                 `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
-	StartTime     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime       *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
-	Type          Pass_PassType          `protobuf:"varint,4,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Hostel
+	Hostel string `protobuf:"bytes,1,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	// Start time filters on create time of passes.
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	// End time filters on create time of passes.
+	EndTime *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
+	// Filters on which type of pass (unspecified if all)
+	Type          Pass_PassType `protobuf:"varint,4,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -347,9 +372,11 @@ func (x *GetOutCountByHostelRequest) GetType() Pass_PassType {
 	return Pass_PASS_TYPE_UNSPECIFIED
 }
 
+// GetOutCountByHostelResponse
 type GetOutCountByHostelResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Out           int64                  `protobuf:"varint,1,opt,name=out,proto3" json:"out,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Number of students which are currently out of hostel based on the filters.
+	Out           int64 `protobuf:"varint,1,opt,name=out,proto3" json:"out,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -391,11 +418,15 @@ func (x *GetOutCountByHostelResponse) GetOut() int64 {
 	return 0
 }
 
+// For including additional information for each pass.
 type GetAllPassesByHostelResponse_InfoIncludedPass struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Pass          *Pass                  `protobuf:"bytes,1,opt,name=pass,proto3" json:"pass,omitempty"`
-	StudentName   string                 `protobuf:"bytes,2,opt,name=student_name,json=studentName,proto3" json:"student_name,omitempty"`
-	StudentRoom   string                 `protobuf:"bytes,3,opt,name=student_room,json=studentRoom,proto3" json:"student_room,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The pass itself
+	Pass *Pass `protobuf:"bytes,1,opt,name=pass,proto3" json:"pass,omitempty"`
+	// Student's name
+	StudentName string `protobuf:"bytes,2,opt,name=student_name,json=studentName,proto3" json:"student_name,omitempty"`
+	// Student's room
+	StudentRoom   string `protobuf:"bytes,3,opt,name=student_room,json=studentRoom,proto3" json:"student_room,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

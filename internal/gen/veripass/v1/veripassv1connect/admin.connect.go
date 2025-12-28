@@ -49,9 +49,14 @@ const (
 
 // AdminServiceClient is a client for the veripass.v1.AdminService service.
 type AdminServiceClient interface {
+	// Returns the Admin for given token in cookies.
 	GetAdmin(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Admin], error)
+	// Returns list of passes based on hostel of admin.
+	// This RPC follows cursor based pagination.
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
+	// Returns the ed25519 public key required to verify signs of passes.
 	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
+	// Returns number of students which are current out of hostel of admin.
 	GetOutCountByHostel(context.Context, *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error)
 }
 
@@ -123,9 +128,14 @@ func (c *adminServiceClient) GetOutCountByHostel(ctx context.Context, req *conne
 
 // AdminServiceHandler is an implementation of the veripass.v1.AdminService service.
 type AdminServiceHandler interface {
+	// Returns the Admin for given token in cookies.
 	GetAdmin(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Admin], error)
+	// Returns list of passes based on hostel of admin.
+	// This RPC follows cursor based pagination.
 	GetAllPassesByHostel(context.Context, *connect.Request[v1.GetAllPassesByHostelRequest]) (*connect.Response[v1.GetAllPassesByHostelResponse], error)
+	// Returns the ed25519 public key required to verify signs of passes.
 	GetPublicKey(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPublicKeyResponse], error)
+	// Returns number of students which are current out of hostel of admin.
 	GetOutCountByHostel(context.Context, *connect.Request[v1.GetOutCountByHostelRequest]) (*connect.Response[v1.GetOutCountByHostelResponse], error)
 }
 

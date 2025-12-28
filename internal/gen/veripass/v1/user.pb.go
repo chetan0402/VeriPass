@@ -22,14 +22,20 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Types of passes
 type ExitRequest_ExitType int32
 
 const (
+	// No pass type
 	ExitRequest_EXIT_TYPE_UNSPECIFIED ExitRequest_ExitType = 0
-	ExitRequest_EXIT_TYPE_CLASS       ExitRequest_ExitType = 1
-	ExitRequest_EXIT_TYPE_MARKET      ExitRequest_ExitType = 2
-	ExitRequest_EXIT_TYPE_HOME        ExitRequest_ExitType = 3
-	ExitRequest_EXIT_TYPE_EVENT       ExitRequest_ExitType = 4
+	// Student is going to class
+	ExitRequest_EXIT_TYPE_CLASS ExitRequest_ExitType = 1
+	// Student is going to market
+	ExitRequest_EXIT_TYPE_MARKET ExitRequest_ExitType = 2
+	// Student is going to home
+	ExitRequest_EXIT_TYPE_HOME ExitRequest_ExitType = 3
+	// Student is going to event
+	ExitRequest_EXIT_TYPE_EVENT ExitRequest_ExitType = 4
 )
 
 // Enum value maps for ExitRequest_ExitType.
@@ -77,13 +83,19 @@ func (ExitRequest_ExitType) EnumDescriptor() ([]byte, []int) {
 	return file_veripass_v1_user_proto_rawDescGZIP(), []int{2, 0}
 }
 
+// User is student
 type User struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Room          string                 `protobuf:"bytes,3,opt,name=room,proto3" json:"room,omitempty"`
-	Hostel        string                 `protobuf:"bytes,4,opt,name=hostel,proto3" json:"hostel,omitempty"`
-	Phone         string                 `protobuf:"bytes,5,opt,name=phone,proto3" json:"phone,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Scholar number of student
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Name of student
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Room of student
+	Room string `protobuf:"bytes,3,opt,name=room,proto3" json:"room,omitempty"`
+	// Hostel of student
+	Hostel string `protobuf:"bytes,4,opt,name=hostel,proto3" json:"hostel,omitempty"`
+	// Phone number of student
+	Phone         string `protobuf:"bytes,5,opt,name=phone,proto3" json:"phone,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -153,9 +165,11 @@ func (x *User) GetPhone() string {
 	return ""
 }
 
+// EntryRequest
 type EntryRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PassId        string                 `protobuf:"bytes,1,opt,name=pass_id,json=passId,proto3" json:"pass_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Unique ID of pass
+	PassId        string `protobuf:"bytes,1,opt,name=pass_id,json=passId,proto3" json:"pass_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -197,10 +211,13 @@ func (x *EntryRequest) GetPassId() string {
 	return ""
 }
 
+// ExitRequest
 type ExitRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Type          ExitRequest_ExitType   `protobuf:"varint,2,opt,name=type,proto3,enum=veripass.v1.ExitRequest_ExitType" json:"type,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Unique ID of pass
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Type of pass
+	Type          ExitRequest_ExitType `protobuf:"varint,2,opt,name=type,proto3,enum=veripass.v1.ExitRequest_ExitType" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -249,9 +266,11 @@ func (x *ExitRequest) GetType() ExitRequest_ExitType {
 	return ExitRequest_EXIT_TYPE_UNSPECIFIED
 }
 
+// ExitResponse
 type ExitResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PassId        string                 `protobuf:"bytes,1,opt,name=pass_id,json=passId,proto3" json:"pass_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Unique ID of pass
+	PassId        string `protobuf:"bytes,1,opt,name=pass_id,json=passId,proto3" json:"pass_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -293,9 +312,12 @@ func (x *ExitResponse) GetPassId() string {
 	return ""
 }
 
+// GetUserRequest
 type GetUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Not set if student is accessing to get their own User entity
+	// Set to unique id of student to get their information by admins
+	Id            *string `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -337,9 +359,12 @@ func (x *GetUserRequest) GetId() string {
 	return ""
 }
 
+// GetPhotoRequest
 type GetPhotoRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Not set if student is accessing to get their own User entity
+	// Set to unique id of student to get their information by admins
+	Id            *string `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -381,9 +406,11 @@ func (x *GetPhotoRequest) GetId() string {
 	return ""
 }
 
+// GetPhotoResponse
 type GetPhotoResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Photo         []byte                 `protobuf:"bytes,1,opt,name=photo,proto3" json:"photo,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Photo of user in raw bytes format
+	Photo         []byte `protobuf:"bytes,1,opt,name=photo,proto3" json:"photo,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

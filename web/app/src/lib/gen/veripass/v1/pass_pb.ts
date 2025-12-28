@@ -15,35 +15,49 @@ export const file_veripass_v1_pass: GenFile = /*@__PURE__*/
   fileDesc("ChZ2ZXJpcGFzcy92MS9wYXNzLnByb3RvEgt2ZXJpcGFzcy52MSLJAgoEUGFzcxIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEigKBHR5cGUYAyABKA4yGi52ZXJpcGFzcy52MS5QYXNzLlBhc3NUeXBlEi4KCnN0YXJ0X3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjEKCGVuZF90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEg8KB3FyX2NvZGUYBiABKAkieQoIUGFzc1R5cGUSGQoVUEFTU19UWVBFX1VOU1BFQ0lGSUVEEAASEwoPUEFTU19UWVBFX0NMQVNTEAESFAoQUEFTU19UWVBFX01BUktFVBACEhIKDlBBU1NfVFlQRV9IT01FEAMSEwoPUEFTU19UWVBFX0VWRU5UEARCCwoJX2VuZF90aW1lIlQKF0NyZWF0ZU1hbnVhbFBhc3NSZXF1ZXN0Eg8KB3VzZXJfaWQYAiABKAkSKAoEdHlwZRgDIAEoDjIaLnZlcmlwYXNzLnYxLlBhc3MuUGFzc1R5cGUiHAoOR2V0UGFzc1JlcXVlc3QSCgoCaWQYASABKAkimAIKF0xpc3RQYXNzZXNCeVVzZXJSZXF1ZXN0Ei4KCnBhZ2VfdG9rZW4YAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhEKCXBhZ2Vfc2l6ZRgDIAEoBRItCgR0eXBlGAQgASgOMhoudmVyaXBhc3MudjEuUGFzcy5QYXNzVHlwZUgAiAEBEjMKCnN0YXJ0X3RpbWUYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSAGIAQESMQoIZW5kX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSAKIAQFCBwoFX3R5cGVCDQoLX3N0YXJ0X3RpbWVCCwoJX2VuZF90aW1lInIKGExpc3RQYXNzZXNCeVVzZXJSZXNwb25zZRIhCgZwYXNzZXMYASADKAsyES52ZXJpcGFzcy52MS5QYXNzEjMKD25leHRfcGFnZV90b2tlbhgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAyuAIKC1Bhc3NTZXJ2aWNlEksKEENyZWF0ZU1hbnVhbFBhc3MSJC52ZXJpcGFzcy52MS5DcmVhdGVNYW51YWxQYXNzUmVxdWVzdBoRLnZlcmlwYXNzLnYxLlBhc3MSOQoHR2V0UGFzcxIbLnZlcmlwYXNzLnYxLkdldFBhc3NSZXF1ZXN0GhEudmVyaXBhc3MudjEuUGFzcxJAChNHZXRMYXRlc3RQYXNzQnlVc2VyEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhEudmVyaXBhc3MudjEuUGFzcxJfChBMaXN0UGFzc2VzQnlVc2VyEiQudmVyaXBhc3MudjEuTGlzdFBhc3Nlc0J5VXNlclJlcXVlc3QaJS52ZXJpcGFzcy52MS5MaXN0UGFzc2VzQnlVc2VyUmVzcG9uc2VCrQEKD2NvbS52ZXJpcGFzcy52MUIJUGFzc1Byb3RvUAFaQmdpdGh1Yi5jb20vY2hldGFuMDQwMi92ZXJpcGFzcy9pbnRlcm5hbC9nZW4vdmVyaXBhc3MvdjE7dmVyaXBhc3N2MaICA1ZYWKoCC1ZlcmlwYXNzLlYxygILVmVyaXBhc3NcVjHiAhdWZXJpcGFzc1xWMVxHUEJNZXRhZGF0YeoCDFZlcmlwYXNzOjpWMWIGcHJvdG8z", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
+ * Pass represents an entry+exit interaction.
+ *
  * @generated from message veripass.v1.Pass
  */
 export type Pass = Message<"veripass.v1.Pass"> & {
   /**
+   * Unique ID to identify a pass
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * User whos pass this belongs to
+   *
    * @generated from field: string user_id = 2;
    */
   userId: string;
 
   /**
+   * Type of pass
+   *
    * @generated from field: veripass.v1.Pass.PassType type = 3;
    */
   type: Pass_PassType;
 
   /**
+   * When did the student went out of the hostel
+   *
    * @generated from field: google.protobuf.Timestamp start_time = 4;
    */
   startTime?: Timestamp;
 
   /**
+   * When did the student come back to hostel
+   *
    * @generated from field: optional google.protobuf.Timestamp end_time = 5;
    */
   endTime?: Timestamp;
 
   /**
+   * A ed25519 signed QR Code to verify
+   *
    * @generated from field: string qr_code = 6;
    */
   qrCode: string;
@@ -57,30 +71,42 @@ export const PassSchema: GenMessage<Pass> = /*@__PURE__*/
   messageDesc(file_veripass_v1_pass, 0);
 
 /**
+ * Various types of passes
+ *
  * @generated from enum veripass.v1.Pass.PassType
  */
 export enum Pass_PassType {
   /**
+   * No pass type
+   *
    * @generated from enum value: PASS_TYPE_UNSPECIFIED = 0;
    */
   UNSPECIFIED = 0,
 
   /**
+   * Student is going to class
+   *
    * @generated from enum value: PASS_TYPE_CLASS = 1;
    */
   CLASS = 1,
 
   /**
+   * Student is going to market
+   *
    * @generated from enum value: PASS_TYPE_MARKET = 2;
    */
   MARKET = 2,
 
   /**
+   * Student is going to home
+   *
    * @generated from enum value: PASS_TYPE_HOME = 3;
    */
   HOME = 3,
 
   /**
+   * Student is going to an event
+   *
    * @generated from enum value: PASS_TYPE_EVENT = 4;
    */
   EVENT = 4,
@@ -93,15 +119,21 @@ export const Pass_PassTypeSchema: GenEnum<Pass_PassType> = /*@__PURE__*/
   enumDesc(file_veripass_v1_pass, 0, 0);
 
 /**
+ * CreateManualPassRequest
+ *
  * @generated from message veripass.v1.CreateManualPassRequest
  */
 export type CreateManualPassRequest = Message<"veripass.v1.CreateManualPassRequest"> & {
   /**
+   * The user for whom the pass is being created
+   *
    * @generated from field: string user_id = 2;
    */
   userId: string;
 
   /**
+   * Type of pass (unspecified not allowed)
+   *
    * @generated from field: veripass.v1.Pass.PassType type = 3;
    */
   type: Pass_PassType;
@@ -115,10 +147,14 @@ export const CreateManualPassRequestSchema: GenMessage<CreateManualPassRequest> 
   messageDesc(file_veripass_v1_pass, 1);
 
 /**
+ * GetPassRequest
+ *
  * @generated from message veripass.v1.GetPassRequest
  */
 export type GetPassRequest = Message<"veripass.v1.GetPassRequest"> & {
   /**
+   * Unique ID of pass
+   *
    * @generated from field: string id = 1;
    */
   id: string;
@@ -132,30 +168,42 @@ export const GetPassRequestSchema: GenMessage<GetPassRequest> = /*@__PURE__*/
   messageDesc(file_veripass_v1_pass, 2);
 
 /**
+ * ListPassesByUserRequest
+ *
  * @generated from message veripass.v1.ListPassesByUserRequest
  */
 export type ListPassesByUserRequest = Message<"veripass.v1.ListPassesByUserRequest"> & {
   /**
+   * Page token, must be current time initially
+   *
    * @generated from field: google.protobuf.Timestamp page_token = 2;
    */
   pageToken?: Timestamp;
 
   /**
+   * Size of expected response
+   *
    * @generated from field: int32 page_size = 3;
    */
   pageSize: number;
 
   /**
+   * Filters based on type of pass
+   *
    * @generated from field: optional veripass.v1.Pass.PassType type = 4;
    */
   type?: Pass_PassType;
 
   /**
+   * Filters based on create time of pass
+   *
    * @generated from field: optional google.protobuf.Timestamp start_time = 5;
    */
   startTime?: Timestamp;
 
   /**
+   * Filters based on end time of pass
+   *
    * @generated from field: optional google.protobuf.Timestamp end_time = 6;
    */
   endTime?: Timestamp;
@@ -169,15 +217,21 @@ export const ListPassesByUserRequestSchema: GenMessage<ListPassesByUserRequest> 
   messageDesc(file_veripass_v1_pass, 3);
 
 /**
+ * ListPassesByUserResponse
+ *
  * @generated from message veripass.v1.ListPassesByUserResponse
  */
 export type ListPassesByUserResponse = Message<"veripass.v1.ListPassesByUserResponse"> & {
   /**
+   * Passes based on filters
+   *
    * @generated from field: repeated veripass.v1.Pass passes = 1;
    */
   passes: Pass[];
 
   /**
+   * Token to be sent in next request, zero/nil/null if no more records avaliable
+   *
    * @generated from field: google.protobuf.Timestamp next_page_token = 2;
    */
   nextPageToken?: Timestamp;
@@ -191,10 +245,15 @@ export const ListPassesByUserResponseSchema: GenMessage<ListPassesByUserResponse
   messageDesc(file_veripass_v1_pass, 4);
 
 /**
+ * PassService defines RPCs that could be accessed by both Admin/Student (Not All)
+ *
  * @generated from service veripass.v1.PassService
  */
 export const PassService: GenService<{
   /**
+   * Allows admins to manually create passes for student
+   * Does not allow any time manipulation
+   *
    * @generated from rpc veripass.v1.PassService.CreateManualPass
    */
   createManualPass: {
@@ -203,6 +262,8 @@ export const PassService: GenService<{
     output: typeof PassSchema;
   },
   /**
+   * Can be accessed by both admin and student
+   *
    * @generated from rpc veripass.v1.PassService.GetPass
    */
   getPass: {
@@ -211,6 +272,10 @@ export const PassService: GenService<{
     output: typeof PassSchema;
   },
   /**
+   * Should only be accessed by student
+   * If there is currently an open pass for the user i.e. the user is out of hostel
+   * The student shouldn't be able to create another pass
+   *
    * @generated from rpc veripass.v1.PassService.GetLatestPassByUser
    */
   getLatestPassByUser: {
@@ -219,6 +284,9 @@ export const PassService: GenService<{
     output: typeof PassSchema;
   },
   /**
+   * Should only be accessed by student
+   * Cursor based pagination
+   *
    * @generated from rpc veripass.v1.PassService.ListPassesByUser
    */
   listPassesByUser: {

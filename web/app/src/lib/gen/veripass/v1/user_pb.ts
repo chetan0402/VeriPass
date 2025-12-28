@@ -15,30 +15,42 @@ export const file_veripass_v1_user: GenFile = /*@__PURE__*/
   fileDesc("ChZ2ZXJpcGFzcy92MS91c2VyLnByb3RvEgt2ZXJpcGFzcy52MSJNCgRVc2VyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEcm9vbRgDIAEoCRIOCgZob3N0ZWwYBCABKAkSDQoFcGhvbmUYBSABKAkiHwoMRW50cnlSZXF1ZXN0Eg8KB3Bhc3NfaWQYASABKAkixQEKC0V4aXRSZXF1ZXN0EgoKAmlkGAEgASgJEi8KBHR5cGUYAiABKA4yIS52ZXJpcGFzcy52MS5FeGl0UmVxdWVzdC5FeGl0VHlwZSJ5CghFeGl0VHlwZRIZChVFWElUX1RZUEVfVU5TUEVDSUZJRUQQABITCg9FWElUX1RZUEVfQ0xBU1MQARIUChBFWElUX1RZUEVfTUFSS0VUEAISEgoORVhJVF9UWVBFX0hPTUUQAxITCg9FWElUX1RZUEVfRVZFTlQQBCIfCgxFeGl0UmVzcG9uc2USDwoHcGFzc19pZBgBIAEoCSIoCg5HZXRVc2VyUmVxdWVzdBIPCgJpZBgBIAEoCUgAiAEBQgUKA19pZCIpCg9HZXRQaG90b1JlcXVlc3QSDwoCaWQYASABKAlIAIgBAUIFCgNfaWQiIQoQR2V0UGhvdG9SZXNwb25zZRINCgVwaG90bxgBIAEoDDKKAgoLVXNlclNlcnZpY2USOgoFRW50cnkSGS52ZXJpcGFzcy52MS5FbnRyeVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSOwoERXhpdBIYLnZlcmlwYXNzLnYxLkV4aXRSZXF1ZXN0GhkudmVyaXBhc3MudjEuRXhpdFJlc3BvbnNlEkcKCEdldFBob3RvEhwudmVyaXBhc3MudjEuR2V0UGhvdG9SZXF1ZXN0Gh0udmVyaXBhc3MudjEuR2V0UGhvdG9SZXNwb25zZRI5CgdHZXRVc2VyEhsudmVyaXBhc3MudjEuR2V0VXNlclJlcXVlc3QaES52ZXJpcGFzcy52MS5Vc2VyQq0BCg9jb20udmVyaXBhc3MudjFCCVVzZXJQcm90b1ABWkJnaXRodWIuY29tL2NoZXRhbjA0MDIvdmVyaXBhc3MvaW50ZXJuYWwvZ2VuL3ZlcmlwYXNzL3YxO3ZlcmlwYXNzdjGiAgNWWFiqAgtWZXJpcGFzcy5WMcoCC1ZlcmlwYXNzXFYx4gIXVmVyaXBhc3NcVjFcR1BCTWV0YWRhdGHqAgxWZXJpcGFzczo6VjFiBnByb3RvMw", [file_google_protobuf_empty]);
 
 /**
+ * User is student
+ *
  * @generated from message veripass.v1.User
  */
 export type User = Message<"veripass.v1.User"> & {
   /**
+   * Scholar number of student
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * Name of student
+   *
    * @generated from field: string name = 2;
    */
   name: string;
 
   /**
+   * Room of student
+   *
    * @generated from field: string room = 3;
    */
   room: string;
 
   /**
+   * Hostel of student
+   *
    * @generated from field: string hostel = 4;
    */
   hostel: string;
 
   /**
+   * Phone number of student
+   *
    * @generated from field: string phone = 5;
    */
   phone: string;
@@ -52,10 +64,14 @@ export const UserSchema: GenMessage<User> = /*@__PURE__*/
   messageDesc(file_veripass_v1_user, 0);
 
 /**
+ * EntryRequest
+ *
  * @generated from message veripass.v1.EntryRequest
  */
 export type EntryRequest = Message<"veripass.v1.EntryRequest"> & {
   /**
+   * Unique ID of pass
+   *
    * @generated from field: string pass_id = 1;
    */
   passId: string;
@@ -69,15 +85,21 @@ export const EntryRequestSchema: GenMessage<EntryRequest> = /*@__PURE__*/
   messageDesc(file_veripass_v1_user, 1);
 
 /**
+ * ExitRequest
+ *
  * @generated from message veripass.v1.ExitRequest
  */
 export type ExitRequest = Message<"veripass.v1.ExitRequest"> & {
   /**
+   * Unique ID of pass
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * Type of pass
+   *
    * @generated from field: veripass.v1.ExitRequest.ExitType type = 2;
    */
   type: ExitRequest_ExitType;
@@ -91,30 +113,42 @@ export const ExitRequestSchema: GenMessage<ExitRequest> = /*@__PURE__*/
   messageDesc(file_veripass_v1_user, 2);
 
 /**
+ * Types of passes
+ *
  * @generated from enum veripass.v1.ExitRequest.ExitType
  */
 export enum ExitRequest_ExitType {
   /**
+   * No pass type
+   *
    * @generated from enum value: EXIT_TYPE_UNSPECIFIED = 0;
    */
   UNSPECIFIED = 0,
 
   /**
+   * Student is going to class
+   *
    * @generated from enum value: EXIT_TYPE_CLASS = 1;
    */
   CLASS = 1,
 
   /**
+   * Student is going to market
+   *
    * @generated from enum value: EXIT_TYPE_MARKET = 2;
    */
   MARKET = 2,
 
   /**
+   * Student is going to home
+   *
    * @generated from enum value: EXIT_TYPE_HOME = 3;
    */
   HOME = 3,
 
   /**
+   * Student is going to event
+   *
    * @generated from enum value: EXIT_TYPE_EVENT = 4;
    */
   EVENT = 4,
@@ -127,10 +161,14 @@ export const ExitRequest_ExitTypeSchema: GenEnum<ExitRequest_ExitType> = /*@__PU
   enumDesc(file_veripass_v1_user, 2, 0);
 
 /**
+ * ExitResponse
+ *
  * @generated from message veripass.v1.ExitResponse
  */
 export type ExitResponse = Message<"veripass.v1.ExitResponse"> & {
   /**
+   * Unique ID of pass
+   *
    * @generated from field: string pass_id = 1;
    */
   passId: string;
@@ -144,10 +182,15 @@ export const ExitResponseSchema: GenMessage<ExitResponse> = /*@__PURE__*/
   messageDesc(file_veripass_v1_user, 3);
 
 /**
+ * GetUserRequest
+ *
  * @generated from message veripass.v1.GetUserRequest
  */
 export type GetUserRequest = Message<"veripass.v1.GetUserRequest"> & {
   /**
+   * Not set if student is accessing to get their own User entity
+   * Set to unique id of student to get their information by admins
+   *
    * @generated from field: optional string id = 1;
    */
   id?: string;
@@ -161,10 +204,15 @@ export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
   messageDesc(file_veripass_v1_user, 4);
 
 /**
+ * GetPhotoRequest
+ *
  * @generated from message veripass.v1.GetPhotoRequest
  */
 export type GetPhotoRequest = Message<"veripass.v1.GetPhotoRequest"> & {
   /**
+   * Not set if student is accessing to get their own User entity
+   * Set to unique id of student to get their information by admins
+   *
    * @generated from field: optional string id = 1;
    */
   id?: string;
@@ -178,10 +226,14 @@ export const GetPhotoRequestSchema: GenMessage<GetPhotoRequest> = /*@__PURE__*/
   messageDesc(file_veripass_v1_user, 5);
 
 /**
+ * GetPhotoResponse
+ *
  * @generated from message veripass.v1.GetPhotoResponse
  */
 export type GetPhotoResponse = Message<"veripass.v1.GetPhotoResponse"> & {
   /**
+   * Photo of user in raw bytes format
+   *
    * @generated from field: bytes photo = 1;
    */
   photo: Uint8Array;
@@ -195,10 +247,15 @@ export const GetPhotoResponseSchema: GenMessage<GetPhotoResponse> = /*@__PURE__*
   messageDesc(file_veripass_v1_user, 6);
 
 /**
+ * UserService defines RPCs which are called by student mostly.
+ *
  * @generated from service veripass.v1.UserService
  */
 export const UserService: GenService<{
   /**
+   * Called when student comes into the hostel
+   * Clients are supposed to call latest pass first to have all the details if required
+   *
    * @generated from rpc veripass.v1.UserService.Entry
    */
   entry: {
@@ -207,6 +264,9 @@ export const UserService: GenService<{
     output: typeof EmptySchema;
   },
   /**
+   * Called when student goes out of hostel
+   * Equivalent to student writing in the register offline
+   *
    * @generated from rpc veripass.v1.UserService.Exit
    */
   exit: {
@@ -215,6 +275,9 @@ export const UserService: GenService<{
     output: typeof ExitResponseSchema;
   },
   /**
+   * Returns photo of user
+   * Can be accessed by both admin and student
+   *
    * @generated from rpc veripass.v1.UserService.GetPhoto
    */
   getPhoto: {
@@ -223,6 +286,9 @@ export const UserService: GenService<{
     output: typeof GetPhotoResponseSchema;
   },
   /**
+   * Returns user
+   * Can be accessed by both admin and student
+   *
    * @generated from rpc veripass.v1.UserService.GetUser
    */
   getUser: {
