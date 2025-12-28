@@ -88,12 +88,7 @@ func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Reques
 		return nil, err
 	}
 
-	protoPass, err := ToProto(entPass)
-	if err != nil {
-		return nil, err
-	}
-
-	return connect.NewResponse(protoPass), nil
+	return connect.NewResponse(ToProto(entPass)), nil
 }
 
 func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1.GetPassRequest]) (*connect.Response[veripassv1.Pass], error) {
@@ -114,12 +109,7 @@ func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1
 		return nil, err
 	}
 
-	protoPass, err := ToProto(pass)
-	if err != nil {
-		return nil, err
-	}
-
-	return connect.NewResponse(protoPass), nil
+	return connect.NewResponse(ToProto(pass)), nil
 }
 
 func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[veripassv1.ListPassesByUserRequest]) (*connect.Response[veripassv1.ListPassesByUserResponse], error) {
@@ -177,17 +167,13 @@ func (s *PassService) ListPassesByUser(ctx context.Context, r *connect.Request[v
 		if index == int(pageSize) {
 			break
 		}
-		protoPass, err := ToProto(pass)
-		if err != nil {
-			return nil, err
-		}
-		response.Passes = append(response.Passes, protoPass)
+		response.Passes = append(response.Passes, ToProto(pass))
 	}
 
 	return connect.NewResponse(response), nil
 }
 
-func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
+func ToProto(entPass *ent.Pass) *veripassv1.Pass {
 	passType := veripassv1.Pass_PASS_TYPE_UNSPECIFIED
 
 	switch entPass.Type {
@@ -219,7 +205,7 @@ func ToProto(entPass *ent.Pass) (*veripassv1.Pass, error) {
 		protoPass.EndTime = timestamppb.New(entPass.EndTime)
 	}
 
-	return protoPass, nil
+	return protoPass
 }
 
 func ProtoPassTypeToEnt(passType veripassv1.Pass_PassType) pass.Type {
