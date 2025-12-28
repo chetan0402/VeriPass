@@ -99,12 +99,8 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 		if err != nil {
 			return nil, err
 		}
-		protoPass, err := passservice.ToProto(pass)
-		if err != nil {
-			return nil, err
-		}
 		response.Passes = append(response.Passes, &veripassv1.GetAllPassesByHostelResponse_InfoIncludedPass{
-			Pass:        protoPass,
+			Pass:        passservice.ToProto(pass),
 			StudentName: user.Name,
 			StudentRoom: user.Room,
 		})
