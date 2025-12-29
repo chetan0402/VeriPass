@@ -46,9 +46,17 @@ const (
 
 // UserServiceClient is a client for the veripass.v1.UserService service.
 type UserServiceClient interface {
+	// Called when student comes into the hostel
+	// Clients are supposed to call latest pass first to have all the details if required
 	Entry(context.Context, *connect.Request[v1.EntryRequest]) (*connect.Response[emptypb.Empty], error)
+	// Called when student goes out of hostel
+	// Equivalent to student writing in the register offline
 	Exit(context.Context, *connect.Request[v1.ExitRequest]) (*connect.Response[v1.ExitResponse], error)
+	// Returns photo of user
+	// Can be accessed by both admin and student
 	GetPhoto(context.Context, *connect.Request[v1.GetPhotoRequest]) (*connect.Response[v1.GetPhotoResponse], error)
+	// Returns user
+	// Can be accessed by both admin and student
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error)
 }
 
@@ -120,9 +128,17 @@ func (c *userServiceClient) GetUser(ctx context.Context, req *connect.Request[v1
 
 // UserServiceHandler is an implementation of the veripass.v1.UserService service.
 type UserServiceHandler interface {
+	// Called when student comes into the hostel
+	// Clients are supposed to call latest pass first to have all the details if required
 	Entry(context.Context, *connect.Request[v1.EntryRequest]) (*connect.Response[emptypb.Empty], error)
+	// Called when student goes out of hostel
+	// Equivalent to student writing in the register offline
 	Exit(context.Context, *connect.Request[v1.ExitRequest]) (*connect.Response[v1.ExitResponse], error)
+	// Returns photo of user
+	// Can be accessed by both admin and student
 	GetPhoto(context.Context, *connect.Request[v1.GetPhotoRequest]) (*connect.Response[v1.GetPhotoResponse], error)
+	// Returns user
+	// Can be accessed by both admin and student
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error)
 }
 

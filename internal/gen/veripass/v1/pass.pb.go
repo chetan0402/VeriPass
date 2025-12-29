@@ -23,14 +23,20 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Various types of passes
 type Pass_PassType int32
 
 const (
+	// No pass type
 	Pass_PASS_TYPE_UNSPECIFIED Pass_PassType = 0
-	Pass_PASS_TYPE_CLASS       Pass_PassType = 1
-	Pass_PASS_TYPE_MARKET      Pass_PassType = 2
-	Pass_PASS_TYPE_HOME        Pass_PassType = 3
-	Pass_PASS_TYPE_EVENT       Pass_PassType = 4
+	// Student is going to class
+	Pass_PASS_TYPE_CLASS Pass_PassType = 1
+	// Student is going to market
+	Pass_PASS_TYPE_MARKET Pass_PassType = 2
+	// Student is going to home
+	Pass_PASS_TYPE_HOME Pass_PassType = 3
+	// Student is going to an event
+	Pass_PASS_TYPE_EVENT Pass_PassType = 4
 )
 
 // Enum value maps for Pass_PassType.
@@ -78,14 +84,21 @@ func (Pass_PassType) EnumDescriptor() ([]byte, []int) {
 	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{0, 0}
 }
 
+// Pass represents an entry+exit interaction.
 type Pass struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Type          Pass_PassType          `protobuf:"varint,3,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
-	StartTime     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
-	QrCode        string                 `protobuf:"bytes,6,opt,name=qr_code,json=qrCode,proto3" json:"qr_code,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Unique ID to identify a pass
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// User whos pass this belongs to
+	UserId string `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// Type of pass
+	Type Pass_PassType `protobuf:"varint,3,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
+	// When did the student went out of the hostel
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	// When did the student come back to hostel
+	EndTime *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
+	// A ed25519 signed QR Code to verify
+	QrCode        string `protobuf:"bytes,6,opt,name=qr_code,json=qrCode,proto3" json:"qr_code,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -162,10 +175,13 @@ func (x *Pass) GetQrCode() string {
 	return ""
 }
 
+// CreateManualPassRequest
 type CreateManualPassRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Type          Pass_PassType          `protobuf:"varint,3,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The user for whom the pass is being created
+	UserId string `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// Type of pass (unspecified not allowed)
+	Type          Pass_PassType `protobuf:"varint,3,opt,name=type,proto3,enum=veripass.v1.Pass_PassType" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -214,9 +230,11 @@ func (x *CreateManualPassRequest) GetType() Pass_PassType {
 	return Pass_PASS_TYPE_UNSPECIFIED
 }
 
+// GetPassRequest
 type GetPassRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Unique ID of pass
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -258,12 +276,18 @@ func (x *GetPassRequest) GetId() string {
 	return ""
 }
 
+// ListPassesByUserRequest
 type ListPassesByUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PageToken     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	Type          *Pass_PassType         `protobuf:"varint,4,opt,name=type,proto3,enum=veripass.v1.Pass_PassType,oneof" json:"type,omitempty"`
-	StartTime     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3,oneof" json:"start_time,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Page token, must be current time initially
+	PageToken *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	// Size of expected response
+	PageSize int32 `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	// Filters based on type of pass
+	Type *Pass_PassType `protobuf:"varint,4,opt,name=type,proto3,enum=veripass.v1.Pass_PassType,oneof" json:"type,omitempty"`
+	// Filters based on create time of pass
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=start_time,json=startTime,proto3,oneof" json:"start_time,omitempty"`
+	// Filters based on end time of pass
 	EndTime       *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=end_time,json=endTime,proto3,oneof" json:"end_time,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -334,9 +358,12 @@ func (x *ListPassesByUserRequest) GetEndTime() *timestamppb.Timestamp {
 	return nil
 }
 
+// ListPassesByUserResponse
 type ListPassesByUserResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Passes        []*Pass                `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Passes based on filters
+	Passes []*Pass `protobuf:"bytes,1,rep,name=passes,proto3" json:"passes,omitempty"`
+	// Token to be sent in next request, zero/nil/null if no more records avaliable
 	NextPageToken *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

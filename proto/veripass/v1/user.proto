@@ -4,49 +4,85 @@ package veripass.v1;
 
 import "google/protobuf/empty.proto";
 
+// User is student
 message User {
+  // Scholar number of student
   string id = 1;
+  // Name of student
   string name = 2;
+  // Room of student
   string room = 3;
+  // Hostel of student
   string hostel = 4;
+  // Phone number of student
   string phone = 5;
 }
 
+// UserService defines RPCs which are called by student mostly.
 service UserService {
+  // Called when student comes into the hostel
+  // Clients are supposed to call latest pass first to have all the details if required
   rpc Entry(EntryRequest) returns (google.protobuf.Empty);
+  // Called when student goes out of hostel
+  // Equivalent to student writing in the register offline
   rpc Exit(ExitRequest) returns (ExitResponse);
+  // Returns photo of user
+  // Can be accessed by both admin and student
   rpc GetPhoto(GetPhotoRequest) returns (GetPhotoResponse);
+  // Returns user
+  // Can be accessed by both admin and student
   rpc GetUser(GetUserRequest) returns (User);
 }
 
+// EntryRequest
 message EntryRequest {
+  // Unique ID of pass
   string pass_id = 1;
 }
 
+// ExitRequest
 message ExitRequest {
+  // Unique ID of pass
   string id = 1;
+  // Types of passes
   enum ExitType {
+    // No pass type
     EXIT_TYPE_UNSPECIFIED = 0;
+    // Student is going to class
     EXIT_TYPE_CLASS = 1;
+    // Student is going to market
     EXIT_TYPE_MARKET = 2;
+    // Student is going to home
     EXIT_TYPE_HOME = 3;
+    // Student is going to event
     EXIT_TYPE_EVENT = 4;
   }
+  // Type of pass
   ExitType type = 2;
 }
 
+// ExitResponse
 message ExitResponse {
+  // Unique ID of pass
   string pass_id = 1;
 }
 
+// GetUserRequest
 message GetUserRequest {
+  // Not set if student is accessing to get their own User entity
+  // Set to unique id of student to get their information by admins
   optional string id = 1;
 }
 
+// GetPhotoRequest
 message GetPhotoRequest {
+  // Not set if student is accessing to get their own User entity
+  // Set to unique id of student to get their information by admins
   optional string id = 1;
 }
 
+// GetPhotoResponse
 message GetPhotoResponse {
+  // Photo of user in raw bytes format
   bytes photo = 1;
 }

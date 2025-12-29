@@ -17,25 +17,35 @@ export const file_veripass_v1_admin: GenFile = /*@__PURE__*/
   fileDesc("Chd2ZXJpcGFzcy92MS9hZG1pbi5wcm90bxILdmVyaXBhc3MudjEiSgoFQWRtaW4SDQoFZW1haWwYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZob3N0ZWwYAyABKAkSFAoMY2FuX2FkZF9wYXNzGAQgASgIIqQCChtHZXRBbGxQYXNzZXNCeUhvc3RlbFJlcXVlc3QSDgoGaG9zdGVsGAEgASgJEi4KCnN0YXJ0X3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiwKCGVuZF90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIZCgxwYXNzX2lzX29wZW4YBCABKAhIAIgBARIoCgR0eXBlGAUgASgOMhoudmVyaXBhc3MudjEuUGFzcy5QYXNzVHlwZRIRCglwYWdlX3NpemUYBiABKAUSLgoKcGFnZV90b2tlbhgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCDwoNX3Bhc3NfaXNfb3BlbiKAAgocR2V0QWxsUGFzc2VzQnlIb3N0ZWxSZXNwb25zZRJKCgZwYXNzZXMYASADKAsyOi52ZXJpcGFzcy52MS5HZXRBbGxQYXNzZXNCeUhvc3RlbFJlc3BvbnNlLkluZm9JbmNsdWRlZFBhc3MSMwoPbmV4dF9wYWdlX3Rva2VuGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBpfChBJbmZvSW5jbHVkZWRQYXNzEh8KBHBhc3MYASABKAsyES52ZXJpcGFzcy52MS5QYXNzEhQKDHN0dWRlbnRfbmFtZRgCIAEoCRIUCgxzdHVkZW50X3Jvb20YAyABKAkiKgoUR2V0UHVibGljS2V5UmVzcG9uc2USEgoKcHVibGljX2tleRgBIAEoDCK0AQoaR2V0T3V0Q291bnRCeUhvc3RlbFJlcXVlc3QSDgoGaG9zdGVsGAEgASgJEi4KCnN0YXJ0X3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiwKCGVuZF90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIoCgR0eXBlGAQgASgOMhoudmVyaXBhc3MudjEuUGFzcy5QYXNzVHlwZSIqChtHZXRPdXRDb3VudEJ5SG9zdGVsUmVzcG9uc2USCwoDb3V0GAEgASgDMugCCgxBZG1pblNlcnZpY2USNgoIR2V0QWRtaW4SFi5nb29nbGUucHJvdG9idWYuRW1wdHkaEi52ZXJpcGFzcy52MS5BZG1pbhJrChRHZXRBbGxQYXNzZXNCeUhvc3RlbBIoLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVxdWVzdBopLnZlcmlwYXNzLnYxLkdldEFsbFBhc3Nlc0J5SG9zdGVsUmVzcG9uc2USSQoMR2V0UHVibGljS2V5EhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GiEudmVyaXBhc3MudjEuR2V0UHVibGljS2V5UmVzcG9uc2USaAoTR2V0T3V0Q291bnRCeUhvc3RlbBInLnZlcmlwYXNzLnYxLkdldE91dENvdW50QnlIb3N0ZWxSZXF1ZXN0GigudmVyaXBhc3MudjEuR2V0T3V0Q291bnRCeUhvc3RlbFJlc3BvbnNlQq4BCg9jb20udmVyaXBhc3MudjFCCkFkbWluUHJvdG9QAVpCZ2l0aHViLmNvbS9jaGV0YW4wNDAyL3ZlcmlwYXNzL2ludGVybmFsL2dlbi92ZXJpcGFzcy92MTt2ZXJpcGFzc3YxogIDVlhYqgILVmVyaXBhc3MuVjHKAgtWZXJpcGFzc1xWMeICF1ZlcmlwYXNzXFYxXEdQQk1ldGFkYXRh6gIMVmVyaXBhc3M6OlYxYgZwcm90bzM", [file_google_protobuf_empty, file_google_protobuf_timestamp, file_veripass_v1_pass]);
 
 /**
+ * Admin can be guard/caretaker/warden.
+ *
  * @generated from message veripass.v1.Admin
  */
 export type Admin = Message<"veripass.v1.Admin"> & {
   /**
+   * Email is email of admin registered with the university.
+   *
    * @generated from field: string email = 1;
    */
   email: string;
 
   /**
+   * Name can be any form of name i.e. first name/last name/full name.
+   *
    * @generated from field: string name = 2;
    */
   name: string;
 
   /**
+   * Hostel is the hostel of which the admin belongs to and can access records of.
+   *
    * @generated from field: string hostel = 3;
    */
   hostel: string;
 
   /**
+   * Whether or not admin can manually create pass for students.
+   *
    * @generated from field: bool can_add_pass = 4;
    */
   canAddPass: boolean;
@@ -49,41 +59,57 @@ export const AdminSchema: GenMessage<Admin> = /*@__PURE__*/
   messageDesc(file_veripass_v1_admin, 0);
 
 /**
+ * GetAllPassesByHostelRequest
+ *
  * @generated from message veripass.v1.GetAllPassesByHostelRequest
  */
 export type GetAllPassesByHostelRequest = Message<"veripass.v1.GetAllPassesByHostelRequest"> & {
   /**
+   * Hostel filters on hostel of passes.
+   *
    * @generated from field: string hostel = 1;
    */
   hostel: string;
 
   /**
+   * Start time filters on create time of passes.
+   *
    * @generated from field: google.protobuf.Timestamp start_time = 2;
    */
   startTime?: Timestamp;
 
   /**
+   * End time filters on create time of passes.
+   *
    * @generated from field: google.protobuf.Timestamp end_time = 3;
    */
   endTime?: Timestamp;
 
   /**
+   * Filters whether the students are currently out or not.
+   *
    * @generated from field: optional bool pass_is_open = 4;
    */
   passIsOpen?: boolean;
 
   /**
+   * Filters on which type of pass (unspecified if all)
+   *
    * @generated from field: veripass.v1.Pass.PassType type = 5;
    */
   type: Pass_PassType;
 
   /**
+   * Size of response
+   *
    * @generated from field: int32 page_size = 6;
    */
   pageSize: number;
 
   /**
    * Based on start_time
+   * Pagination token
+   * Set to current time initially
    *
    * @generated from field: google.protobuf.Timestamp page_token = 7;
    */
@@ -98,15 +124,21 @@ export const GetAllPassesByHostelRequestSchema: GenMessage<GetAllPassesByHostelR
   messageDesc(file_veripass_v1_admin, 1);
 
 /**
+ * GetAllPassesByHostelResponse
+ *
  * @generated from message veripass.v1.GetAllPassesByHostelResponse
  */
 export type GetAllPassesByHostelResponse = Message<"veripass.v1.GetAllPassesByHostelResponse"> & {
   /**
+   * Passes
+   *
    * @generated from field: repeated veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass passes = 1;
    */
   passes: GetAllPassesByHostelResponse_InfoIncludedPass[];
 
   /**
+   * Token to send for next request, will be zero/nil/null if no further records avaliable
+   *
    * @generated from field: google.protobuf.Timestamp next_page_token = 2;
    */
   nextPageToken?: Timestamp;
@@ -120,20 +152,28 @@ export const GetAllPassesByHostelResponseSchema: GenMessage<GetAllPassesByHostel
   messageDesc(file_veripass_v1_admin, 2);
 
 /**
+ * For including additional information for each pass.
+ *
  * @generated from message veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass
  */
 export type GetAllPassesByHostelResponse_InfoIncludedPass = Message<"veripass.v1.GetAllPassesByHostelResponse.InfoIncludedPass"> & {
   /**
+   * The pass itself
+   *
    * @generated from field: veripass.v1.Pass pass = 1;
    */
   pass?: Pass;
 
   /**
+   * Student's name
+   *
    * @generated from field: string student_name = 2;
    */
   studentName: string;
 
   /**
+   * Student's room
+   *
    * @generated from field: string student_room = 3;
    */
   studentRoom: string;
@@ -147,10 +187,14 @@ export const GetAllPassesByHostelResponse_InfoIncludedPassSchema: GenMessage<Get
   messageDesc(file_veripass_v1_admin, 2, 0);
 
 /**
+ * GetPublicKeyResponse
+ *
  * @generated from message veripass.v1.GetPublicKeyResponse
  */
 export type GetPublicKeyResponse = Message<"veripass.v1.GetPublicKeyResponse"> & {
   /**
+   * ed25519 public key in raw bytes format
+   *
    * @generated from field: bytes public_key = 1;
    */
   publicKey: Uint8Array;
@@ -164,25 +208,35 @@ export const GetPublicKeyResponseSchema: GenMessage<GetPublicKeyResponse> = /*@_
   messageDesc(file_veripass_v1_admin, 3);
 
 /**
+ * GetOutCountByHostelRequest
+ *
  * @generated from message veripass.v1.GetOutCountByHostelRequest
  */
 export type GetOutCountByHostelRequest = Message<"veripass.v1.GetOutCountByHostelRequest"> & {
   /**
+   * Hostel
+   *
    * @generated from field: string hostel = 1;
    */
   hostel: string;
 
   /**
+   * Start time filters on create time of passes.
+   *
    * @generated from field: google.protobuf.Timestamp start_time = 2;
    */
   startTime?: Timestamp;
 
   /**
+   * End time filters on create time of passes.
+   *
    * @generated from field: google.protobuf.Timestamp end_time = 3;
    */
   endTime?: Timestamp;
 
   /**
+   * Filters on which type of pass (unspecified if all)
+   *
    * @generated from field: veripass.v1.Pass.PassType type = 4;
    */
   type: Pass_PassType;
@@ -196,10 +250,14 @@ export const GetOutCountByHostelRequestSchema: GenMessage<GetOutCountByHostelReq
   messageDesc(file_veripass_v1_admin, 4);
 
 /**
+ * GetOutCountByHostelResponse
+ *
  * @generated from message veripass.v1.GetOutCountByHostelResponse
  */
 export type GetOutCountByHostelResponse = Message<"veripass.v1.GetOutCountByHostelResponse"> & {
   /**
+   * Number of students which are currently out of hostel based on the filters.
+   *
    * @generated from field: int64 out = 1;
    */
   out: bigint;
@@ -213,10 +271,14 @@ export const GetOutCountByHostelResponseSchema: GenMessage<GetOutCountByHostelRe
   messageDesc(file_veripass_v1_admin, 5);
 
 /**
+ * AdminService defines all the RPCs which will be accessed by Admin only and only.
+ *
  * @generated from service veripass.v1.AdminService
  */
 export const AdminService: GenService<{
   /**
+   * Returns the Admin for given token in cookies.
+   *
    * @generated from rpc veripass.v1.AdminService.GetAdmin
    */
   getAdmin: {
@@ -225,6 +287,9 @@ export const AdminService: GenService<{
     output: typeof AdminSchema;
   },
   /**
+   * Returns list of passes based on hostel of admin.
+   * This RPC follows cursor based pagination.
+   *
    * @generated from rpc veripass.v1.AdminService.GetAllPassesByHostel
    */
   getAllPassesByHostel: {
@@ -233,6 +298,8 @@ export const AdminService: GenService<{
     output: typeof GetAllPassesByHostelResponseSchema;
   },
   /**
+   * Returns the ed25519 public key required to verify signs of passes.
+   *
    * @generated from rpc veripass.v1.AdminService.GetPublicKey
    */
   getPublicKey: {
@@ -241,6 +308,8 @@ export const AdminService: GenService<{
     output: typeof GetPublicKeyResponseSchema;
   },
   /**
+   * Returns number of students which are current out of hostel of admin.
+   *
    * @generated from rpc veripass.v1.AdminService.GetOutCountByHostel
    */
   getOutCountByHostel: {

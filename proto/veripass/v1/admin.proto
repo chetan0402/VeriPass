@@ -6,51 +6,88 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "veripass/v1/pass.proto";
 
+// Admin can be guard/caretaker/warden.
 message Admin {
+  // Email is email of admin registered with the university.
   string email = 1;
+  // Name can be any form of name i.e. first name/last name/full name.
   string name = 2;
+  // Hostel is the hostel of which the admin belongs to and can access records of.
   string hostel = 3;
+  // Whether or not admin can manually create pass for students.
   bool can_add_pass = 4;
 }
 
+// AdminService defines all the RPCs which will be accessed by Admin only and only.
 service AdminService {
+  // Returns the Admin for given token in cookies.
   rpc GetAdmin(google.protobuf.Empty) returns (Admin);
+  // Returns list of passes based on hostel of admin.
+  // This RPC follows cursor based pagination.
   rpc GetAllPassesByHostel(GetAllPassesByHostelRequest) returns (GetAllPassesByHostelResponse);
+  // Returns the ed25519 public key required to verify signs of passes.
   rpc GetPublicKey(google.protobuf.Empty) returns (GetPublicKeyResponse);
+  // Returns number of students which are current out of hostel of admin.
   rpc GetOutCountByHostel(GetOutCountByHostelRequest) returns (GetOutCountByHostelResponse);
 }
 
+// GetAllPassesByHostelRequest
 message GetAllPassesByHostelRequest {
+  // Hostel filters on hostel of passes.
   string hostel = 1;
+  // Start time filters on create time of passes.
   google.protobuf.Timestamp start_time = 2;
+  // End time filters on create time of passes.
   google.protobuf.Timestamp end_time = 3;
+  // Filters whether the students are currently out or not.
   optional bool pass_is_open = 4;
+  // Filters on which type of pass (unspecified if all)
   Pass.PassType type = 5;
+  // Size of response
   int32 page_size = 6;
-  google.protobuf.Timestamp page_token = 7; // Based on start_time
+  // Based on start_time
+  // Pagination token
+  // Set to current time initially
+  google.protobuf.Timestamp page_token = 7;
 }
 
+// GetAllPassesByHostelResponse
 message GetAllPassesByHostelResponse {
+  // For including additional information for each pass.
   message InfoIncludedPass {
+    // The pass itself
     Pass pass = 1;
+    // Student's name
     string student_name = 2;
+    // Student's room
     string student_room = 3;
   }
+  // Passes
   repeated InfoIncludedPass passes = 1;
+  // Token to send for next request, will be zero/nil/null if no further records avaliable
   google.protobuf.Timestamp next_page_token = 2;
 }
 
+// GetPublicKeyResponse
 message GetPublicKeyResponse {
+  // ed25519 public key in raw bytes format
   bytes public_key = 1;
 }
 
+// GetOutCountByHostelRequest
 message GetOutCountByHostelRequest {
+  // Hostel
   string hostel = 1;
+  // Start time filters on create time of passes.
   google.protobuf.Timestamp start_time = 2;
+  // End time filters on create time of passes.
   google.protobuf.Timestamp end_time = 3;
+  // Filters on which type of pass (unspecified if all)
   Pass.PassType type = 4;
 }
 
+// GetOutCountByHostelResponse
 message GetOutCountByHostelResponse {
+  // Number of students which are currently out of hostel based on the filters.
   int64 out = 1;
 }

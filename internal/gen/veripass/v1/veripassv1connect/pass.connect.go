@@ -49,9 +49,17 @@ const (
 
 // PassServiceClient is a client for the veripass.v1.PassService service.
 type PassServiceClient interface {
+	// Allows admins to manually create passes for student
+	// Does not allow any time manipulation
 	CreateManualPass(context.Context, *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error)
+	// Can be accessed by both admin and student
 	GetPass(context.Context, *connect.Request[v1.GetPassRequest]) (*connect.Response[v1.Pass], error)
+	// Should only be accessed by student
+	// If there is currently an open pass for the user i.e. the user is out of hostel
+	// The student shouldn't be able to create another pass
 	GetLatestPassByUser(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Pass], error)
+	// Should only be accessed by student
+	// Cursor based pagination
 	ListPassesByUser(context.Context, *connect.Request[v1.ListPassesByUserRequest]) (*connect.Response[v1.ListPassesByUserResponse], error)
 }
 
@@ -123,9 +131,17 @@ func (c *passServiceClient) ListPassesByUser(ctx context.Context, req *connect.R
 
 // PassServiceHandler is an implementation of the veripass.v1.PassService service.
 type PassServiceHandler interface {
+	// Allows admins to manually create passes for student
+	// Does not allow any time manipulation
 	CreateManualPass(context.Context, *connect.Request[v1.CreateManualPassRequest]) (*connect.Response[v1.Pass], error)
+	// Can be accessed by both admin and student
 	GetPass(context.Context, *connect.Request[v1.GetPassRequest]) (*connect.Response[v1.Pass], error)
+	// Should only be accessed by student
+	// If there is currently an open pass for the user i.e. the user is out of hostel
+	// The student shouldn't be able to create another pass
 	GetLatestPassByUser(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.Pass], error)
+	// Should only be accessed by student
+	// Cursor based pagination
 	ListPassesByUser(context.Context, *connect.Request[v1.ListPassesByUserRequest]) (*connect.Response[v1.ListPassesByUserResponse], error)
 }
 
