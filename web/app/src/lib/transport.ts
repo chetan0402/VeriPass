@@ -215,10 +215,10 @@ const mockRouter = createRouterTransport(({ rpc }) => {
 	});
 
 	rpc(PassService.method.getPass, (req) => {
-		if (!(req.id in mockPasses)) {
+		if (!(req.passId in mockPasses)) {
 			throw new ConnectError('Pass not found', Code.NotFound);
 		}
-		return mockPasses[req.id];
+		return mockPasses[req.passId];
 	});
 
 	rpc(PassService.method.listPassesByUser, (req) => {

@@ -51,7 +51,7 @@
 		try {
 			const passClient = createClient(PassService, transport);
 			pass = await passClient.getPass({
-				id: passId
+				passId: passId
 			});
 			const userClient = createClient(UserService, transport);
 			user = await userClient.getUser({

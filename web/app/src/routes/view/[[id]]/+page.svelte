@@ -22,7 +22,7 @@
 	 */
 	async function refreshPass() {
 		try {
-			pass = await passClient.getPass({ id: passId });
+			pass = await passClient.getPass({ passId: passId });
 		} catch (error) {
 			console.error('Error fetching pass data:', error);
 			passFetchStatus = "Pass Details Can't be Fetched.";
