@@ -42,8 +42,6 @@ message EntryRequest {
 
 // ExitRequest
 message ExitRequest {
-  // Unique ID of pass
-  string id = 1;
   // Types of passes
   enum ExitType {
     // No pass type

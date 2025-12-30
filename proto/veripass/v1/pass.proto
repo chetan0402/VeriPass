@@ -61,7 +61,7 @@ message CreateManualPassRequest {
 // GetPassRequest
 message GetPassRequest {
   // Unique ID of pass
-  string id = 1;
+  string pass_id = 1;
 }
 
 // ListPassesByUserRequest

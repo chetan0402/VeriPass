@@ -99,7 +99,7 @@ func (s *PassService) GetLatestPassByUser(ctx context.Context, r *connect.Reques
 // GetPass implements veripassv1connect.PassServiceHandler
 func (s *PassService) GetPass(ctx context.Context, r *connect.Request[veripassv1.GetPassRequest]) (*connect.Response[veripassv1.Pass], error) {
 	var (
-		passId = r.Msg.Id
+		passId = r.Msg.PassId
 	)
 
 	passUUID, err := uuid.Parse(passId)

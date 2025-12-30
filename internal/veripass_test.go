@@ -133,7 +133,6 @@ func TestMain(t *testing.T) {
 	}
 
 	exitResponse, err := userClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
-		Id:   mockPass1.UserId,
 		Type: veripassv1.ExitRequest_ExitType(mockPass1.Type),
 	}))
 	attest(t, err)
@@ -149,7 +148,6 @@ func TestMain(t *testing.T) {
 	mockPass1.EndTime = timestamppb.Now()
 
 	exitResponse2, err := userClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
-		Id:   mockPass2.UserId,
 		Type: veripassv1.ExitRequest_ExitType(mockPass2.Type),
 	}))
 	attest(t, err)
@@ -158,14 +156,14 @@ func TestMain(t *testing.T) {
 	mockPass2.StartTime = timestamppb.Now()
 
 	pass, err := passClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
-		Id: mockPass1.Id,
+		PassId: mockPass1.Id,
 	}))
 	attest(t, err)
 
 	failIfNotEqualPass(t, pass.Msg, &mockPass1, publicKey.Msg.PublicKey)
 
 	pass2, err := passClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
-		Id: mockPass2.Id,
+		PassId: mockPass2.Id,
 	}))
 	attest(t, err)
 

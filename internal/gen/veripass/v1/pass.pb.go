@@ -234,7 +234,7 @@ func (x *CreateManualPassRequest) GetType() Pass_PassType {
 type GetPassRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Unique ID of pass
-	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PassId        string `protobuf:"bytes,1,opt,name=pass_id,json=passId,proto3" json:"pass_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -269,9 +269,9 @@ func (*GetPassRequest) Descriptor() ([]byte, []int) {
 	return file_veripass_v1_pass_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetPassRequest) GetId() string {
+func (x *GetPassRequest) GetPassId() string {
 	if x != nil {
-		return x.Id
+		return x.PassId
 	}
 	return ""
 }
@@ -435,9 +435,9 @@ const file_veripass_v1_pass_proto_rawDesc = "" +
 	"\t_end_time\"b\n" +
 	"\x17CreateManualPassRequest\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12.\n" +
-	"\x04type\x18\x03 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\" \n" +
-	"\x0eGetPassRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xc7\x02\n" +
+	"\x04type\x18\x03 \x01(\x0e2\x1a.veripass.v1.Pass.PassTypeR\x04type\")\n" +
+	"\x0eGetPassRequest\x12\x17\n" +
+	"\apass_id\x18\x01 \x01(\tR\x06passId\"\xc7\x02\n" +
 	"\x17ListPassesByUserRequest\x129\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tpageToken\x12\x1b\n" +

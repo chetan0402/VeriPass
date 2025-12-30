@@ -214,8 +214,6 @@ func (x *EntryRequest) GetPassId() string {
 // ExitRequest
 type ExitRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Unique ID of pass
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// Type of pass
 	Type          ExitRequest_ExitType `protobuf:"varint,2,opt,name=type,proto3,enum=veripass.v1.ExitRequest_ExitType" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -250,13 +248,6 @@ func (x *ExitRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ExitRequest.ProtoReflect.Descriptor instead.
 func (*ExitRequest) Descriptor() ([]byte, []int) {
 	return file_veripass_v1_user_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ExitRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
 }
 
 func (x *ExitRequest) GetType() ExitRequest_ExitType {
@@ -464,9 +455,8 @@ const file_veripass_v1_user_proto_rawDesc = "" +
 	"\x06hostel\x18\x04 \x01(\tR\x06hostel\x12\x14\n" +
 	"\x05phone\x18\x05 \x01(\tR\x05phone\"'\n" +
 	"\fEntryRequest\x12\x17\n" +
-	"\apass_id\x18\x01 \x01(\tR\x06passId\"\xcf\x01\n" +
-	"\vExitRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x125\n" +
+	"\apass_id\x18\x01 \x01(\tR\x06passId\"\xbf\x01\n" +
+	"\vExitRequest\x125\n" +
 	"\x04type\x18\x02 \x01(\x0e2!.veripass.v1.ExitRequest.ExitTypeR\x04type\"y\n" +
 	"\bExitType\x12\x19\n" +
 	"\x15EXIT_TYPE_UNSPECIFIED\x10\x00\x12\x13\n" +

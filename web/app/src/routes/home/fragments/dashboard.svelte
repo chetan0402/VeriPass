@@ -70,7 +70,7 @@
 	 */
 	async function generatePassByServer() {
 		try {
-			let response: ExitResponse = await client.exit({ id: user.id, type: getExitType(selected) });
+			let response: ExitResponse = await client.exit({ type: getExitType(selected) });
 			if (response.passId) {
 				await goto(`../pass`, { replaceState: true });
 			} else {
