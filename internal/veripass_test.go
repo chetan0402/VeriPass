@@ -1,15 +1,14 @@
 package veripass_test
 
 import (
-	"context"
 	"crypto/ed25519"
+	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
 	"math"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"strings"
 	"testing"
 	"time"
 
@@ -20,7 +19,9 @@ import (
 	"github.com/chetan0402/veripass/internal/ent"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
-	"golang.org/x/net/publicsuffix"
+	dex "github.com/dexidp/dex/api/v2"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -28,21 +29,29 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
+// HOST is URL of running backend
+const HOST = "http://localhost:8000"
+
+// VERIPASS_HASH is bcrypt hash of the password "veripass"
+const VERIPASS_HASH = "$2y$10$6JmUm254bTxZSICSXtFWZ.joFmhkGZuHIMoXx6S7aHi2krB/BpsUm"
+
+// CONFIG is veripass configuration for running server
+var CONFIG = veripass.Config{
+	DatabaseUrl:    "postgres://veripass:veripass@localhost:5432/veripass",
+	OAuthServer:    "http://localhost:1433/dex",
+	ClientID:       "veripass",
+	ClientSecret:   "veripass",
+	RedirectionURI: HOST + "/callback",
+}
+
 // TODO - test passClient create manual after create admin entity
 func TestMain(t *testing.T) {
+	ctx := t.Context()
 	timeout := time.After(30 * time.Second)
-	host := "http://localhost:8000"
-	dbUrl := "postgres://veripass:veripass@localhost:5432/veripass"
-	go veripass.Run(&veripass.Config{
-		DatabaseUrl:    dbUrl,
-		OAuthServer:    "http://localhost:1433/dex",
-		ClientID:       "veripass",
-		ClientSecret:   "veripass",
-		RedirectionURI: "http://localhost:8000/callback",
-	})
+	go veripass.Run(&CONFIG)
 
 	for {
-		if _, err := http.DefaultClient.Get(host + "/ping"); err == nil {
+		if _, err := http.DefaultClient.Get(HOST + "/ping"); err == nil {
 			break
 		}
 		select {
@@ -52,34 +61,24 @@ func TestMain(t *testing.T) {
 		}
 	}
 
-	jar, err := cookiejar.New(&cookiejar.Options{
-		PublicSuffixList: publicsuffix.List,
-	})
-	attest(t, err)
-
-	jar.SetCookies(&url.URL{
-		Scheme: "http",
-		Host:   "localhost:8000",
-	}, []*http.Cookie{getToken(t)})
-	client := &http.Client{Jar: jar}
-
-	userClient := veripassv1connect.NewUserServiceClient(client, host)
-	passClient := veripassv1connect.NewPassServiceClient(client, host)
-	adminClient := veripassv1connect.NewAdminServiceClient(client, host)
-	ctx := context.Background()
-
-	db, err := sql.Open("pgx", dbUrl)
+	db, err := sql.Open("pgx", CONFIG.DatabaseUrl)
 	attest(t, err)
 
 	dbClient := ent.NewClient(ent.Driver(entsql.OpenDB(dialect.Postgres, db)))
 
-	mockUser := veripassv1.User{
-		Id:     "2411012345",
-		Name:   "test_name",
-		Room:   "test_room",
-		Hostel: "test_hostel",
-		Phone:  "1234567890",
-	}
+	conn, err := grpc.NewClient("127.0.0.1:5557", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	attest(t, err)
+
+	dexClient := dex.NewDexClient(conn)
+	mockUser, mockAdmin := getUserAdminPair(t, dbClient, dexClient, true)
+
+	studentClient := getClient(t, mockUser.Id+"@stu.manit.ac.in")
+	adminClient := getClient(t, mockAdmin.Email)
+
+	studentUserClient := veripassv1connect.NewUserServiceClient(studentClient, HOST)
+	studentPassClient := veripassv1connect.NewPassServiceClient(studentClient, HOST)
+
+	adminAdminClient := veripassv1connect.NewAdminServiceClient(adminClient, HOST)
 
 	mockPass1 := veripassv1.Pass{
 		UserId: mockUser.Id,
@@ -91,48 +90,18 @@ func TestMain(t *testing.T) {
 		Type:   veripassv1.Pass_PASS_TYPE_HOME,
 	}
 
-	mockAdmin := veripassv1.Admin{
-		Email:      "2411012345@stu.manit.ac.in",
-		Name:       "test_name",
-		Hostel:     "test_hostel",
-		CanAddPass: true,
-	}
-
-	if err := dbClient.User.Create().
-		SetID(mockUser.Id).
-		SetName(mockUser.Name).
-		SetRoom(mockUser.Room).
-		SetHostel(mockUser.Hostel).
-		SetPhone(mockUser.Phone).
-		Exec(ctx); err != nil {
-		if !ent.IsConstraintError(err) {
-			t.Fatal(err)
-		}
-	}
-
-	if err := dbClient.Admin.Create().
-		SetEmail(mockAdmin.Email).
-		SetName(mockAdmin.Name).
-		SetHostel(mockAdmin.Hostel).
-		SetCanAddPass(mockAdmin.CanAddPass).
-		Exec(ctx); err != nil {
-		if !ent.IsConstraintError(err) {
-			t.Fatal(err)
-		}
-	}
-
-	publicKey, err := adminClient.GetPublicKey(ctx, connect.NewRequest(&emptypb.Empty{}))
+	publicKey, err := adminAdminClient.GetPublicKey(ctx, connect.NewRequest(&emptypb.Empty{}))
 	attest(t, err)
 
-	user, err := userClient.GetUser(ctx, connect.NewRequest(&veripassv1.GetUserRequest{
+	user, err := studentUserClient.GetUser(ctx, connect.NewRequest(&veripassv1.GetUserRequest{
 		Id: nil,
 	}))
 	attest(t, err)
-	if !proto.Equal(user.Msg, &mockUser) {
+	if !proto.Equal(user.Msg, mockUser) {
 		t.Fatal("User response not equal")
 	}
 
-	exitResponse, err := userClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
+	exitResponse, err := studentUserClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
 		Type: veripassv1.ExitRequest_ExitType(mockPass1.Type),
 	}))
 	attest(t, err)
@@ -140,14 +109,14 @@ func TestMain(t *testing.T) {
 	mockPass1.Id = exitResponse.Msg.PassId
 	mockPass1.StartTime = timestamppb.Now()
 
-	_, err = userClient.Entry(ctx, connect.NewRequest(&veripassv1.EntryRequest{
+	_, err = studentUserClient.Entry(ctx, connect.NewRequest(&veripassv1.EntryRequest{
 		PassId: mockPass1.Id,
 	}))
 	attest(t, err)
 
 	mockPass1.EndTime = timestamppb.Now()
 
-	exitResponse2, err := userClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
+	exitResponse2, err := studentUserClient.Exit(ctx, connect.NewRequest(&veripassv1.ExitRequest{
 		Type: veripassv1.ExitRequest_ExitType(mockPass2.Type),
 	}))
 	attest(t, err)
@@ -155,28 +124,28 @@ func TestMain(t *testing.T) {
 	mockPass2.Id = exitResponse2.Msg.PassId
 	mockPass2.StartTime = timestamppb.Now()
 
-	pass, err := passClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
+	pass, err := studentPassClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
 		PassId: mockPass1.Id,
 	}))
 	attest(t, err)
 
 	failIfNotEqualPass(t, pass.Msg, &mockPass1, publicKey.Msg.PublicKey)
 
-	pass2, err := passClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
+	pass2, err := studentPassClient.GetPass(ctx, connect.NewRequest(&veripassv1.GetPassRequest{
 		PassId: mockPass2.Id,
 	}))
 	attest(t, err)
 
 	failIfNotEqualPass(t, pass2.Msg, &mockPass2, publicKey.Msg.PublicKey)
 
-	latestPass, err := passClient.GetLatestPassByUser(ctx, connect.NewRequest(&emptypb.Empty{}))
+	latestPass, err := studentPassClient.GetLatestPassByUser(ctx, connect.NewRequest(&emptypb.Empty{}))
 	attest(t, err)
 
 	failIfNotEqualPass(t, latestPass.Msg, &mockPass2, publicKey.Msg.PublicKey)
 
 	pageToken := timestamppb.Now()
 
-	passList1, err := passClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
+	passList1, err := studentPassClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
 		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED.Enum(),
 		PageToken: pageToken,
 		PageSize:  1,
@@ -188,7 +157,7 @@ func TestMain(t *testing.T) {
 	failIfNotEqualPass(t, passList1.Msg.Passes[0], pass2.Msg, publicKey.Msg.PublicKey)
 	pageToken = passList1.Msg.NextPageToken
 
-	passList2, err := passClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
+	passList2, err := studentPassClient.ListPassesByUser(ctx, connect.NewRequest(&veripassv1.ListPassesByUserRequest{
 		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED.Enum(),
 		PageToken: pageToken,
 		PageSize:  1,
@@ -199,15 +168,15 @@ func TestMain(t *testing.T) {
 	}
 	failIfNotEqualPass(t, passList2.Msg.Passes[0], pass.Msg, publicKey.Msg.PublicKey)
 
-	admin, err := adminClient.GetAdmin(ctx, connect.NewRequest(&emptypb.Empty{}))
+	admin, err := adminAdminClient.GetAdmin(ctx, connect.NewRequest(&emptypb.Empty{}))
 	attest(t, err)
 
-	if !proto.Equal(admin.Msg, &mockAdmin) {
+	if !proto.Equal(admin.Msg, mockAdmin) {
 		t.Fatalf("Expected %v, got %v", &mockAdmin, admin.Msg)
 	}
 
-	hostelPassList1, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
-		Hostel:     "H mock",
+	hostelPassList1, err := adminAdminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
+		Hostel:     mockAdmin.Hostel,
 		StartTime:  timestamppb.New(time.Unix(0, 0)),
 		EndTime:    timestamppb.Now(),
 		PassIsOpen: nil,
@@ -227,8 +196,8 @@ func TestMain(t *testing.T) {
 	}
 	failIfNotEqualPass(t, hostelPassList1.Msg.Passes[0].Pass, pass2.Msg, publicKey.Msg.PublicKey)
 
-	hostelPassList2, err := adminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
-		Hostel:     "H mock",
+	hostelPassList2, err := adminAdminClient.GetAllPassesByHostel(ctx, connect.NewRequest(&veripassv1.GetAllPassesByHostelRequest{
+		Hostel:     mockAdmin.Hostel,
 		StartTime:  timestamppb.New(time.Unix(0, 0)),
 		EndTime:    timestamppb.Now(),
 		PassIsOpen: nil,
@@ -248,8 +217,8 @@ func TestMain(t *testing.T) {
 	}
 	failIfNotEqualPass(t, hostelPassList2.Msg.Passes[0].Pass, pass.Msg, publicKey.Msg.PublicKey)
 
-	outCount, err := adminClient.GetOutCountByHostel(ctx, connect.NewRequest(&veripassv1.GetOutCountByHostelRequest{
-		Hostel:    "H mock",
+	outCount, err := adminAdminClient.GetOutCountByHostel(ctx, connect.NewRequest(&veripassv1.GetOutCountByHostelRequest{
+		Hostel:    mockAdmin.Hostel,
 		StartTime: timestamppb.New(time.Unix(0, 0)),
 		EndTime:   timestamppb.Now(),
 		Type:      veripassv1.Pass_PASS_TYPE_UNSPECIFIED,
@@ -261,8 +230,8 @@ func TestMain(t *testing.T) {
 }
 
 func attest(t *testing.T, err error) {
+	t.Helper()
 	if err != nil {
-		t.Helper()
 		t.Fatal(err)
 	}
 }
@@ -281,40 +250,37 @@ func failIfNotEqualPass(t *testing.T, got *veripassv1.Pass, expected *veripassv1
 
 func verifyPass(t *testing.T, pass *veripassv1.Pass, publicKey ed25519.PublicKey) {
 	t.Helper()
-
-	encodedSignedQrCode := pass.QrCode
-
-	signedQrCodeBytes, err := base64.StdEncoding.DecodeString(encodedSignedQrCode)
+	signedQrCode, err := base64.StdEncoding.DecodeString(pass.QrCode)
 	attest(t, err)
 
-	signedQrCode := string(signedQrCodeBytes)
-
-	pass_id, useridAndSignature, ok := strings.Cut(signedQrCode, "|")
-	if !ok {
-		t.Fatal("Invalid signed QR code format")
+	secondDelimemter := -1
+	for i := 38; i < len(signedQrCode); i++ {
+		if signedQrCode[i] == '|' {
+			secondDelimemter = i
+			break
+		}
+	}
+	if secondDelimemter == -1 {
+		t.Fatal("Invalid QR code format")
 	}
 
-	userid, signature, ok := strings.Cut(useridAndSignature, "|")
-	if !ok {
-		t.Fatal("Invalid signed QR code format")
+	if !ed25519.Verify(publicKey, signedQrCode[:secondDelimemter], signedQrCode[secondDelimemter+1:]) {
+		t.Log(string(signedQrCode))
+		t.Fatalf("Invalid signature")
 	}
 
-	message := pass_id + "|" + userid
-
-	if !ed25519.Verify(publicKey, []byte(message), []byte(signature)) {
-		t.Fatal("Invalid signature")
+	passID := string(signedQrCode[:36])
+	if passID != pass.Id {
+		t.Fatalf("Expected pass ID %v, got %v", pass.Id, passID)
 	}
 
-	if pass_id != pass.Id {
-		t.Fatalf("Expected pass ID %v, got %v", pass.Id, pass_id)
-	}
-
-	if userid != pass.UserId {
-		t.Fatalf("Expected user ID %v, got %v", pass.UserId, userid)
+	userID := string(signedQrCode[37:secondDelimemter])
+	if userID != pass.UserId {
+		t.Fatalf("Expected user ID %v, got %v", pass.UserId, userID)
 	}
 }
 
-func getToken(t *testing.T) *http.Cookie {
+func getClient(t *testing.T, email string) *http.Client {
 	jar, err := cookiejar.New(nil)
 	attest(t, err)
 	client := &http.Client{
@@ -327,13 +293,11 @@ func getToken(t *testing.T) *http.Cookie {
 		t.Fatal(resp)
 	}
 
-	dexLoginFormURL := resp.Request.URL.String()
-
 	formData := url.Values{}
-	formData.Set("login", "2411012345@stu.manit.ac.in")
+	formData.Set("login", email)
 	formData.Set("password", "veripass")
 
-	resp, err = client.PostForm(dexLoginFormURL, formData)
+	resp, err = client.PostForm(resp.Request.URL.String(), formData)
 	attest(t, err)
 	if resp.StatusCode >= 400 {
 		t.Fatal(resp)
@@ -351,10 +315,64 @@ func getToken(t *testing.T) *http.Cookie {
 		Host:   "localhost:8000",
 	}) {
 		if c.Name == "token" {
-			return c
+			return client
 		}
 	}
 
 	t.Fatalf("Couldn't get token from dex")
 	return nil
+}
+
+func getUserAdminPair(t *testing.T, db *ent.Client, dexClient dex.DexClient, canAdminAddPass bool) (*veripassv1.User, *veripassv1.Admin) {
+	u := &veripassv1.User{
+		Id:     rand.Text(),
+		Name:   rand.Text(),
+		Room:   rand.Text(),
+		Hostel: rand.Text(),
+		Phone:  rand.Text(),
+	}
+	a := &veripassv1.Admin{
+		Email:      rand.Text() + "@manit.ac.in",
+		Name:       rand.Text(),
+		Hostel:     u.Hostel,
+		CanAddPass: canAdminAddPass,
+	}
+
+	_, err := db.User.Create().
+		SetID(u.Id).
+		SetName(u.Name).
+		SetRoom(u.Room).
+		SetHostel(u.Hostel).
+		SetPhone(u.Phone).
+		Save(t.Context())
+	attest(t, err)
+
+	_, err = db.Admin.Create().
+		SetEmail(a.Email).
+		SetName(a.Name).
+		SetHostel(a.Hostel).
+		SetCanAddPass(a.CanAddPass).
+		Save(t.Context())
+	attest(t, err)
+
+	_, err = dexClient.CreatePassword(t.Context(), &dex.CreatePasswordReq{
+		Password: &dex.Password{
+			Email:    u.Id + "@stu.manit.ac.in",
+			Hash:     []byte(VERIPASS_HASH),
+			Username: u.Id,
+			UserId:   u.Id,
+		},
+	})
+	attest(t, err)
+
+	_, err = dexClient.CreatePassword(t.Context(), &dex.CreatePasswordReq{
+		Password: &dex.Password{
+			Email:    a.Email,
+			Hash:     []byte(VERIPASS_HASH),
+			Username: a.Name,
+			UserId:   a.Name,
+		},
+	})
+	attest(t, err)
+	return u, a
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/chetan0402/veripass/internal/ent"
 	"github.com/chetan0402/veripass/internal/ent/admin"
 	"github.com/chetan0402/veripass/internal/ent/pass"
+	"github.com/chetan0402/veripass/internal/ent/user"
 	veripassv1 "github.com/chetan0402/veripass/internal/gen/veripass/v1"
 	"github.com/chetan0402/veripass/internal/gen/veripass/v1/veripassv1connect"
 	veripass "github.com/chetan0402/veripass/internal/services"
@@ -47,7 +48,7 @@ func (s *AdminService) GetPublicKey(context.Context, *connect.Request[emptypb.Em
 // Cursor based pagination is used on ID (UUIDv7)
 func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Request[veripassv1.GetAllPassesByHostelRequest]) (*connect.Response[veripassv1.GetAllPassesByHostelResponse], error) {
 	var (
-		_            = r.Msg.Hostel
+		hostel       = r.Msg.Hostel
 		start_time   = r.Msg.StartTime.AsTime()
 		end_time     = r.Msg.EndTime.AsTime()
 		pass_is_open = r.Msg.PassIsOpen
@@ -64,6 +65,9 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 		pass.IDGTE(veripass.ToUUIDv7Nil(start_time)),
 		pass.IDLTE(veripass.ToUUIDv7Max(end_time)),
 		pass.IDLTE(veripass.ToUUIDv7Max(page_token.AsTime())),
+		pass.HasUserWith(
+			user.Hostel(hostel),
+		),
 	)
 
 	if pass_is_open != nil {
@@ -77,8 +81,6 @@ func (s *AdminService) GetAllPassesByHostel(ctx context.Context, r *connect.Requ
 	if pass_type != veripassv1.Pass_PASS_TYPE_UNSPECIFIED {
 		query = query.Where(pass.TypeEQ(passservice.ProtoPassTypeToEnt(pass_type)))
 	}
-
-	// TODO - Filter by hostel
 
 	passes, err := query.All(ctx)
 	if err != nil {
@@ -129,7 +131,7 @@ func (s *AdminService) GetAdmin(ctx context.Context, r *connect.Request[emptypb.
 // GetOutCountByHostel implements veripassv1connect.AdminServiceHandler.
 func (s *AdminService) GetOutCountByHostel(ctx context.Context, req *connect.Request[veripassv1.GetOutCountByHostelRequest]) (*connect.Response[veripassv1.GetOutCountByHostelResponse], error) {
 	var (
-		_         = req.Msg.Hostel
+		hostel    = req.Msg.Hostel
 		startTime = req.Msg.StartTime.AsTime()
 		endTime   = req.Msg.EndTime.AsTime()
 		passType  = req.Msg.Type
@@ -139,6 +141,9 @@ func (s *AdminService) GetOutCountByHostel(ctx context.Context, req *connect.Req
 		pass.IDGTE(veripass.ToUUIDv7Nil(startTime)),
 		pass.IDLTE(veripass.ToUUIDv7Max(endTime)),
 		pass.EndTimeIsNil(),
+		pass.HasUserWith(
+			user.Hostel(hostel),
+		),
 	)
 
 	if passType != veripassv1.Pass_PASS_TYPE_UNSPECIFIED {
