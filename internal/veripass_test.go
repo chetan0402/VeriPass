@@ -29,9 +29,13 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // Import the pgx driver for PostgreSQL
 )
 
+// HOST is URL of running backend
 const HOST = "http://localhost:8000"
+
+// VERIPASS_HASH is bcrypt hash of the password "veripass"
 const VERIPASS_HASH = "$2y$10$6JmUm254bTxZSICSXtFWZ.joFmhkGZuHIMoXx6S7aHi2krB/BpsUm"
 
+// CONFIG is veripass configuration for running server
 var CONFIG = veripass.Config{
 	DatabaseUrl:    "postgres://veripass:veripass@localhost:5432/veripass",
 	OAuthServer:    "http://localhost:1433/dex",
@@ -369,5 +373,6 @@ func getUserAdminPair(t *testing.T, db *ent.Client, dexClient dex.DexClient, can
 			UserId:   a.Name,
 		},
 	})
+	attest(t, err)
 	return u, a
 }

@@ -131,7 +131,7 @@ func (s *AdminService) GetAdmin(ctx context.Context, r *connect.Request[emptypb.
 // GetOutCountByHostel implements veripassv1connect.AdminServiceHandler.
 func (s *AdminService) GetOutCountByHostel(ctx context.Context, req *connect.Request[veripassv1.GetOutCountByHostelRequest]) (*connect.Response[veripassv1.GetOutCountByHostelResponse], error) {
 	var (
-		hostel         = req.Msg.Hostel
+		hostel    = req.Msg.Hostel
 		startTime = req.Msg.StartTime.AsTime()
 		endTime   = req.Msg.EndTime.AsTime()
 		passType  = req.Msg.Type
