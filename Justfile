@@ -34,7 +34,7 @@ stop-test-database:
 
 start-test-dex: stop-test-dex
     sleep 1
-    docker run --rm -d --name veripass-test-dex -p 1433:1433 -v ./dex-config-testing.yaml:/etc/dex/config.yaml dexidp/dex:latest dex serve /etc/dex/config.yaml
+    docker run --rm -d --name veripass-test-dex -p 1433:1433 -p 5557:5557 -v ./dex-config-testing.yaml:/etc/dex/config.yaml dexidp/dex:latest dex serve /etc/dex/config.yaml
 
 stop-test-dex:
     docker stop veripass-test-dex || true
