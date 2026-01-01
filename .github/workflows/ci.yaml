@@ -26,21 +26,21 @@ jobs:
       with:
         go-version-file: 'go.mod'
     
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+    
     - name: Setup node
       uses: actions/setup-node@v6
       with:
         node-version: 24
+        cache: 'pnpm'
 
     - name: Setup Buf
       uses: bufbuild/buf-action@v1
       with:
         setup_only: true
-    
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 10
-        cache: true
     
     - name: Setup golangci
       uses: golangci/golangci-lint-action@v9
