@@ -19,31 +19,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
-        go-version: '1.25.3'
+        go-version-file: 'go.mod'
     
     - name: Setup node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: '22'
+        node-version: 24
 
     - name: Setup Buf
       uses: bufbuild/buf-action@v1
       with:
-        pr_comment: false
-        breaking: false
+        setup_only: true
     
     - name: Setup pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
       with:
-        version: 9
+        version: 10
+        cache: true
     
     - name: Setup golangci
-      uses: golangci/golangci-lint-action@v8
+      uses: golangci/golangci-lint-action@v9
+      with:
+        install-only: true
     
     - name: Setup just
       uses: extractions/setup-just@v3
@@ -55,8 +57,5 @@ jobs:
 
     - name: Perform lint
       run: |
-        just lint
-        just fmt
-        git diff --exit-code
-        just gen
+        just gen fmt lint
         git diff --exit-code
